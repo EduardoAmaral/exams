@@ -33,9 +33,5 @@ jobs:
           name: test-reports
           path: ~/jacocoTestReport.xml
 
-#      - name: Static Analysis
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_ORG:  ${{ secrets.SONAR_ORG }}
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: ./gradlew sonarqube
+      - name: Static Analysis
+        run: ./gradlew sonarqube

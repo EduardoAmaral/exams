@@ -20,7 +20,7 @@ springBoot {
 
 jacocoTestReport {
 	reports {
-		html.destination file("${project.buildDir}/jacoco/html")
+		xml.enabled true
 	}
 }
 jacocoTestReport.dependsOn(test)
@@ -29,8 +29,10 @@ sonarqube {
 	properties {
 		property('sonar.sources', "${projectDir}/src/main/java")
 		property('sonar.language', "java")
-		property('sonar.junit.reportPaths', "${project.buildDir}/test-results/test")
-		property('sonar.jajaco.reportPaths', "${project.buildDir}/jajaco/test.exec")
+		property "sonar.projectKey", "EduardoAmaral_exams"
+		property "sonar.organization", "eduardoamaral"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.login", "2a02e8a015d143408658dd92ec6f6b51788cbb21"
 	}
 }
 
