@@ -27,11 +27,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build jacocoTestReport
 
-      - name: Stores Tests Report
-        uses: actions/upload-artifact@master
-        with:
-          name: test-reports
-          path: ./jacocoTestReport.xml
+#      - name: Stores Tests Report
+#        uses: actions/upload-artifact@master
+#        with:
+#          name: test-reports
+#          path: ./jacocoTestReport.xml
 
       - name: Static Analysis
         run: ./gradlew sonarqube
