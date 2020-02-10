@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: test-reports
-          path: ~/jacocoTestReport.xml
+          path: ./jacocoTestReport.xml
 
       - name: Static Analysis
         run: ./gradlew sonarqube
