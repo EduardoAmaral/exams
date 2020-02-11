@@ -21,5 +21,5 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
 
         Assertions.assertThat(question.getId()).isNotZero();
     }
-    
+
 }
