@@ -17,8 +17,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = "question", produces = MediaType.APPLICATION_JSON_VALUE)
 public class QuestionController {
 
+    private final QuestionPort questionPort;
+
     @Autowired
-    private QuestionPort questionPort;
+    public QuestionController(QuestionPort questionPort) {
+        this.questionPort = questionPort;
+    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id){

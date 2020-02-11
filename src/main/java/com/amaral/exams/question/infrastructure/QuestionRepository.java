@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class QuestionRepository implements QuestionRepositoryPort {
 
-    private QuestionJpaRepository repository;
+    private final QuestionJpaRepository repository;
 
     @Autowired
     public QuestionRepository(QuestionJpaRepository repository) {

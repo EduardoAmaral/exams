@@ -23,7 +23,6 @@ jacocoTestReport {
 		xml.enabled true
 	}
 }
-jacocoTestReport.dependsOn(test)
 
 sonarqube {
 	properties {
@@ -90,7 +89,6 @@ test {
 		exceptionFormat "full"
 	}
 
-	useJUnitPlatform()
 }
 
 bootRun {

@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class QuestionService implements QuestionPort {
 
+    private final QuestionRepositoryPort repository;
+
     @Autowired
-    private QuestionRepositoryPort repository;
+    public QuestionService(QuestionRepositoryPort repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<Question> findAll() {
