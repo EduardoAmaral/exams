@@ -12,8 +12,10 @@ import java.io.Serializable;
 @Setter
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class QuestionDTO implements Serializable {
+public class QuestionDTO implements Serializable, Question {
 
     private Long id;
 
@@ -41,15 +43,5 @@ public class QuestionDTO implements Serializable {
                 .build();
     }
 
-    public Question toDomain() {
-        return Question.builder()
-                .id(id)
-                .statement(statement)
-                .active(active)
-                .solution(solution)
-                .type(type)
-                .sharable(sharable)
-                .build();
-    }
 }
 

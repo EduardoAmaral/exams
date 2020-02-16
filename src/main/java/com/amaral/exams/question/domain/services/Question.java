@@ -4,20 +4,18 @@ import com.amaral.exams.question.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
-@Builder
-public class Question {
+public interface Question {
 
-    private Long id;
+    Long getId();
 
-    private String statement;
+    String getStatement();
 
-    private QuestionType type;
+    QuestionType getType();
 
-    private String solution;
+    String getSolution();
 
-    private boolean active;
+    boolean isActive();
 
-    private boolean sharable;
+    boolean isSharable();
 
 }

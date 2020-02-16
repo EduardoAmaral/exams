@@ -2,9 +2,7 @@ package com.amaral.exams.question.infrastructure.jpa;
 
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.services.Question;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -13,8 +11,10 @@ import javax.validation.constraints.*;
 @Getter
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "TB_QUESTION")
-public class QuestionData {
+public class QuestionData implements Question {
 
     @Id
     @Column
@@ -40,17 +40,6 @@ public class QuestionData {
 
     @Column(nullable = false)
     private boolean sharable;
-
-    public Question toDomain(){
-        return Question.builder()
-                .id(id)
-                .active(active)
-                .solution(solution)
-                .statement(statement)
-                .type(type)
-                .sharable(sharable)
-                .build();
-    }
 
     public static QuestionData from(Question question){
         return QuestionData.builder()

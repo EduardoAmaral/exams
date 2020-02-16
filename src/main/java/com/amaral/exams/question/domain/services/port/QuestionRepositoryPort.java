@@ -12,4 +12,5 @@ public interface QuestionRepositoryPort {
 
     Question save(Question question);
 
+    List<Question> saveAll(List<Question> questions);
 }

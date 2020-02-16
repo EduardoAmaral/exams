@@ -42,6 +42,6 @@ public class QuestionController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> create(@RequestBody @Validated QuestionDTO question) {
         return ok(QuestionDTO.from(
-                questionPort.save(question.toDomain())));
+                questionPort.save(question)));
     }
 }

@@ -2,6 +2,7 @@ package com.amaral.exams.question.domain.services;
 
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.domain.services.services.QuestionService;
+import com.amaral.exams.question.infrastructure.jpa.QuestionData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,10 +26,10 @@ public class QuestionServiceTest {
     @Test
     public void findAll_shouldReturnAllQuestions() {
         List<Question> questions = List.of(
-                Question.builder()
+                QuestionData.builder()
                         .statement("AAA")
                         .build(),
-                Question.builder()
+                QuestionData.builder()
                         .statement("EEE")
                         .build());
 

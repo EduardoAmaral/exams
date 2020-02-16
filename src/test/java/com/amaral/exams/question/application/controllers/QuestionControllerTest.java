@@ -32,10 +32,10 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = List.of(
-                Question.builder()
+                QuestionDTO.builder()
                         .statement("ABC")
                         .build(),
-                Question.builder()
+                QuestionDTO.builder()
                         .statement("XYZ")
                         .build());
 
@@ -46,12 +46,12 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].statement", is("ABC")))
-                .andExpect(jsonPath("$[1].statement", is("XYZ")));;
+                .andExpect(jsonPath("$[1].statement", is("XYZ")));
     }
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(questionService.findById(1L)).thenReturn(Question.builder().statement("ABC").build());
+        when(questionService.findById(1L)).thenReturn(QuestionDTO.builder().statement("ABC").build());
 
         mockMvc.perform(
                 get("/question/1"))
@@ -71,7 +71,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .sharable(false)
                 .build();
 
-        Question question = Question.builder()
+        Question question = QuestionDTO.builder()
                 .id(1L)
                 .solution(solution)
                 .statement(statement)
