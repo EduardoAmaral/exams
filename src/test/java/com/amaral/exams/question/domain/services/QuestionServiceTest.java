@@ -37,7 +37,19 @@ public class QuestionServiceTest {
 
         List<Question> result = service.findAll();
 
-        assertThat(result).hasSize(2);
         assertThat(result).extracting("statement").containsOnly("AAA", "EEE");
+    }
+
+    @Test
+    public void findById_shouldReturnAQuestion() {
+        Question question = QuestionData.builder()
+                .statement("AAA")
+                .build();
+
+        when(repositoryPort.findById(1L)).thenReturn(question);
+
+        Question result = service.findById(1L);
+
+        assertThat(result).isEqualTo(question);
     }
 }

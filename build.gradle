@@ -10,10 +10,6 @@ group = 'com.amaral'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-ext{
-	distsDir = "${project.buildDir}/dist"
-}
-
 springBoot {
 	mainClassName = "com.amaral.exams.configuration.ExamsApplication"
 }

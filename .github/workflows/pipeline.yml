@@ -35,7 +35,7 @@ jobs:
 
       - name: Static Analysis
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_ORG:  ${{ secrets.SONAR_ORG }}
+          EXAMS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          EXAMS_SONAR_ORG:  ${{ secrets.SONAR_ORG }}
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: ./gradlew sonarqube
