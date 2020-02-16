@@ -32,4 +32,9 @@ public class QuestionService implements QuestionPort {
     public Question save(Question question) {
         return repository.save(question);
     }
+
+    @Override
+    public List<Question> saveAll(List<Question> question) {
+        return repository.saveAll(question);
+    }
 }

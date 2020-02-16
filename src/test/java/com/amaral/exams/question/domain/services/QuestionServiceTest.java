@@ -10,8 +10,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,5 +53,46 @@ public class QuestionServiceTest {
         Question result = service.findById(1L);
 
         assertThat(result).isEqualTo(question);
+    }
+
+    @Test
+    public void save_shouldReturnAQuestion() {
+        Question question = QuestionData.builder()
+                .id(1L)
+                .statement("AAA")
+                .build();
+
+        when(repositoryPort.save(question)).thenReturn(question);
+
+        Question result = service.save(question);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void saveAll_shouldReturnAllQuestionsWithId() {
+        List<Question> request = List.of(
+                QuestionData.builder()
+                        .statement("AAA")
+                        .build(),
+                QuestionData.builder()
+                        .statement("EEE")
+                        .build());
+
+        List<Question> response = List.of(
+                QuestionData.builder()
+                        .id(1L)
+                        .statement("AAA")
+                        .build(),
+                QuestionData.builder()
+                        .id(2L)
+                        .statement("EEE")
+                        .build());
+
+        when(repositoryPort.saveAll(request)).thenReturn(response);
+
+        List<Question> result = service.saveAll(request);
+
+        assertThat(result).extracting("id").isNotNull();
     }
 }

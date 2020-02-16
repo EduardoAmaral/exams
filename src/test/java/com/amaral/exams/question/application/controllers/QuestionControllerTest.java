@@ -111,4 +111,67 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void createByList_whenAllFieldsAreValid_shouldReturnQuestionsWithId() throws Exception {
+        String statement1 = "Question 1?";
+        String solution1 = "S1";
+        String statement2 = "Question 2?";
+        String solution2 = "S2";
+
+        List<QuestionDTO> dtos = List.of(
+                QuestionDTO.builder()
+                        .solution(solution1)
+                        .statement(statement1)
+                        .type(QuestionType.MULTIPLE_CHOICES)
+                        .active(true)
+                        .sharable(false)
+                        .build(),
+                QuestionDTO.builder()
+                        .solution(solution2)
+                        .statement(statement2)
+                        .type(QuestionType.MULTIPLE_CHOICES)
+                        .active(true)
+                        .sharable(false)
+                        .build());
+
+        List<Question> questions = List.of(
+                QuestionDTO.builder()
+                        .id(1L)
+                        .solution(solution1)
+                        .statement(statement1)
+                        .type(QuestionType.MULTIPLE_CHOICES)
+                        .active(true)
+                        .sharable(false)
+                        .build(),
+                QuestionDTO.builder()
+                        .id(2L)
+                        .solution(solution2)
+                        .statement(statement2)
+                        .type(QuestionType.MULTIPLE_CHOICES)
+                        .active(true)
+                        .sharable(false)
+                        .build());
+
+        when(questionService.saveAll(any())).thenReturn(questions);
+
+        mockMvc.perform(
+                post("/question/list")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(dtos))
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].statement", is(statement1)))
+                .andExpect(jsonPath("$[0].solution", is(solution1)))
+                .andExpect(jsonPath("$[0].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
+                .andExpect(jsonPath("$[0].active", is(true)))
+                .andExpect(jsonPath("$[0].sharable", is(false)))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].statement", is(statement2)))
+                .andExpect(jsonPath("$[1].solution", is(solution2)))
+                .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
+                .andExpect(jsonPath("$[1].active", is(true)))
+                .andExpect(jsonPath("$[1].sharable", is(false)));
+    }
 }

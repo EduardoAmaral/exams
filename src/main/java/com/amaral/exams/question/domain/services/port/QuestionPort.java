@@ -11,4 +11,6 @@ public interface QuestionPort {
     Question findById(long id);
 
     Question save(Question question);
+
+    List<Question> saveAll(List<Question> question);
 }

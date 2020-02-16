@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
@@ -43,5 +45,15 @@ public class QuestionController {
     public ResponseEntity<QuestionDTO> create(@RequestBody @Validated QuestionDTO question) {
         return ok(QuestionDTO.from(
                 questionPort.save(question)));
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
+    public ResponseEntity<List<QuestionDTO>> createByList(@RequestBody @Validated List<QuestionDTO> questions) {
+        List<QuestionDTO> result = questionPort
+                .saveAll(new ArrayList<>(questions))
+                .stream()
+                .map(QuestionDTO::from)
+                .collect(toList());
+        return ok(result);
     }
 }
