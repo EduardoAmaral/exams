@@ -1,8 +1,9 @@
 package com.amaral.exams.question.domain.services;
 
+import com.amaral.exams.question.application.dto.QuestionDTO;
+import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.domain.services.services.QuestionService;
-import com.amaral.exams.question.infrastructure.jpa.QuestionData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -10,10 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,10 +27,10 @@ public class QuestionServiceTest {
     @Test
     public void findAll_shouldReturnAllQuestions() {
         List<Question> questions = List.of(
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .statement("AAA")
                         .build(),
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .statement("EEE")
                         .build());
 
@@ -44,7 +43,7 @@ public class QuestionServiceTest {
 
     @Test
     public void findById_shouldReturnAQuestion() {
-        Question question = QuestionData.builder()
+        Question question = QuestionDTO.builder()
                 .statement("AAA")
                 .build();
 
@@ -57,7 +56,7 @@ public class QuestionServiceTest {
 
     @Test
     public void save_shouldReturnAQuestion() {
-        Question question = QuestionData.builder()
+        Question question = QuestionDTO.builder()
                 .id(1L)
                 .statement("AAA")
                 .build();
@@ -72,19 +71,19 @@ public class QuestionServiceTest {
     @Test
     public void saveAll_shouldReturnAllQuestionsWithId() {
         List<Question> request = List.of(
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .statement("AAA")
                         .build(),
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .statement("EEE")
                         .build());
 
         List<Question> response = List.of(
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .id(1L)
                         .statement("AAA")
                         .build(),
-                QuestionData.builder()
+                QuestionDTO.builder()
                         .id(2L)
                         .statement("EEE")
                         .build());

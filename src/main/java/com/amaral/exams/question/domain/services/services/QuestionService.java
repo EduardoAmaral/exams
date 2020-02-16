@@ -1,6 +1,6 @@
 package com.amaral.exams.question.domain.services.services;
 
-import com.amaral.exams.question.domain.services.Question;
+import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionPort;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;

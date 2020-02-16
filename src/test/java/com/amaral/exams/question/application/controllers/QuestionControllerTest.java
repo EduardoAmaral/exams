@@ -2,8 +2,9 @@ package com.amaral.exams.question.application.controllers;
 
 import com.amaral.exams.configuration.controller.ControllerIntegrationTest;
 import com.amaral.exams.question.QuestionType;
+import com.amaral.exams.question.application.dto.AlternativeDTO;
 import com.amaral.exams.question.application.dto.QuestionDTO;
-import com.amaral.exams.question.domain.services.Question;
+import com.amaral.exams.question.domain.Question;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,19 +67,21 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         QuestionDTO dto = QuestionDTO.builder()
                 .solution(solution)
                 .statement(statement)
-                .type(QuestionType.MULTIPLE_CHOICES)
+                .type(QuestionType.TRUE_OR_FALSE)
                 .active(true)
                 .sharable(false)
+                .correctAnswer("A")
+                .alternatives(
+                        List.of(
+                                AlternativeDTO.builder()
+                                        .description("True")
+                                        .build(),
+                                AlternativeDTO.builder()
+                                        .description("False")
+                                        .build()))
                 .build();
 
-        Question question = QuestionDTO.builder()
-                .id(1L)
-                .solution(solution)
-                .statement(statement)
-                .type(QuestionType.MULTIPLE_CHOICES)
-                .active(true)
-                .sharable(false)
-                .build();
+        Question question = dto.toBuilder().id(1L).build();
 
         when(questionService.save(any())).thenReturn(question);
 
@@ -91,9 +94,13 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is(statement)))
                 .andExpect(jsonPath("$.solution", is(solution)))
-                .andExpect(jsonPath("$.type", is(QuestionType.MULTIPLE_CHOICES.toString())))
+                .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
                 .andExpect(jsonPath("$.active", is(true)))
-                .andExpect(jsonPath("$.sharable", is(false)));
+                .andExpect(jsonPath("$.sharable", is(false)))
+                .andExpect(jsonPath("$.correctAnswer", is("A")))
+                .andExpect(jsonPath("$.sharable", is(false)))
+                .andExpect(jsonPath("$.alternatives[0].description", is("True")))
+                .andExpect(jsonPath("$.alternatives[1].description", is("False")));
     }
 
     @Test
@@ -124,6 +131,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .solution(solution1)
                         .statement(statement1)
                         .type(QuestionType.MULTIPLE_CHOICES)
+                        .correctAnswer("C")
+                        .alternatives(getAlternatives())
                         .active(true)
                         .sharable(false)
                         .build(),
@@ -131,26 +140,20 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .solution(solution2)
                         .statement(statement2)
                         .type(QuestionType.MULTIPLE_CHOICES)
+                        .correctAnswer("A")
+                        .alternatives(getAlternatives())
                         .active(true)
                         .sharable(false)
                         .build());
 
         List<Question> questions = List.of(
-                QuestionDTO.builder()
+                dtos.get(0)
+                        .toBuilder()
                         .id(1L)
-                        .solution(solution1)
-                        .statement(statement1)
-                        .type(QuestionType.MULTIPLE_CHOICES)
-                        .active(true)
-                        .sharable(false)
                         .build(),
-                QuestionDTO.builder()
+                dtos.get(1)
+                        .toBuilder()
                         .id(2L)
-                        .solution(solution2)
-                        .statement(statement2)
-                        .type(QuestionType.MULTIPLE_CHOICES)
-                        .active(true)
-                        .sharable(false)
                         .build());
 
         when(questionService.saveAll(any())).thenReturn(questions);
@@ -167,11 +170,29 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
                 .andExpect(jsonPath("$[0].active", is(true)))
                 .andExpect(jsonPath("$[0].sharable", is(false)))
+                .andExpect(jsonPath("$[0].correctAnswer", is("C")))
+                .andExpect(jsonPath("$[0].alternatives", hasSize(3)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is(statement2)))
                 .andExpect(jsonPath("$[1].solution", is(solution2)))
                 .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
                 .andExpect(jsonPath("$[1].active", is(true)))
-                .andExpect(jsonPath("$[1].sharable", is(false)));
+                .andExpect(jsonPath("$[1].sharable", is(false)))
+                .andExpect(jsonPath("$[1].correctAnswer", is("A")))
+                .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
+    }
+
+    private List<AlternativeDTO> getAlternatives(){
+        return List.of(
+                AlternativeDTO.builder()
+                        .description("A")
+                        .build(),
+                AlternativeDTO.builder()
+                        .description("B")
+                        .build(),
+                AlternativeDTO.builder()
+                        .description("C")
+                        .build()
+        );
     }
 }

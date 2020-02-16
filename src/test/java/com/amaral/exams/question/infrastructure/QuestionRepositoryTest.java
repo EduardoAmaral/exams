@@ -1,9 +1,13 @@
 package com.amaral.exams.question.infrastructure;
 
+import com.amaral.exams.configuration.exception.DataNotFoundException;
+import com.amaral.exams.configuration.exception.InvalidQuestionTypeException;
 import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
 import com.amaral.exams.question.QuestionType;
-import com.amaral.exams.question.domain.services.Question;
-import com.amaral.exams.question.infrastructure.jpa.QuestionData;
+import com.amaral.exams.question.domain.Question;
+import com.amaral.exams.question.infrastructure.jpa.AlternativeData;
+import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceData;
+import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseData;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,10 +22,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
 
     @Test
     public void save_whenFieldsAreValid_shouldReturnAQuestionWithId() {
-        Question question = QuestionData.builder()
-                .statement("Can I test it?")
-                .type(QuestionType.TRUE_OR_FALSE)
-                .build();
+        Question question = getTrueOrFalseQuestion();
 
         Question result = questionRepository.save(question);
 
@@ -30,15 +31,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
 
     @Test
     public void saveAll_whenFieldsAreValid_shouldReturnQuestionsWithIds() {
-        List<Question> questions = List.of(
-                QuestionData.builder()
-                        .statement("Can I test TF?")
-                        .type(QuestionType.TRUE_OR_FALSE)
-                        .build(),
-                QuestionData.builder()
-                        .statement("Can I test MC?").
-                        type(QuestionType.MULTIPLE_CHOICES)
-                        .build());
+        List<Question> questions = getQuestions();
 
         List<Question> result = questionRepository.saveAll(questions);
 
@@ -49,47 +42,106 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
 
     @Test
     public void findAll_whenQuestionsExist_shouldReturnAllQuestions() {
-        List<Question> questions = List.of(
-                QuestionData.builder()
-                        .statement("Can I test TF?")
-                        .type(QuestionType.TRUE_OR_FALSE)
-                        .build(),
-                QuestionData.builder()
-                        .statement("Can I test MC?").
-                        type(QuestionType.MULTIPLE_CHOICES)
-                        .build());
+        List<Question> questions = getQuestions();
 
         questionRepository.saveAll(questions);
 
         List<Question> result = questionRepository.findAll();
 
         assertThat(result)
-                .extracting("statement", "type")
+                .extracting("statement", "type", "correctAnswer")
                 .containsExactlyInAnyOrder(
-                        tuple("Can I test TF?", QuestionType.TRUE_OR_FALSE),
-                        tuple("Can I test MC?", QuestionType.MULTIPLE_CHOICES));
+                        tuple("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True"),
+                        tuple("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B"));
     }
 
     @Test
-    public void findById_whenIdExists_shouldReturnAQuestion() {
-        Question question = QuestionData.builder()
-                .statement("Can I test it?")
-                .type(QuestionType.TRUE_OR_FALSE)
-                .build();
+    public void findById_whenIdExistsAndQuestionIsTrueOrFalse_shouldReturnATrueOrFalseQuestion() {
+        Question question = getTrueOrFalseQuestion();
 
         question = questionRepository.save(question);
 
         Question result = questionRepository.findById(question.getId());
 
         assertThat(result)
-                .extracting("statement", "type")
-                .containsExactly("Can I test it?", QuestionType.TRUE_OR_FALSE);
+                .extracting("statement", "type", "correctAnswer")
+                .containsExactly("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True");
+        assertThat(result.getAlternatives())
+                .extracting("description")
+                .containsExactlyInAnyOrder("True", "False");
     }
 
     @Test
-    public void findById_whenIdDoesNotExist_shouldReturnANotFoundException() {
+    public void findById_whenIdExistsAndQuestionIsMultipleChoice_shouldReturnAMultipleChoiceQuestion() {
+        Question question = getMultipleChoice();
+
+        question = questionRepository.save(question);
+
+        Question result = questionRepository.findById(question.getId());
+
+        assertThat(result)
+                .extracting("statement", "type", "correctAnswer")
+                .containsExactly("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B");
+        assertThat(result.getAlternatives())
+                .extracting("description")
+                .containsExactlyInAnyOrder("A", "B", "C", "D", "E");
+    }
+
+    @Test
+    public void findById_whenIdDoesNotExist_shouldThrowsNotFoundException() {
         assertThatThrownBy(
                 () -> questionRepository.findById(1L),
-                "Question 1 not found");
+                "Question 1 not found")
+                .isInstanceOf(DataNotFoundException.class);
+    }
+
+    @Test
+    public void save_whenQuestionTypeIsInvalid_shouldThrowsException() {
+        assertThatThrownBy(
+                () -> questionRepository.save(MultipleChoiceData.builder().build()),
+                "Question type informed is invalid")
+                .isInstanceOf(InvalidQuestionTypeException.class);
+    }
+
+    private List<Question> getQuestions() {
+        return List.of(
+                getTrueOrFalseQuestion(),
+                getMultipleChoice());
+    }
+
+    private TrueOrFalseData getTrueOrFalseQuestion() {
+        return TrueOrFalseData.builder()
+                .statement("Can I test TF?")
+                .type(QuestionType.TRUE_OR_FALSE)
+                .correctAnswer("True")
+                .build();
+    }
+
+    private MultipleChoiceData getMultipleChoice() {
+        return MultipleChoiceData.builder()
+                .statement("Can I test MC?")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .correctAnswer("B")
+                .alternatives(getAlternatives())
+                .build();
+    }
+
+    private List<AlternativeData> getAlternatives() {
+        return List.of(
+                AlternativeData.builder()
+                        .description("A")
+                        .build(),
+                AlternativeData.builder()
+                        .description("B")
+                        .build(),
+                AlternativeData.builder()
+                        .description("C")
+                        .build(),
+                AlternativeData.builder()
+                        .description("D")
+                        .build(),
+                AlternativeData.builder()
+                        .description("E")
+                        .build());
     }
 }

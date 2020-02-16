@@ -1,38 +1,42 @@
 package com.amaral.exams.question.infrastructure.jpa;
 
 import com.amaral.exams.question.QuestionType;
-import com.amaral.exams.question.domain.services.Question;
-import lombok.*;
+import com.amaral.exams.question.domain.Question;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Getter
-@Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_QUESTION")
-public class QuestionData implements Question {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class QuestionData implements Question {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column(columnDefinition = "varchar(2000)")
-    @NotEmpty(message = "Statement is required")
-    @Size(min = 4, max = 2000, message = "The statement should have between 4 and 2000 characters")
+    @NotBlank(message = "{question.statement.required}")
+    @Size(min = 4, max = 2000, message = "{question.statement.size}")
     private String statement;
 
     @Column
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Type is required")
+    @NotNull(message = "{question.type.required}")
     private QuestionType type;
 
     @Column(columnDefinition = "varchar(3000)")
-    @Max(value = 3000, message = "The maximum value to solution is 3000 characters")
+    @Max(value = 3000, message = "{question.solution.size}")
     private String solution;
 
     @Column(nullable = false)
@@ -41,15 +45,8 @@ public class QuestionData implements Question {
     @Column(nullable = false)
     private boolean sharable;
 
-    public static QuestionData from(Question question){
-        return QuestionData.builder()
-                .id(question.getId())
-                .statement(question.getStatement())
-                .active(question.isActive())
-                .solution(question.getSolution())
-                .type(question.getType())
-                .sharable(question.isSharable())
-                .build();
-    }
+    @Column
+    @NotBlank(message = "{question.answer.required}")
+    private String correctAnswer;
 
 }

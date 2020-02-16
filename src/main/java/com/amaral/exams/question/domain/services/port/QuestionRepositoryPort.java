@@ -1,6 +1,6 @@
 package com.amaral.exams.question.domain.services.port;
 
-import com.amaral.exams.question.domain.services.Question;
+import com.amaral.exams.question.domain.Question;
 
 import java.util.List;
 

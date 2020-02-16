@@ -1,8 +1,8 @@
-package com.amaral.exams.question.domain.services;
+package com.amaral.exams.question.domain;
 
 import com.amaral.exams.question.QuestionType;
-import lombok.Builder;
-import lombok.Data;
+
+import java.util.List;
 
 public interface Question {
 
@@ -18,4 +18,7 @@ public interface Question {
 
     boolean isSharable();
 
+    List<Alternative> getAlternatives();
+
+    String getCorrectAnswer();
 }
