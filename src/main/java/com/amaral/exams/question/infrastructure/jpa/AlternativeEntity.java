@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_ALTERNATIVE")
-public class AlternativeData implements Alternative {
+public class AlternativeEntity implements Alternative {
 
     @Id
     @Column
@@ -26,11 +26,11 @@ public class AlternativeData implements Alternative {
     @NotBlank(message = "Alternative's description is required")
     private String description;
 
-    public static List<AlternativeData> from(List<Alternative> alternatives) {
-        return alternatives.stream().map(AlternativeData::from).collect(toList());
+    public static List<AlternativeEntity> from(List<Alternative> alternatives) {
+        return alternatives.stream().map(AlternativeEntity::from).collect(toList());
     }
 
-    private static AlternativeData from(Alternative alternative){
+    private static AlternativeEntity from(Alternative alternative){
         return builder()
                 .id(alternative.getId())
                 .description(alternative.getDescription())

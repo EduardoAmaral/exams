@@ -3,10 +3,10 @@ package com.amaral.exams.question.infrastructure.converter;
 import com.amaral.exams.configuration.exception.InvalidQuestionTypeException;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
-import com.amaral.exams.question.infrastructure.jpa.AlternativeData;
-import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceData;
-import com.amaral.exams.question.infrastructure.jpa.QuestionData;
-import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseData;
+import com.amaral.exams.question.infrastructure.jpa.AlternativeEntity;
+import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceEntity;
+import com.amaral.exams.question.infrastructure.jpa.QuestionEntity;
+import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseEntity;
 
 public class QuestionConverter {
 
@@ -14,9 +14,9 @@ public class QuestionConverter {
         super();
     }
 
-    public static QuestionData from(Question question){
+    public static QuestionEntity from(Question question){
         if(QuestionType.MULTIPLE_CHOICES.equals(question.getType())) {
-            return MultipleChoiceData.builder()
+            return MultipleChoiceEntity.builder()
                     .id(question.getId())
                     .active(question.isActive())
                     .correctAnswer(question.getCorrectAnswer())
@@ -24,10 +24,10 @@ public class QuestionConverter {
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
-                    .alternatives(AlternativeData.from(question.getAlternatives()))
+                    .alternatives(AlternativeEntity.from(question.getAlternatives()))
                     .build();
         } else if(QuestionType.TRUE_OR_FALSE.equals(question.getType())) {
-            return TrueOrFalseData.builder()
+            return TrueOrFalseEntity.builder()
                     .id(question.getId())
                     .active(question.isActive())
                     .correctAnswer(question.getCorrectAnswer())

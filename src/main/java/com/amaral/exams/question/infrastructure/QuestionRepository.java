@@ -4,7 +4,7 @@ import com.amaral.exams.configuration.exception.DataNotFoundException;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.infrastructure.converter.QuestionConverter;
-import com.amaral.exams.question.infrastructure.jpa.QuestionData;
+import com.amaral.exams.question.infrastructure.jpa.QuestionEntity;
 import com.amaral.exams.question.infrastructure.jpa.QuestionJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -44,7 +44,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
 
     @Override
     public List<Question> saveAll(List<Question> questions) {
-        List<QuestionData> questionsData = questions.stream().map(QuestionConverter::from).collect(toList());
+        List<QuestionEntity> questionsData = questions.stream().map(QuestionConverter::from).collect(toList());
         return new ArrayList<>(repository.saveAll(questionsData));
     }
 }

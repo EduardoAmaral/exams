@@ -2,7 +2,6 @@ package com.amaral.exams.question.infrastructure.jpa;
 
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Alternative;
-import com.amaral.exams.question.domain.Question;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,20 +14,20 @@ import java.util.List;
 @Table(name = "TB_QUESTION_TRUE_OR_FALSE")
 @Getter
 @NoArgsConstructor
-public class TrueOrFalseData extends QuestionData implements Question {
+public class TrueOrFalseEntity extends QuestionEntity {
 
     @Builder
-    public TrueOrFalseData(Long id, String statement, QuestionType type, String solution, boolean active, boolean sharable, String correctAnswer){
+    public TrueOrFalseEntity(Long id, String statement, QuestionType type, String solution, boolean active, boolean sharable, String correctAnswer){
         super(id, statement, type, solution, active, sharable, correctAnswer);
     }
 
     @Override
     public List<Alternative> getAlternatives() {
         return List.of(
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("True")
                         .build(),
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("False")
                         .build());
     }

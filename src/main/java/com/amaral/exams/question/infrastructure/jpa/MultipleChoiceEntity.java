@@ -2,7 +2,6 @@ package com.amaral.exams.question.infrastructure.jpa;
 
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Alternative;
-import com.amaral.exams.question.domain.Question;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.List;
 @Table(name = "TB_QUESTION_MULTIPLE_CHOICE")
 @Getter
 @NoArgsConstructor
-public class MultipleChoiceData extends QuestionData implements Question {
+public class MultipleChoiceEntity extends QuestionEntity {
 
     @Column
     @NotEmpty(message = "{question.alternatives.required}")
@@ -25,10 +24,10 @@ public class MultipleChoiceData extends QuestionData implements Question {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<AlternativeData> alternatives;
+    private List<AlternativeEntity> alternatives;
 
     @Builder
-    public MultipleChoiceData(
+    public MultipleChoiceEntity(
             Long id,
             String statement,
             QuestionType type,
@@ -36,7 +35,7 @@ public class MultipleChoiceData extends QuestionData implements Question {
             boolean active,
             boolean sharable,
             String correctAnswer,
-            List<AlternativeData> alternatives){
+            List<AlternativeEntity> alternatives){
         super(id, statement, type, solution, active, sharable, correctAnswer);
         this.alternatives = alternatives;
     }

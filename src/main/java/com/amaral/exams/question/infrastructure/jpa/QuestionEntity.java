@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Table(name = "TB_QUESTION")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class QuestionData implements Question {
+public abstract class QuestionEntity implements Question {
 
     @Id
     @Column

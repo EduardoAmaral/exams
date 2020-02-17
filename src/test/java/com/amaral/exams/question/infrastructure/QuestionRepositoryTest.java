@@ -5,9 +5,9 @@ import com.amaral.exams.configuration.exception.InvalidQuestionTypeException;
 import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
-import com.amaral.exams.question.infrastructure.jpa.AlternativeData;
-import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceData;
-import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseData;
+import com.amaral.exams.question.infrastructure.jpa.AlternativeEntity;
+import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceEntity;
+import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -98,7 +98,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void save_whenQuestionTypeIsInvalid_shouldThrowsException() {
         assertThatThrownBy(
-                () -> questionRepository.save(MultipleChoiceData.builder().build()),
+                () -> questionRepository.save(MultipleChoiceEntity.builder().build()),
                 "Question type informed is invalid")
                 .isInstanceOf(InvalidQuestionTypeException.class);
     }
@@ -109,16 +109,16 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 getMultipleChoice());
     }
 
-    private TrueOrFalseData getTrueOrFalseQuestion() {
-        return TrueOrFalseData.builder()
+    private TrueOrFalseEntity getTrueOrFalseQuestion() {
+        return TrueOrFalseEntity.builder()
                 .statement("Can I test TF?")
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
                 .build();
     }
 
-    private MultipleChoiceData getMultipleChoice() {
-        return MultipleChoiceData.builder()
+    private MultipleChoiceEntity getMultipleChoice() {
+        return MultipleChoiceEntity.builder()
                 .statement("Can I test MC?")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
@@ -126,21 +126,21 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 .build();
     }
 
-    private List<AlternativeData> getAlternatives() {
+    private List<AlternativeEntity> getAlternatives() {
         return List.of(
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("A")
                         .build(),
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("B")
                         .build(),
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("C")
                         .build(),
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("D")
                         .build(),
-                AlternativeData.builder()
+                AlternativeEntity.builder()
                         .description("E")
                         .build());
     }
