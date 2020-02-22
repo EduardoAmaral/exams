@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -47,4 +48,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
         List<QuestionEntity> questionsData = questions.stream().map(QuestionConverter::from).collect(toList());
         return new ArrayList<>(repository.saveAll(questionsData));
     }
+
+    @Override
+    public Optional<Question> findByStatement(String statement) {
+        return repository.findByStatement(statement);
+    }
+
 }

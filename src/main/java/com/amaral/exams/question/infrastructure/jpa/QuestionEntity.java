@@ -36,7 +36,7 @@ public abstract class QuestionEntity implements Question {
     private QuestionType type;
 
     @Column(columnDefinition = "varchar(3000)")
-    @Max(value = 3000, message = "{question.solution.size}")
+    @Size(max = 3000, message = "{question.solution.size}")
     private String solution;
 
     @Column(nullable = false)

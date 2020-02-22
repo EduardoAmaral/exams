@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -101,6 +102,58 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 () -> questionRepository.save(MultipleChoiceEntity.builder().build()),
                 "Question type informed is invalid")
                 .isInstanceOf(InvalidQuestionTypeException.class);
+    }
+
+    @Test
+    public void update_shouldUpdateTheFieldsOfAQuestion(){
+        Question question = getMultipleChoice();
+        question = questionRepository.save(question);
+
+        MultipleChoiceEntity entity = MultipleChoiceEntity.builder()
+                .id(question.getId())
+                .alternatives(AlternativeEntity.from(question.getAlternatives()))
+                .type(question.getType())
+                .correctAnswer("World")
+                .statement("Hello")
+                .active(false)
+                .sharable(false)
+                .solution("Hello World!")
+                .build();
+
+        question = questionRepository.save(entity);
+
+        assertThat(question)
+                .extracting(
+                        "id",
+                        "statement",
+                        "solution",
+                        "correctAnswer",
+                        "active",
+                        "sharable")
+                .containsExactlyInAnyOrder(
+                        entity.getId(),
+                        "Hello",
+                        "Hello World!",
+                        "World",
+                        false,
+                        false);
+    }
+
+    @Test
+    public void findByStatement_whenQuestionWithTheStatementExists_shouldReturnAQuestionByItsExactlyStatement() {
+        Question question = getMultipleChoice();
+        questionRepository.save(question);
+
+        Optional<Question> result = questionRepository.findByStatement(question.getStatement());
+
+        assertThat(result).isPresent();
+    }
+
+    @Test
+    public void findByStatement_whenStatementDoesNotExist_shouldReturnEmpty() {
+        Optional<Question> result = questionRepository.findByStatement("Hello World!");
+
+        assertThat(result).isEmpty();
     }
 
     private List<Question> getQuestions() {
