@@ -17,8 +17,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,17 +89,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.statement", is(statement)))
-                .andExpect(jsonPath("$.solution", is(solution)))
-                .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
-                .andExpect(jsonPath("$.active", is(true)))
-                .andExpect(jsonPath("$.sharable", is(false)))
-                .andExpect(jsonPath("$.correctAnswer", is("A")))
-                .andExpect(jsonPath("$.sharable", is(false)))
-                .andExpect(jsonPath("$.alternatives[0].description", is("True")))
-                .andExpect(jsonPath("$.alternatives[1].description", is("False")));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -180,6 +169,49 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
+    }
+
+    @Test
+    public void update_whenAllFieldsAreValid_shouldReturnAQuestionUpdated() throws Exception {
+        QuestionDTO dto = QuestionDTO.builder()
+                .id(1L)
+                .solution("Solution")
+                .statement("Statement")
+                .type(QuestionType.TRUE_OR_FALSE)
+                .active(true)
+                .sharable(true)
+                .correctAnswer("True")
+                .alternatives(
+                        List.of(
+                                AlternativeDTO.builder()
+                                        .description("True")
+                                        .build(),
+                                AlternativeDTO.builder()
+                                        .description("False")
+                                        .build()))
+                .build();
+
+        Question question = dto.toBuilder()
+                .solution("New Solution")
+                .statement("New Statement")
+                .sharable(false)
+                .correctAnswer("False")
+                .build();
+
+        when(questionService.update(any())).thenReturn(question);
+
+        mockMvc.perform(
+                put("/question")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.statement", is("New Statement")))
+                .andExpect(jsonPath("$.solution", is("New Solution")))
+                .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$.sharable", is(false)))
+                .andExpect(jsonPath("$.correctAnswer", is("False")));
     }
 
     private List<AlternativeDTO> getAlternatives(){

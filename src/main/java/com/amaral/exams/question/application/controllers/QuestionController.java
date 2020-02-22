@@ -3,6 +3,7 @@ package com.amaral.exams.question.application.controllers;
 import com.amaral.exams.question.application.dto.QuestionDTO;
 import com.amaral.exams.question.domain.services.port.QuestionPort;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,9 +42,9 @@ public class QuestionController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<QuestionDTO> create(@RequestBody @Validated QuestionDTO question) {
-        return ok(QuestionDTO.from(
-                questionPort.save(question)));
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody @Validated QuestionDTO question) {
+        questionPort.save(question);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
@@ -55,4 +56,11 @@ public class QuestionController {
                 .collect(toList());
         return ok(result);
     }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
+        return ok(QuestionDTO.from(
+                questionPort.update(question)));
+    }
+
 }

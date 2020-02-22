@@ -6,7 +6,10 @@ import com.amaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,7 @@ public class QuestionDTO implements Serializable, Question {
     @NotNull(message = "{question.type.required}")
     private QuestionType type;
 
-    @Max(value = 3000, message = "{question.solution.size}")
+    @Size(max = 3000, message = "{question.solution.size}")
     private String solution;
 
     private boolean active;
