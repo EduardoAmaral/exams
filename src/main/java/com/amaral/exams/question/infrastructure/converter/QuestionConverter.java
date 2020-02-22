@@ -1,6 +1,6 @@
 package com.amaral.exams.question.infrastructure.converter;
 
-import com.amaral.exams.configuration.exception.InvalidQuestionTypeException;
+import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.infrastructure.jpa.AlternativeEntity;
@@ -37,6 +37,6 @@ public class QuestionConverter {
                     .type(question.getType())
                     .build();
         }
-        throw new InvalidQuestionTypeException();
+        throw new InvalidDataException("Question type informed is invalid");
     }
 }

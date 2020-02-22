@@ -1,7 +1,7 @@
 package com.amaral.exams.question.infrastructure;
 
 import com.amaral.exams.configuration.exception.DataNotFoundException;
-import com.amaral.exams.configuration.exception.InvalidQuestionTypeException;
+import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
@@ -101,7 +101,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
         assertThatThrownBy(
                 () -> questionRepository.save(MultipleChoiceEntity.builder().build()),
                 "Question type informed is invalid")
-                .isInstanceOf(InvalidQuestionTypeException.class);
+                .isInstanceOf(InvalidDataException.class);
     }
 
     @Test

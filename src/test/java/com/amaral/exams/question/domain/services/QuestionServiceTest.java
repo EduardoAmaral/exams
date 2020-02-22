@@ -1,9 +1,13 @@
 package com.amaral.exams.question.domain.services;
 
+import com.amaral.exams.configuration.exception.InvalidDataException;
+import com.amaral.exams.question.QuestionType;
+import com.amaral.exams.question.application.dto.AlternativeDTO;
 import com.amaral.exams.question.application.dto.QuestionDTO;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.domain.services.services.QuestionService;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -93,5 +97,54 @@ public class QuestionServiceTest {
         List<Question> result = service.saveAll(request);
 
         assertThat(result).extracting("id").isNotNull();
+    }
+
+    @Test
+    public void update_whenTypeDoesNotChange_shouldReturnAUpdatedQuestion() {
+        Question question = getQuestionBuilder("Solution", "Statement", "False")
+                .build();
+
+        Question response = getQuestionBuilder("New Solution", "New Statement", "True")
+                .build();
+
+        when(repositoryPort.findById(question.getId())).thenReturn(question);
+        when(repositoryPort.save(question)).thenReturn(response);
+
+        Question result = service.update(question);
+
+        assertThat(result)
+                .extracting("solution", "statement", "correctAnswer")
+                .containsExactlyInAnyOrder("New Solution", "New Statement", "True");
+    }
+
+    @Test
+    public void update_whenTypeChanges_shouldReturnAInvalidException() {
+        QuestionDTO.QuestionDTOBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
+        Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
+
+
+        when(repositoryPort.findById(question.getId())).thenReturn(builder.type(QuestionType.MULTIPLE_CHOICES).build());
+
+        Assertions.assertThatThrownBy(() -> service.update(question), "Question's type cannot be updated")
+                .isInstanceOf(InvalidDataException.class);
+    }
+
+    private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution, String statement, String correctAnswer) {
+        return QuestionDTO.builder()
+                .id(1L)
+                .solution(solution)
+                .statement(statement)
+                .type(QuestionType.TRUE_OR_FALSE)
+                .active(true)
+                .sharable(false)
+                .correctAnswer(correctAnswer)
+                .alternatives(
+                        List.of(
+                                AlternativeDTO.builder()
+                                        .description("True")
+                                        .build(),
+                                AlternativeDTO.builder()
+                                        .description("False")
+                                        .build()));
     }
 }

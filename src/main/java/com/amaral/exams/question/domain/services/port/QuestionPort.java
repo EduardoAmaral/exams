@@ -13,4 +13,6 @@ public interface QuestionPort {
     Question save(Question question);
 
     List<Question> saveAll(List<Question> question);
+
+    Question update(Question question);
 }

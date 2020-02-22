@@ -1,5 +1,6 @@
 package com.amaral.exams.question.domain.services.services;
 
+import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionPort;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
@@ -36,5 +37,14 @@ public class QuestionService implements QuestionPort {
     @Override
     public List<Question> saveAll(List<Question> question) {
         return repository.saveAll(question);
+    }
+
+    @Override
+    public Question update(Question question) {
+        if(!repository.findById(question.getId()).getType().equals(question.getType())){
+            throw new InvalidDataException("Question's type cannot be updated");
+        }
+
+        return repository.save(question);
     }
 }
