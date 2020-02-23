@@ -24,6 +24,7 @@ public class QuestionConverter {
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
+                    .topic(question.getTopic())
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
                     .build();
         } else if(QuestionType.TRUE_OR_FALSE.equals(question.getType())) {
@@ -35,6 +36,7 @@ public class QuestionConverter {
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
+                    .topic(question.getTopic())
                     .build();
         }
         throw new InvalidDataException("Question type informed is invalid");

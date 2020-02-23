@@ -52,4 +52,7 @@ public abstract class QuestionEntity implements Question {
     @NotBlank(message = "{question.answer.required}")
     private String correctAnswer;
 
+    @Column
+    private String topic;
+
 }

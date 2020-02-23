@@ -114,9 +114,9 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 .type(question.getType())
                 .correctAnswer("World")
                 .statement("Hello")
-                .active(false)
                 .sharable(false)
                 .solution("Hello World!")
+                .topic("Greetings")
                 .build();
 
         question = questionRepository.save(entity);
@@ -127,14 +127,14 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                         "statement",
                         "solution",
                         "correctAnswer",
-                        "active",
+                        "topic",
                         "sharable")
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",
                         "Hello World!",
                         "World",
-                        false,
+                        "Greetings",
                         false);
     }
 

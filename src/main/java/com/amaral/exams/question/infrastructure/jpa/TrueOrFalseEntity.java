@@ -17,8 +17,15 @@ import java.util.List;
 public class TrueOrFalseEntity extends QuestionEntity {
 
     @Builder
-    public TrueOrFalseEntity(Long id, String statement, QuestionType type, String solution, boolean active, boolean sharable, String correctAnswer){
-        super(id, statement, type, solution, active, sharable, correctAnswer);
+    public TrueOrFalseEntity(Long id,
+                             String statement,
+                             QuestionType type,
+                             String solution,
+                             boolean active,
+                             boolean sharable,
+                             String correctAnswer,
+                             String topic){
+        super(id, statement, type, solution, active, sharable, correctAnswer, topic);
     }
 
     @Override

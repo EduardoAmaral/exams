@@ -21,4 +21,6 @@ public interface Question {
     List<Alternative> getAlternatives();
 
     String getCorrectAnswer();
+
+    String getTopic();
 }

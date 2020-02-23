@@ -45,6 +45,8 @@ public class QuestionDTO implements Serializable, Question {
     @NotBlank(message = "{question.answer.required}")
     private String correctAnswer;
 
+    private String topic;
+
     public static QuestionDTO from(Question question){
         return QuestionDTO.builder()
                 .id(question.getId())
