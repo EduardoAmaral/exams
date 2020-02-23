@@ -12,6 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { JPAIntegrationTestConfiguration.class }, properties = "spring.jpa.open-in-view=false")
 @Transactional
-public abstract class JPAIntegrationTest {
+public abstract class JpaIntegrationTest {
 
 }

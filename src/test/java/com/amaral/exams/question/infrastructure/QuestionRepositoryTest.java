@@ -1,7 +1,7 @@
 package com.amaral.exams.question.infrastructure;
 
 import com.amaral.exams.configuration.exception.InvalidDataException;
-import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
+import com.amaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class QuestionRepositoryTest extends JPAIntegrationTest {
+public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private QuestionRepository repository;
