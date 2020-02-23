@@ -1,6 +1,5 @@
 package com.amaral.exams.question.infrastructure;
 
-import com.amaral.exams.configuration.exception.DataNotFoundException;
 import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
 import com.amaral.exams.question.QuestionType;
@@ -93,7 +92,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
         assertThatThrownBy(
                 () -> questionRepository.findById(1L),
                 "Question 1 not found")
-                .isInstanceOf(DataNotFoundException.class);
+                .isInstanceOf(Exception.class);
     }
 
     @Test
@@ -156,6 +155,22 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    public void delete_shouldRemoveAQuestion() {
+        Question question = getMultipleChoice();
+        question = questionRepository.save(question);
+
+        List<Question> questions = questionRepository.findAll();
+
+        assertThat(questions).hasSize(1);
+
+        questionRepository.delete(question.getId());
+
+        questions = questionRepository.findAll();
+
+        assertThat(questions).hasSize(0);
+    }
+
     private List<Question> getQuestions() {
         return List.of(
                 getTrueOrFalseQuestion(),
@@ -167,6 +182,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 .statement("Can I test TF?")
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
+                .active(true)
                 .build();
     }
 
@@ -175,6 +191,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 .statement("Can I test MC?")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
+                .active(true)
                 .alternatives(getAlternatives())
                 .build();
     }

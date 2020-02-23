@@ -5,9 +5,10 @@ import com.amaral.exams.question.domain.Question;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,6 +19,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Table(name = "TB_QUESTION")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Where(clause = "active = true")
 public abstract class QuestionEntity implements Question {
 
     @Id
@@ -40,10 +42,11 @@ public abstract class QuestionEntity implements Question {
     private String solution;
 
     @Column(nullable = false)
-    private boolean active;
+    @Setter
+    private boolean active = true;
 
     @Column(nullable = false)
-    private boolean sharable;
+    private boolean sharable = false;
 
     @Column
     @NotBlank(message = "{question.answer.required}")

@@ -1,6 +1,6 @@
 package com.amaral.exams.question.infrastructure;
 
-import com.amaral.exams.configuration.exception.DataNotFoundException;
+import com.amaral.exams.configuration.exception.NotFoundException;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.infrastructure.converter.QuestionConverter;
@@ -35,7 +35,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     public Question findById(Long id) {
         return repository
                 .findById(id)
-                .orElseThrow(() -> new DataNotFoundException(String.format("Question %d not found", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Question %d not found", id)));
     }
 
     @Override
@@ -52,6 +52,13 @@ public class QuestionRepository implements QuestionRepositoryPort {
     @Override
     public Optional<Question> findByStatement(String statement) {
         return repository.findByStatement(statement);
+    }
+
+    @Override
+    public void delete(Long id) {
+        QuestionEntity question = repository.getOne(id);
+        question.setActive(false);
+        repository.save(question);
     }
 
 }
