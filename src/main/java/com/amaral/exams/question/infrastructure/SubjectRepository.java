@@ -5,6 +5,8 @@ import com.amaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class SubjectRepository {
 
@@ -17,5 +19,9 @@ public class SubjectRepository {
 
     public SubjectEntity save(SubjectEntity subject){
         return repository.saveAndFlush(subject);
+    }
+
+    public List<SubjectEntity> findAll() {
+        return repository.findAll();
     }
 }
