@@ -15,4 +15,6 @@ public interface QuestionPort {
     List<Question> saveAll(List<Question> question);
 
     Question update(Question question);
+
+    void delete(long id);
 }

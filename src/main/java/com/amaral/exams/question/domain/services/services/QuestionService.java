@@ -47,4 +47,9 @@ public class QuestionService implements QuestionPort {
 
         return repository.save(question);
     }
+
+    @Override
+    public void delete(long id) {
+        repository.delete(id);
+    }
 }

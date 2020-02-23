@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionServiceTest {
@@ -127,6 +127,15 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question), "Question's type cannot be updated")
                 .isInstanceOf(InvalidDataException.class);
+    }
+
+    @Test
+    public void delete_shouldCallDeleteMethodFromRepository() {
+        doNothing().when(repositoryPort).delete(1L);
+
+        service.delete(1L);
+
+        verify(repositoryPort, atLeastOnce()).delete(1L);
     }
 
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution, String statement, String correctAnswer) {
