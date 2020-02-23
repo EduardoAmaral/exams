@@ -63,4 +63,10 @@ public class QuestionController {
                 questionPort.update(question)));
     }
 
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("id") Long id){
+        questionPort.delete(id);
+    }
+
 }

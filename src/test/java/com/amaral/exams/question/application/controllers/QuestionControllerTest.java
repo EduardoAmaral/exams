@@ -16,6 +16,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -212,6 +213,14 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("False")));
+    }
+
+    @Test
+    public void delete_shouldReturnSuccess() throws Exception {
+        doNothing().when(questionService).delete(1L);
+
+        mockMvc.perform(
+                delete("/question/1")).andExpect(status().isNoContent());
     }
 
     private List<AlternativeDTO> getAlternatives(){
