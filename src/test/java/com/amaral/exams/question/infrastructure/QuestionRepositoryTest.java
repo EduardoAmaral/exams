@@ -18,13 +18,13 @@ import static org.assertj.core.api.Assertions.*;
 public class QuestionRepositoryTest extends JPAIntegrationTest {
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionRepository repository;
 
     @Test
     public void save_whenFieldsAreValid_shouldReturnAQuestionWithId() {
         Question question = getTrueOrFalseQuestion();
 
-        Question result = questionRepository.save(question);
+        Question result = repository.save(question);
 
         assertThat(result.getId()).isNotZero();
     }
@@ -33,7 +33,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     public void saveAll_whenFieldsAreValid_shouldReturnQuestionsWithIds() {
         List<Question> questions = getQuestions();
 
-        List<Question> result = questionRepository.saveAll(questions);
+        List<Question> result = repository.saveAll(questions);
 
         assertThat(result)
                 .extracting("id")
@@ -44,9 +44,9 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     public void findAll_whenQuestionsExist_shouldReturnAllQuestions() {
         List<Question> questions = getQuestions();
 
-        questionRepository.saveAll(questions);
+        repository.saveAll(questions);
 
-        List<Question> result = questionRepository.findAll();
+        List<Question> result = repository.findAll();
 
         assertThat(result)
                 .extracting("statement", "type", "correctAnswer")
@@ -59,9 +59,9 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     public void findById_whenIdExistsAndQuestionIsTrueOrFalse_shouldReturnATrueOrFalseQuestion() {
         Question question = getTrueOrFalseQuestion();
 
-        question = questionRepository.save(question);
+        question = repository.save(question);
 
-        Question result = questionRepository.findById(question.getId());
+        Question result = repository.findById(question.getId());
 
         assertThat(result)
                 .extracting("statement", "type", "correctAnswer")
@@ -75,9 +75,9 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     public void findById_whenIdExistsAndQuestionIsMultipleChoice_shouldReturnAMultipleChoiceQuestion() {
         Question question = getMultipleChoice();
 
-        question = questionRepository.save(question);
+        question = repository.save(question);
 
-        Question result = questionRepository.findById(question.getId());
+        Question result = repository.findById(question.getId());
 
         assertThat(result)
                 .extracting("statement", "type", "correctAnswer")
@@ -90,7 +90,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void findById_whenIdDoesNotExist_shouldThrowsNotFoundException() {
         assertThatThrownBy(
-                () -> questionRepository.findById(1L),
+                () -> repository.findById(1L),
                 "Question 1 not found")
                 .isInstanceOf(Exception.class);
     }
@@ -98,7 +98,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void save_whenQuestionTypeIsInvalid_shouldThrowsException() {
         assertThatThrownBy(
-                () -> questionRepository.save(MultipleChoiceEntity.builder().build()),
+                () -> repository.save(MultipleChoiceEntity.builder().build()),
                 "Question type informed is invalid")
                 .isInstanceOf(InvalidDataException.class);
     }
@@ -106,7 +106,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void update_shouldUpdateTheFieldsOfAQuestion(){
         Question question = getMultipleChoice();
-        question = questionRepository.save(question);
+        question = repository.save(question);
 
         MultipleChoiceEntity entity = MultipleChoiceEntity.builder()
                 .id(question.getId())
@@ -119,7 +119,7 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
                 .topic("Greetings")
                 .build();
 
-        question = questionRepository.save(entity);
+        question = repository.save(entity);
 
         assertThat(question)
                 .extracting(
@@ -141,16 +141,16 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void findByStatement_whenQuestionWithTheStatementExists_shouldReturnAQuestionByItsExactlyStatement() {
         Question question = getMultipleChoice();
-        questionRepository.save(question);
+        repository.save(question);
 
-        Optional<Question> result = questionRepository.findByStatement(question.getStatement());
+        Optional<Question> result = repository.findByStatement(question.getStatement());
 
         assertThat(result).isPresent();
     }
 
     @Test
     public void findByStatement_whenStatementDoesNotExist_shouldReturnEmpty() {
-        Optional<Question> result = questionRepository.findByStatement("Hello World!");
+        Optional<Question> result = repository.findByStatement("Hello World!");
 
         assertThat(result).isEmpty();
     }
@@ -158,15 +158,15 @@ public class QuestionRepositoryTest extends JPAIntegrationTest {
     @Test
     public void delete_shouldRemoveAQuestion() {
         Question question = getMultipleChoice();
-        question = questionRepository.save(question);
+        question = repository.save(question);
 
-        List<Question> questions = questionRepository.findAll();
+        List<Question> questions = repository.findAll();
 
         assertThat(questions).hasSize(1);
 
-        questionRepository.delete(question.getId());
+        repository.delete(question.getId());
 
-        questions = questionRepository.findAll();
+        questions = repository.findAll();
 
         assertThat(questions).hasSize(0);
     }
