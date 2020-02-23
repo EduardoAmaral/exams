@@ -1,4 +1,4 @@
-package com.amaral.exams.question.domain.services.services;
+package com.amaral.exams.question.domain.services;
 
 import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.question.domain.Question;

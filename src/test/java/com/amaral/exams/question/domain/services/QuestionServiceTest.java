@@ -6,7 +6,6 @@ import com.amaral.exams.question.application.dto.AlternativeDTO;
 import com.amaral.exams.question.application.dto.QuestionDTO;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
-import com.amaral.exams.question.domain.services.services.QuestionService;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
