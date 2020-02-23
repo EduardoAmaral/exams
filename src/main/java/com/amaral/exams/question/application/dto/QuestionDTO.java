@@ -55,6 +55,7 @@ public class QuestionDTO implements Serializable, Question {
                 .solution(question.getSolution())
                 .type(question.getType())
                 .correctAnswer(question.getCorrectAnswer())
+                .topic(question.getTopic())
                 .alternatives(AlternativeDTO.from(question.getAlternatives()))
                 .build();
     }
