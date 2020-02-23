@@ -1,4 +1,4 @@
-package com.amaral.exams.question.infrastructure.jpa;
+package com.amaral.exams.question.infrastructure.jpa.entity;
 
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;

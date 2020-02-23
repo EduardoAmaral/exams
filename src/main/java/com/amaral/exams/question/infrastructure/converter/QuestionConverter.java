@@ -3,10 +3,10 @@ package com.amaral.exams.question.infrastructure.converter;
 import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
-import com.amaral.exams.question.infrastructure.jpa.AlternativeEntity;
-import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceEntity;
-import com.amaral.exams.question.infrastructure.jpa.QuestionEntity;
-import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.MultipleChoiceEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.QuestionEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.TrueOrFalseEntity;
 
 public class QuestionConverter {
 

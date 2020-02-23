@@ -4,7 +4,7 @@ import com.amaral.exams.configuration.exception.NotFoundException;
 import com.amaral.exams.question.domain.Question;
 import com.amaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.amaral.exams.question.infrastructure.converter.QuestionConverter;
-import com.amaral.exams.question.infrastructure.jpa.QuestionEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.QuestionEntity;
 import com.amaral.exams.question.infrastructure.jpa.QuestionJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

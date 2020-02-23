@@ -4,9 +4,9 @@ import com.amaral.exams.configuration.exception.InvalidDataException;
 import com.amaral.exams.configuration.jpa.JPAIntegrationTest;
 import com.amaral.exams.question.QuestionType;
 import com.amaral.exams.question.domain.Question;
-import com.amaral.exams.question.infrastructure.jpa.AlternativeEntity;
-import com.amaral.exams.question.infrastructure.jpa.MultipleChoiceEntity;
-import com.amaral.exams.question.infrastructure.jpa.TrueOrFalseEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.MultipleChoiceEntity;
+import com.amaral.exams.question.infrastructure.jpa.entity.TrueOrFalseEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
