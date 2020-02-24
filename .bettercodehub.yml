@@ -1,7 +1,7 @@
 languages:
   - java
 
-component_depth: 8
+component_depth: 7
 
 exclude:
   - .*DTO\.java
