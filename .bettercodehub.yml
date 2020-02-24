@@ -1,0 +1,9 @@
+languages:
+  - java
+
+component_depth: 8
+
+exclude:
+  - .*DTO\.java
+  - .*Entity\.java
+  - .*Converter\.java
