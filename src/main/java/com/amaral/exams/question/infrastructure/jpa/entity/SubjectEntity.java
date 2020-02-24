@@ -21,7 +21,7 @@ public class SubjectEntity implements Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "{subject.description.required}")
     private String description;
 
     public static SubjectEntity from(Subject subject) {

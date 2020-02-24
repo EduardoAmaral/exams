@@ -6,9 +6,11 @@ import com.amaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SubjectRepositoryTest extends JpaIntegrationTest {
 
@@ -42,5 +44,12 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
         List<SubjectEntity> result = repository.findAll();
 
         assertThat(result).hasSize(2);
+    }
+
+    @Test
+    public void save_whenDescriptionIsBlank_shouldThrowsException() {
+        SubjectEntity entity = new SubjectEntity();
+        assertThatThrownBy(() -> repository.save(entity))
+                .isInstanceOf(ConstraintViolationException.class);
     }
 }
