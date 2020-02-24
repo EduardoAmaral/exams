@@ -1,6 +1,7 @@
 package com.amaral.exams.question.domain.services;
 
 import com.amaral.exams.question.domain.Subject;
+import com.amaral.exams.question.domain.services.port.SubjectPort;
 import com.amaral.exams.question.domain.services.port.SubjectRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SubjectService {
+public class SubjectService implements SubjectPort {
 
     private final SubjectRepositoryPort repository;
 

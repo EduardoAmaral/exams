@@ -25,12 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class QuestionControllerTest extends ControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = new ArrayList<>(getDtoList());
