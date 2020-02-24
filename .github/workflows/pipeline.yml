@@ -33,3 +33,5 @@ jobs:
           EXAMS_SONAR_ORG:  ${{ secrets.SONAR_ORG }}
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: ./gradlew sonarqube
+      - name: Docker Build
+        run: docker-compose --log-level INFO up -d --build
