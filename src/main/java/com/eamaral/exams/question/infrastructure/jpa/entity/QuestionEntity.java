@@ -17,7 +17,6 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TB_QUESTION")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Where(clause = "active = true")
 public abstract class QuestionEntity implements Question {
