@@ -41,7 +41,7 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
         repository.save(english);
         repository.save(french);
 
-        List<SubjectEntity> result = repository.findAll();
+        List<Subject> result = repository.findAll();
 
         assertThat(result).hasSize(2);
     }

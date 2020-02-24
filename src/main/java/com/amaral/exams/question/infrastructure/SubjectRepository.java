@@ -7,6 +7,7 @@ import com.amaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,7 +25,8 @@ public class SubjectRepository implements SubjectRepositoryPort {
         return repository.saveAndFlush(SubjectEntity.from(subject));
     }
 
-    public List<SubjectEntity> findAll() {
-        return repository.findAll();
+    @Override
+    public List<Subject> findAll() {
+        return new ArrayList<>(repository.findAll());
     }
 }
