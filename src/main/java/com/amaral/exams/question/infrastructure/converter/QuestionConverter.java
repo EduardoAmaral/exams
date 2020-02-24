@@ -39,6 +39,6 @@ public class QuestionConverter {
                     .topic(question.getTopic())
                     .build();
         }
-        throw new InvalidDataException("Question type informed is invalid");
+        throw new InvalidDataException("{question.type.invalid}");
     }
 }

@@ -42,7 +42,7 @@ public class QuestionService implements QuestionPort {
     @Override
     public Question update(Question question) {
         if(!repository.findById(question.getId()).getType().equals(question.getType())){
-            throw new InvalidDataException("Question's type cannot be updated");
+            throw new InvalidDataException("{question.invalid.type.update}");
         }
 
         return repository.save(question);

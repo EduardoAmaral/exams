@@ -35,7 +35,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     public Question findById(Long id) {
         return repository
                 .findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Question %d not found", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("{question.not.found}", id)));
     }
 
     @Override
