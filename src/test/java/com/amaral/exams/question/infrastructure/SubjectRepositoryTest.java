@@ -1,6 +1,7 @@
 package com.amaral.exams.question.infrastructure;
 
 import com.amaral.exams.configuration.jpa.JpaIntegrationTest;
+import com.amaral.exams.question.domain.Subject;
 import com.amaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
                 .description("English")
                 .build();
 
-        entity = repository.save(entity);
+        Subject subject = repository.save(entity);
 
-        assertThat(entity.getId()).isNotZero();
+        assertThat(subject.getId()).isNotZero();
     }
 
     @Test

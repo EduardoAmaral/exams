@@ -1,5 +1,6 @@
 package com.amaral.exams.question.infrastructure.jpa.entity;
 
+import com.amaral.exams.question.domain.Subject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubjectEntity {
+public class SubjectEntity implements Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +23,11 @@ public class SubjectEntity {
 
     @NotBlank
     private String description;
+
+    public static SubjectEntity from(Subject subject) {
+        return SubjectEntity.builder()
+                .id(subject.getId())
+                .description(subject.getDescription())
+                .build();
+    }
 }

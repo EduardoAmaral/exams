@@ -1,5 +1,7 @@
 package com.amaral.exams.question.infrastructure;
 
+import com.amaral.exams.question.domain.Subject;
+import com.amaral.exams.question.domain.services.port.SubjectRepositoryPort;
 import com.amaral.exams.question.infrastructure.jpa.SubjectJpaRepository;
 import com.amaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class SubjectRepository {
+public class SubjectRepository implements SubjectRepositoryPort {
 
     private final SubjectJpaRepository repository;
 
@@ -17,8 +19,9 @@ public class SubjectRepository {
         this.repository = repository;
     }
 
-    public SubjectEntity save(SubjectEntity subject){
-        return repository.saveAndFlush(subject);
+    @Override
+    public Subject save(Subject subject){
+        return repository.saveAndFlush(SubjectEntity.from(subject));
     }
 
     public List<SubjectEntity> findAll() {
