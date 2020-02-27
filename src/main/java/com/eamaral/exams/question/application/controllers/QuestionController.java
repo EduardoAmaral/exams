@@ -2,6 +2,7 @@ package com.eamaral.exams.question.application.controllers;
 
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.services.port.QuestionPort;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "question", produces = MediaType.APPLICATION_JSON_VALUE)
 public class QuestionController {
@@ -28,6 +30,7 @@ public class QuestionController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id){
+        log.info("Getting question {}", id);
         QuestionDTO question = QuestionDTO.from(questionPort.findById(id));
 
         return ok(question);
@@ -35,6 +38,7 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity<List<QuestionDTO>> get(){
+        log.info("Getting all subjects");
         return ok(questionPort.findAll()
                 .stream()
                 .map(QuestionDTO::from)
@@ -44,11 +48,13 @@ public class QuestionController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Validated QuestionDTO question) {
+        log.info("Saving question {}", question.getStatement());
         questionPort.save(question);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
     public ResponseEntity<List<QuestionDTO>> createByList(@RequestBody @Validated List<QuestionDTO> questions) {
+        log.info("Saving  {} question(s)", questions.size());
         List<QuestionDTO> result = questionPort
                 .saveAll(new ArrayList<>(questions))
                 .stream()
@@ -59,6 +65,7 @@ public class QuestionController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
+        log.info("Updating question {}", question.getId());
         return ok(QuestionDTO.from(
                 questionPort.update(question)));
     }
@@ -66,6 +73,7 @@ public class QuestionController {
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id){
+        log.info("Deleting question {}", id);
         questionPort.delete(id);
     }
 
