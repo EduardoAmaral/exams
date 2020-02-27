@@ -47,6 +47,7 @@ public class QuestionDTO implements Serializable, Question {
 
     private String topic;
 
+    @NotNull(message = "{question.subject.required}")
     private SubjectDTO subject;
 
     public static QuestionDTO from(Question question){
@@ -59,6 +60,7 @@ public class QuestionDTO implements Serializable, Question {
                 .correctAnswer(question.getCorrectAnswer())
                 .topic(question.getTopic())
                 .alternatives(AlternativeDTO.from(question.getAlternatives()))
+                .subject(SubjectDTO.from(question.getSubject()))
                 .build();
     }
 

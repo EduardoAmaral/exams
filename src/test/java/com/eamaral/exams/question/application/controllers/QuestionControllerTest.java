@@ -4,6 +4,7 @@ import com.eamaral.exams.configuration.controller.ControllerIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.AlternativeDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
+import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.Question;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -41,6 +42,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
+                .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
@@ -50,39 +52,34 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
+                .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(questionService.find(1L)).thenReturn(QuestionDTO.builder().statement("ABC").build());
+        when(questionService.find(1L)).thenReturn(getTrueOrFalseQuestion("S1", "Question 1?", true, "True"));
 
         mockMvc.perform(
                 get("/question/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statement", is("ABC")));
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.statement", is("Question 1?")))
+                .andExpect(jsonPath("$.solution", is("S1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$.active", is(true)))
+                .andExpect(jsonPath("$.sharable", is(false)))
+                .andExpect(jsonPath("$.correctAnswer", is("True")))
+                .andExpect(jsonPath("$.topic", is("T01")))
+                .andExpect(jsonPath("$.subject.description", is("English")))
+                .andExpect(jsonPath("$.alternatives", hasSize(2)));
     }
 
     @Test
     public void create_whenAllFieldsAreValid_shouldReturnAQuestionWithId() throws Exception {
         String statement = "1 + 2 = ?";
         String solution = "3";
-        QuestionDTO dto = QuestionDTO.builder()
-                .solution(solution)
-                .statement(statement)
-                .type(QuestionType.TRUE_OR_FALSE)
-                .active(true)
-                .sharable(false)
-                .correctAnswer("A")
-                .alternatives(
-                        List.of(
-                                AlternativeDTO.builder()
-                                        .description("True")
-                                        .build(),
-                                AlternativeDTO.builder()
-                                        .description("False")
-                                        .build()))
-                .build();
+        QuestionDTO dto = getTrueOrFalseQuestion(solution, statement, false, "A");
 
         Question question = dto.toBuilder().id(1L).build();
 
@@ -114,7 +111,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         "Question's alternatives are required",
                         "Question's type is required",
                         "Question's correct answer is required",
-                        "Question's statement is required")));
+                        "Question's statement is required",
+                        "Question's subject is required")));
     }
 
     @Test
@@ -138,6 +136,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].active", is(true)))
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
+                .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
@@ -146,28 +145,13 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].active", is(true)))
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
+                .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
 
     @Test
     public void update_whenAllFieldsAreValid_shouldReturnAQuestionUpdated() throws Exception {
-        QuestionDTO dto = QuestionDTO.builder()
-                .id(1L)
-                .solution("Solution")
-                .statement("Statement")
-                .type(QuestionType.TRUE_OR_FALSE)
-                .active(true)
-                .sharable(true)
-                .correctAnswer("True")
-                .alternatives(
-                        List.of(
-                                AlternativeDTO.builder()
-                                        .description("True")
-                                        .build(),
-                                AlternativeDTO.builder()
-                                        .description("False")
-                                        .build()))
-                .build();
+        QuestionDTO dto = getTrueOrFalseQuestion("Solution", "Statement", true, "True");
 
         Question question = dto.toBuilder()
                 .solution("New Solution")
@@ -200,36 +184,46 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 delete("/question/1")).andExpect(status().isNoContent());
     }
 
+    private QuestionDTO getTrueOrFalseQuestion(String solution, String statement, boolean sharable, String correctAnswer) {
+        return QuestionDTO.builder()
+                .id(1L)
+                .solution(solution)
+                .statement(statement)
+                .type(QuestionType.TRUE_OR_FALSE)
+                .active(true)
+                .sharable(sharable)
+                .correctAnswer(correctAnswer)
+                .topic("T01")
+                .subject(SubjectDTO.builder()
+                        .description("English")
+                        .build())
+                .alternatives(
+                        List.of(
+                                AlternativeDTO.builder()
+                                        .description("True")
+                                        .build(),
+                                AlternativeDTO.builder()
+                                        .description("False")
+                                        .build()))
+                .build();
+    }
+
     private List<QuestionDTO> getDtoList() {
         return List.of(
-                QuestionDTO.builder()
-                        .id(1L)
-                        .statement("Question 1?")
-                        .solution("S1")
-                        .type(QuestionType.TRUE_OR_FALSE)
-                        .active(true)
-                        .sharable(false)
-                        .correctAnswer("True")
-                        .topic("T01")
-                        .alternatives(
-                                List.of(
-                                        AlternativeDTO.builder()
-                                                .description("True")
-                                                .build(),
-                                        AlternativeDTO.builder()
-                                                .description("False")
-                                                .build()))
-                        .build(),
+                getTrueOrFalseQuestion("S1", "Question 1?", true, "True"),
                 QuestionDTO.builder()
                         .id(2L)
                         .statement("Question 2?")
                         .solution("S2")
                         .type(QuestionType.MULTIPLE_CHOICES)
-                        .correctAnswer("A")
-                        .topic("T02")
-                        .alternatives(getAlternatives())
                         .active(true)
                         .sharable(false)
+                        .correctAnswer("A")
+                        .topic("T02")
+                        .subject(SubjectDTO.builder()
+                                .description("English")
+                                .build())
+                        .alternatives(getAlternatives())
                         .build());
     }
 
