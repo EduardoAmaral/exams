@@ -8,7 +8,7 @@ public interface QuestionPort {
 
     List<Question> findAll();
 
-    Question findById(long id);
+    Question find(long id);
 
     Question save(Question question);
 

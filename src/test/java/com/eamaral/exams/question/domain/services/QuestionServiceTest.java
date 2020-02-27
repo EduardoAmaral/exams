@@ -4,6 +4,7 @@ import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.AlternativeDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
+import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import org.assertj.core.api.Assertions;
@@ -46,15 +47,21 @@ public class QuestionServiceTest {
 
     @Test
     public void findById_shouldReturnAQuestion() {
-        Question question = QuestionDTO.builder()
-                .statement("AAA")
-                .build();
+        Question question = getQuestionBuilder("A", "Statement", "True").build();
 
-        when(repositoryPort.findById(1L)).thenReturn(question);
+        when(repositoryPort.find(1L)).thenReturn(question);
 
-        Question result = service.findById(1L);
+        Question result = service.find(1L);
 
-        assertThat(result).isEqualTo(question);
+        assertThat(result)
+                .extracting("id",
+                        "statement",
+                        "type",
+                        "subject.description")
+                .containsExactly(1L,
+                        "Statement",
+                        QuestionType.TRUE_OR_FALSE,
+                        "English");
     }
 
     @Test
@@ -106,14 +113,18 @@ public class QuestionServiceTest {
         Question response = getQuestionBuilder("New Solution", "New Statement", "True")
                 .build();
 
-        when(repositoryPort.findById(question.getId())).thenReturn(question);
+        when(repositoryPort.find(question.getId())).thenReturn(question);
         when(repositoryPort.save(question)).thenReturn(response);
 
         Question result = service.update(question);
 
         assertThat(result)
-                .extracting("solution", "statement", "correctAnswer")
-                .containsExactlyInAnyOrder("New Solution", "New Statement", "True");
+                .extracting("solution",
+                        "statement",
+                        "correctAnswer")
+                .containsExactlyInAnyOrder("New Solution",
+                        "New Statement",
+                        "True");
     }
 
     @Test
@@ -122,7 +133,7 @@ public class QuestionServiceTest {
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
 
-        when(repositoryPort.findById(question.getId())).thenReturn(builder.type(QuestionType.MULTIPLE_CHOICES).build());
+        when(repositoryPort.find(question.getId())).thenReturn(builder.type(QuestionType.MULTIPLE_CHOICES).build());
 
         Assertions.assertThatThrownBy(() -> service.update(question), "Question's type cannot be updated")
                 .isInstanceOf(InvalidDataException.class);
@@ -137,7 +148,9 @@ public class QuestionServiceTest {
         verify(repositoryPort, atLeastOnce()).delete(1L);
     }
 
-    private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution, String statement, String correctAnswer) {
+    private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,
+                                                              String statement,
+                                                              String correctAnswer) {
         return QuestionDTO.builder()
                 .id(1L)
                 .solution(solution)
@@ -146,6 +159,9 @@ public class QuestionServiceTest {
                 .active(true)
                 .sharable(false)
                 .correctAnswer(correctAnswer)
+                .subject(SubjectDTO.builder()
+                        .description("English")
+                        .build())
                 .alternatives(
                         List.of(
                                 AlternativeDTO.builder()

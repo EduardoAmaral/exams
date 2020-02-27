@@ -55,7 +55,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(questionService.findById(1L)).thenReturn(QuestionDTO.builder().statement("ABC").build());
+        when(questionService.find(1L)).thenReturn(QuestionDTO.builder().statement("ABC").build());
 
         mockMvc.perform(
                 get("/question/1"))

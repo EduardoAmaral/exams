@@ -29,7 +29,7 @@ public class QuestionController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id){
         log.info("Getting question {}", id);
-        QuestionDTO question = QuestionDTO.from(questionPort.findById(id));
+        QuestionDTO question = QuestionDTO.from(questionPort.find(id));
 
         return ok(question);
     }

@@ -32,7 +32,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public Question findById(Long id) {
+    public Question find(Long id) {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("{question.not.found}", id)));

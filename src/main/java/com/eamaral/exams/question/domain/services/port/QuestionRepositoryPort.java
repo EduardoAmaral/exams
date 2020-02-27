@@ -9,7 +9,7 @@ public interface QuestionRepositoryPort {
 
     List<Question> findAll();
 
-    Question findById(Long id);
+    Question find(Long id);
 
     Question save(Question question);
 

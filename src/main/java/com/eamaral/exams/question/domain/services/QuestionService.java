@@ -25,8 +25,8 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question findById(long id) {
-        return repository.findById(id);
+    public Question find(long id) {
+        return repository.find(id);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public Question update(Question question) {
-        if(!repository.findById(question.getId()).getType().equals(question.getType())){
+        if(!repository.find(question.getId()).getType().equals(question.getType())){
             throw new InvalidDataException("{question.invalid.type.update}");
         }
 

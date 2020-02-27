@@ -81,7 +81,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Question result = repository.findById(question.getId());
+        Question result = repository.find(question.getId());
 
         assertThat(result)
                 .extracting("statement", "type", "correctAnswer")
@@ -97,7 +97,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Question result = repository.findById(question.getId());
+        Question result = repository.find(question.getId());
 
         assertThat(result)
                 .extracting("statement", "type", "correctAnswer")
@@ -110,7 +110,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     public void findById_whenIdDoesNotExist_shouldThrowsNotFoundException() {
         assertThatThrownBy(
-                () -> repository.findById(1L),
+                () -> repository.find(1L),
                 "Question 1 not found")
                 .isInstanceOf(NotFoundException.class);
     }
