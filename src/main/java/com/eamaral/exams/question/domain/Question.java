@@ -23,4 +23,6 @@ public interface Question {
     String getCorrectAnswer();
 
     String getTopic();
+
+    Subject getSubject();
 }

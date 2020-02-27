@@ -1,12 +1,16 @@
 package com.eamaral.exams.question.infrastructure;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
+import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
 import com.eamaral.exams.question.infrastructure.jpa.entity.MultipleChoiceEntity;
+import com.eamaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import com.eamaral.exams.question.infrastructure.jpa.entity.TrueOrFalseEntity;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +23,19 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private QuestionRepository repository;
+    
+    @Autowired
+    private SubjectRepository subjectRepository;
+    
+    private SubjectEntity subject;
+
+    @Before
+    public void setUp() throws Exception {
+        Subject english = SubjectEntity.builder()
+                .description("English")
+                .build();
+        subject = SubjectEntity.from(subjectRepository.save(english));
+    }
 
     @Test
     public void save_whenFieldsAreValid_shouldReturnAQuestionWithId() {
@@ -49,10 +66,10 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         List<Question> result = repository.findAll();
 
         assertThat(result)
-                .extracting("statement", "type", "correctAnswer")
+                .extracting("statement", "type", "correctAnswer", "subject.description")
                 .containsExactlyInAnyOrder(
-                        tuple("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True"),
-                        tuple("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B"));
+                        tuple("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True", "English"),
+                        tuple("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B", "English"));
     }
 
     @Test
@@ -92,7 +109,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         assertThatThrownBy(
                 () -> repository.findById(1L),
                 "Question 1 not found")
-                .isInstanceOf(Exception.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -117,6 +134,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .sharable(false)
                 .solution("Hello World!")
                 .topic("Greetings")
+                .subject(subject)
                 .build();
 
         question = repository.save(entity);
@@ -128,14 +146,16 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         "solution",
                         "correctAnswer",
                         "topic",
-                        "sharable")
+                        "sharable",
+                        "subject.description")
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",
                         "Hello World!",
                         "World",
                         "Greetings",
-                        false);
+                        false,
+                        "English");
     }
 
     @Test
@@ -183,6 +203,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
                 .active(true)
+                .subject(subject)
                 .build();
     }
 
@@ -192,6 +213,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
                 .active(true)
+                .subject(subject)
                 .alternatives(getAlternatives())
                 .build();
     }
@@ -214,4 +236,5 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         .description("E")
                         .build());
     }
+
 }

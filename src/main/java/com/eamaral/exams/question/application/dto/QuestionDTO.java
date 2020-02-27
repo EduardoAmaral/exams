@@ -47,6 +47,8 @@ public class QuestionDTO implements Serializable, Question {
 
     private String topic;
 
+    private SubjectDTO subject;
+
     public static QuestionDTO from(Question question){
         return QuestionDTO.builder()
                 .id(question.getId())
@@ -60,6 +62,7 @@ public class QuestionDTO implements Serializable, Question {
                 .build();
     }
 
+    @Override
     public List<Alternative> getAlternatives(){
         return new ArrayList<>(alternatives);
     }

@@ -54,4 +54,7 @@ public abstract class QuestionEntity implements Question {
     @Column
     private String topic;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private SubjectEntity subject;
+
 }

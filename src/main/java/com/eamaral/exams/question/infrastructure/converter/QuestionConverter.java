@@ -3,10 +3,7 @@ package com.eamaral.exams.question.infrastructure.converter;
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
-import com.eamaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
-import com.eamaral.exams.question.infrastructure.jpa.entity.MultipleChoiceEntity;
-import com.eamaral.exams.question.infrastructure.jpa.entity.QuestionEntity;
-import com.eamaral.exams.question.infrastructure.jpa.entity.TrueOrFalseEntity;
+import com.eamaral.exams.question.infrastructure.jpa.entity.*;
 
 public class QuestionConverter {
 
@@ -25,6 +22,7 @@ public class QuestionConverter {
                     .statement(question.getStatement())
                     .type(question.getType())
                     .topic(question.getTopic())
+                    .subject(SubjectEntity.from(question.getSubject()))
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
                     .build();
         } else if(QuestionType.TRUE_OR_FALSE.equals(question.getType())) {
@@ -37,6 +35,7 @@ public class QuestionConverter {
                     .statement(question.getStatement())
                     .type(question.getType())
                     .topic(question.getTopic())
+                    .subject(SubjectEntity.from(question.getSubject()))
                     .build();
         }
         throw new InvalidDataException("{question.type.invalid}");

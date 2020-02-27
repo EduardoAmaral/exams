@@ -36,8 +36,9 @@ public class MultipleChoiceEntity extends QuestionEntity {
             boolean sharable,
             String correctAnswer,
             String topic,
+            SubjectEntity subject,
             List<AlternativeEntity> alternatives){
-        super(id, statement, type, solution, active, sharable, correctAnswer, topic);
+        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject);
         this.alternatives = alternatives;
     }
 
