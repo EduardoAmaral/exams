@@ -3,7 +3,6 @@ package com.eamaral.exams.question.application.controllers;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.services.port.QuestionPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ public class QuestionController {
 
     private final QuestionPort questionPort;
 
-    @Autowired
     public QuestionController(QuestionPort questionPort) {
         this.questionPort = questionPort;
     }
