@@ -49,8 +49,7 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void save_whenDescriptionIsBlank_shouldThrowsException() {
-        SubjectEntity entity = new SubjectEntity();
-        assertThatThrownBy(() -> repository.save(entity))
+        assertThatThrownBy(() -> repository.save(SubjectEntity.builder().build()))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
