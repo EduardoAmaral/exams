@@ -13,7 +13,10 @@ import com.eamaral.exams.question.infrastructure.jpa.entity.TrueOrFalseEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import javax.validation.ConstraintViolationException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -189,6 +192,32 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         questions = repository.findAll();
 
         assertThat(questions).hasSize(0);
+    }
+
+    @Test
+    public void save_whenFieldsAreInvalid_shouldThrowsException() {
+        Question question = MultipleChoiceEntity.builder()
+                .subject(subject)
+                .alternatives(Collections.emptyList())
+                .correctAnswer("")
+                .statement("")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .build();
+
+        assertThatThrownBy(() -> repository.save(question))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void save_whenSubjectIsBlank_shouldThrowsException() {
+        Question question = MultipleChoiceEntity.builder()
+                .subject(SubjectEntity.builder().build())
+                .alternatives(Collections.emptyList())
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .build();
+
+        assertThatThrownBy(() -> repository.save(question))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     private List<Question> getQuestions() {
