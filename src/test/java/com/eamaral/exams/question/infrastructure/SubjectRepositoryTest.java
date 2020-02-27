@@ -5,6 +5,7 @@ import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.jpa.entity.SubjectEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -51,5 +52,17 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
         SubjectEntity entity = new SubjectEntity();
         assertThatThrownBy(() -> repository.save(entity))
                 .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void save_whenDescriptionAlreadyExists_shouldThrowsException() {
+        SubjectEntity english = SubjectEntity.builder()
+                .description("English")
+                .build();
+
+        repository.save(english);
+
+        assertThatThrownBy(() -> repository.save(english))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 }

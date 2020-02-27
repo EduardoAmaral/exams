@@ -22,6 +22,7 @@ public class SubjectEntity implements Subject {
     private Long id;
 
     @NotBlank(message = "{subject.description.required}")
+    @Column(unique = true)
     private String description;
 
     public static SubjectEntity from(Subject subject) {
