@@ -44,6 +44,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
 
 dependencies {
@@ -57,6 +58,11 @@ dependencies {
 
 	implementation group: 'com.google.code.gson', name: 'gson'
 	implementation group: 'javax.xml.bind', name: 'jaxb-api'
+
+	implementation 'io.springfox:springfox-swagger2:3.0.0-SNAPSHOT'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT'
+	implementation 'io.springfox:springfox-data-rest:3.0.0-SNAPSHOT'
+	implementation 'io.springfox:springfox-bean-validators:3.0.0-SNAPSHOT'
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'
