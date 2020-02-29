@@ -95,6 +95,10 @@ test {
 
 }
 
+task setup(type: Exec) {
+	commandLine 'docker-compose', 'up', '-d --build --remove-orphans'
+}
+
 bootRun {
 	jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
 	systemProperty "spring.profiles.active", "local"
