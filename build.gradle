@@ -28,7 +28,7 @@ sonarqube {
 		property "sonar.organization", "$System.env.EXAMS_SONAR_ORG"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.login", "$System.env.EXAMS_SONAR_TOKEN"
-		property "sonar.coverage.exclusions", ["*Converter.java", "*DTO.java", "*Entity.java", "**.configuration"]
+		property "sonar.coverage.exclusions", ["**/*DTO.java", "**/*Entity.java", "**/configuration/*"]
 	}
 }
 
