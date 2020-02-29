@@ -1,6 +1,7 @@
 package com.eamaral.exams.question.domain.services;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
+import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.services.port.QuestionPort;
 import com.eamaral.exams.question.domain.services.port.QuestionRepositoryPort;
@@ -26,7 +27,8 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public Question find(long id) {
-        return repository.find(id);
+        return repository.find(id)
+                .orElseThrow(() -> new NotFoundException(String.format("{question.not.found}", id)));
     }
 
     @Override
@@ -41,7 +43,9 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public Question update(Question question) {
-        if(!repository.find(question.getId()).getType().equals(question.getType())){
+        Question oldQuestion = find(question.getId());
+
+        if (!oldQuestion.getType().equals(question.getType())) {
             throw new InvalidDataException("{question.invalid.type.update}");
         }
 
@@ -50,6 +54,7 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public void delete(long id) {
-        repository.delete(id);
+        Question question = find(id);
+        repository.delete(question);
     }
 }

@@ -1,6 +1,7 @@
 package com.eamaral.exams.question.domain.services;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
+import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.AlternativeDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
@@ -15,8 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,22 +45,22 @@ public class QuestionServiceTest {
 
         List<Question> result = service.findAll();
 
-        assertThat(result).extracting("statement").containsOnly("AAA", "EEE");
+        assertThat(result).extracting(Question::getStatement).containsOnly("AAA", "EEE");
     }
 
     @Test
     public void findById_shouldReturnAQuestion() {
         Question question = getQuestionBuilder("A", "Statement", "True").build();
 
-        when(repositoryPort.find(1L)).thenReturn(question);
+        when(repositoryPort.find(1L)).thenReturn(Optional.of(question));
 
         Question result = service.find(1L);
 
         assertThat(result)
-                .extracting("id",
-                        "statement",
-                        "type",
-                        "subject.description")
+                .extracting(Question::getId,
+                        Question::getStatement,
+                        Question::getType,
+                        q -> q.getSubject().getDescription())
                 .containsExactly(1L,
                         "Statement",
                         QuestionType.TRUE_OR_FALSE,
@@ -65,17 +68,34 @@ public class QuestionServiceTest {
     }
 
     @Test
+    public void findById_whenQuestionDoesntExist_shouldThrowsException() {
+        when(repositoryPort.find(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> service.find(1L),
+                "Question 1 not found")
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     public void save_shouldReturnAQuestion() {
         Question question = QuestionDTO.builder()
-                .id(1L)
                 .statement("AAA")
                 .build();
 
-        when(repositoryPort.save(question)).thenReturn(question);
+        when(repositoryPort.save(question)).then(invocation -> {
+            Question q = invocation.getArgument(0);
+            return QuestionDTO.builder()
+                    .id(1L)
+                    .statement(q.getStatement())
+                    .build();
+        });
 
         Question result = service.save(question);
 
-        assertThat(result).isNotNull();
+        assertThat(result)
+                .extracting(Question::getId, Question::getStatement)
+                .containsExactly(1L, "AAA");
     }
 
     @Test
@@ -88,21 +108,24 @@ public class QuestionServiceTest {
                         .statement("EEE")
                         .build());
 
-        List<Question> response = List.of(
-                QuestionDTO.builder()
-                        .id(1L)
-                        .statement("AAA")
-                        .build(),
-                QuestionDTO.builder()
-                        .id(2L)
-                        .statement("EEE")
-                        .build());
-
-        when(repositoryPort.saveAll(request)).thenReturn(response);
+        when(repositoryPort.saveAll(request)).then(invocation -> {
+            List<Question> args = invocation.getArgument(0);
+            return args.stream().map(q ->
+                    QuestionDTO.builder()
+                            .id(request.indexOf(q) + 1L)
+                            .statement(q.getStatement())
+                            .build())
+                    .collect(toList());
+        });
 
         List<Question> result = service.saveAll(request);
 
-        assertThat(result).extracting("id").isNotNull();
+        assertThat(result)
+                .extracting(Question::getId, Question::getStatement)
+                .containsExactlyInAnyOrder(
+                        tuple(1L, "AAA"),
+                        tuple(2L, "EEE")
+                );
     }
 
     @Test
@@ -113,17 +136,19 @@ public class QuestionServiceTest {
         Question response = getQuestionBuilder("New Solution", "New Statement", "True")
                 .build();
 
-        when(repositoryPort.find(question.getId())).thenReturn(question);
+        when(repositoryPort.find(question.getId())).thenReturn(Optional.of(question));
         when(repositoryPort.save(question)).thenReturn(response);
 
         Question result = service.update(question);
 
         assertThat(result)
-                .extracting("solution",
-                        "statement",
-                        "correctAnswer")
-                .containsExactlyInAnyOrder("New Solution",
+                .extracting(
+                        Question::getStatement,
+                        Question::getSolution,
+                        Question::getCorrectAnswer)
+                .containsExactlyInAnyOrder(
                         "New Statement",
+                        "New Solution",
                         "True");
     }
 
@@ -133,19 +158,47 @@ public class QuestionServiceTest {
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
 
-        when(repositoryPort.find(question.getId())).thenReturn(builder.type(QuestionType.MULTIPLE_CHOICES).build());
+        when(repositoryPort.find(question.getId()))
+                .thenReturn(Optional.of(builder.type(QuestionType.MULTIPLE_CHOICES)
+                        .build()));
 
-        Assertions.assertThatThrownBy(() -> service.update(question), "Question's type cannot be updated")
-                .isInstanceOf(InvalidDataException.class);
+        Assertions.assertThatThrownBy(() -> service.update(question))
+                .isInstanceOf(InvalidDataException.class)
+                .hasMessage("{question.invalid.type.update}");
+    }
+
+    @Test
+    public void update_whenQuestionDoesntExist_shouldReturnNotFoundException() {
+        Question question = QuestionDTO.builder().id(1L).build();
+
+        when(repositoryPort.find(anyLong()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> service.update(question))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("{question.not.found}");
     }
 
     @Test
     public void delete_shouldCallDeleteMethodFromRepository() {
-        doNothing().when(repositoryPort).delete(1L);
+        Question question = QuestionDTO.builder().id(1L).build();
+
+        when(repositoryPort.find(1L)).thenReturn(Optional.of(question));
+        doNothing().when(repositoryPort).delete(question);
 
         service.delete(1L);
 
-        verify(repositoryPort, atLeastOnce()).delete(1L);
+        verify(repositoryPort).delete(question);
+    }
+
+    @Test
+    public void delete_whenQuestionDoesntExist_shouldReturnNotFoundException() {
+        when(repositoryPort.find(anyLong()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> service.delete(1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("{question.not.found}");
     }
 
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,

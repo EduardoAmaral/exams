@@ -1,11 +1,10 @@
 package com.eamaral.exams.question.infrastructure;
 
-import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.services.port.QuestionRepositoryPort;
 import com.eamaral.exams.question.infrastructure.converter.QuestionConverter;
-import com.eamaral.exams.question.infrastructure.jpa.entity.QuestionEntity;
 import com.eamaral.exams.question.infrastructure.jpa.QuestionJpaRepository;
+import com.eamaral.exams.question.infrastructure.jpa.entity.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,10 +31,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public Question find(Long id) {
-        return repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("{question.not.found}", id)));
+    public Optional<Question> find(Long id) {
+        Optional<QuestionEntity> question = repository
+                .findById(id);
+        return question.flatMap(Optional::of);
     }
 
     @Override
@@ -55,10 +54,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public void delete(Long id) {
-        QuestionEntity question = repository.getOne(id);
-        question.setActive(false);
-        repository.save(question);
+    public void delete(Question question) {
+        QuestionEntity questionEntity = QuestionConverter.from(question);
+        questionEntity.setActive(false);
+        repository.save(questionEntity);
     }
 
 }

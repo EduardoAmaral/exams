@@ -9,7 +9,7 @@ public interface QuestionRepositoryPort {
 
     List<Question> findAll();
 
-    Question find(Long id);
+    Optional<Question> find(Long id);
 
     Question save(Question question);
 
@@ -17,5 +17,5 @@ public interface QuestionRepositoryPort {
 
     Optional<Question> findByStatement(String statement);
 
-    void delete(Long id);
+    void delete(Question question);
 }

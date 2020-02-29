@@ -1,9 +1,9 @@
 package com.eamaral.exams.question.infrastructure;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
-import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
+import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.jpa.entity.AlternativeEntity;
@@ -26,14 +26,14 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private QuestionRepository repository;
-    
+
     @Autowired
     private SubjectRepository subjectRepository;
-    
+
     private SubjectEntity subject;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Subject english = SubjectEntity.builder()
                 .description("English")
                 .build();
@@ -56,7 +56,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         List<Question> result = repository.saveAll(questions);
 
         assertThat(result)
-                .extracting("id")
+                .extracting(Question::getId)
                 .isNotNull();
     }
 
@@ -69,7 +69,10 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         List<Question> result = repository.findAll();
 
         assertThat(result)
-                .extracting("statement", "type", "correctAnswer", "subject.description")
+                .extracting(Question::getStatement,
+                        Question::getType,
+                        Question::getCorrectAnswer,
+                        q -> q.getSubject().getDescription())
                 .containsExactlyInAnyOrder(
                         tuple("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True", "English"),
                         tuple("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B", "English"));
@@ -81,13 +84,16 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Question result = repository.find(question.getId());
+        Optional<Question> result = repository.find(question.getId());
 
-        assertThat(result)
-                .extracting("statement", "type", "correctAnswer")
+        assertThat(result).isPresent();
+
+        assertThat(result.get())
+                .extracting(Question::getStatement, Question::getType, Question::getCorrectAnswer)
                 .containsExactly("Can I test TF?", QuestionType.TRUE_OR_FALSE, "True");
-        assertThat(result.getAlternatives())
-                .extracting("description")
+
+        assertThat(result.get().getAlternatives())
+                .extracting(Alternative::getDescription)
                 .containsExactlyInAnyOrder("True", "False");
     }
 
@@ -97,22 +103,24 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Question result = repository.find(question.getId());
+        Optional<Question> result = repository.find(question.getId());
 
-        assertThat(result)
-                .extracting("statement", "type", "correctAnswer")
+        assertThat(result).isPresent();
+
+        assertThat(result.get())
+                .extracting(Question::getStatement, Question::getType, Question::getCorrectAnswer)
                 .containsExactly("Can I test MC?", QuestionType.MULTIPLE_CHOICES, "B");
-        assertThat(result.getAlternatives())
-                .extracting("description")
+
+        assertThat(result.get().getAlternatives())
+                .extracting(Alternative::getDescription)
                 .containsExactlyInAnyOrder("A", "B", "C", "D", "E");
     }
 
     @Test
-    public void findById_whenIdDoesNotExist_shouldThrowsNotFoundException() {
-        assertThatThrownBy(
-                () -> repository.find(1L),
-                "Question 1 not found")
-                .isInstanceOf(NotFoundException.class);
+    public void findById_whenIdDoesNotExist_shouldReturnEmpty() {
+        Optional<Question> result = repository.find(1L);
+
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -124,7 +132,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void update_shouldUpdateTheFieldsOfAQuestion(){
+    public void update_shouldUpdateTheFieldsOfAQuestion() {
         Question question = getMultipleChoice();
         question = repository.save(question);
 
@@ -144,13 +152,13 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(question)
                 .extracting(
-                        "id",
-                        "statement",
-                        "solution",
-                        "correctAnswer",
-                        "topic",
-                        "sharable",
-                        "subject.description")
+                        Question::getId,
+                        Question::getStatement,
+                        Question::getSolution,
+                        Question::getCorrectAnswer,
+                        Question::getTopic,
+                        Question::isSharable,
+                        q -> q.getSubject().getDescription())
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",
@@ -187,7 +195,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(questions).hasSize(1);
 
-        repository.delete(question.getId());
+        repository.delete(question);
 
         questions = repository.findAll();
 
