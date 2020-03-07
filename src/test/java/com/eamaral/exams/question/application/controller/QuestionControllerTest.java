@@ -45,6 +45,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
+                .andExpect(jsonPath("$[0].userId", is("1")))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
@@ -55,6 +56,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
+                .andExpect(jsonPath("$[1].userId", is("1")))
                 .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
@@ -99,11 +101,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void create_withoutStatementAndType_shouldReturnBadRequest() throws Exception {
-        QuestionDTO dto = QuestionDTO.builder()
-                .solution("3")
-                .active(true)
-                .sharable(false)
-                .build();
+        QuestionDTO dto = QuestionDTO.builder().build();
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -117,7 +115,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         "Question's type is required",
                         "Question's correct answer is required",
                         "Question's statement is required",
-                        "Question's subject is required")));
+                        "Question's subject is required",
+                        "Question's user is required")));
     }
 
     @Test
@@ -203,6 +202,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .sharable(sharable)
                 .correctAnswer(correctAnswer)
                 .topic("T01")
+                .userId("1")
                 .subject(SubjectDTO.builder()
                         .description("English")
                         .build())
@@ -229,6 +229,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .sharable(false)
                         .correctAnswer("A")
                         .topic("T02")
+                        .userId("1")
                         .subject(SubjectDTO.builder()
                                 .description("English")
                                 .build())

@@ -10,8 +10,6 @@ import com.eamaral.exams.question.infrastructure.repository.jpa.entity.Alternati
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.MultipleChoiceEntity;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.TrueOrFalseEntity;
-import com.eamaral.exams.question.infrastructure.repository.QuestionRepository;
-import com.eamaral.exams.question.infrastructure.repository.SubjectRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,6 +146,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .solution("Hello World!")
                 .topic("Greetings")
                 .subject(subject)
+                .userId("1")
                 .build();
 
         question = repository.save(entity);
@@ -160,7 +159,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getCorrectAnswer,
                         Question::getTopic,
                         Question::isSharable,
-                        q -> q.getSubject().getDescription())
+                        q -> q.getSubject().getDescription(),
+                        Question::getUserId)
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",
@@ -168,7 +168,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         "World",
                         "Greetings",
                         false,
-                        "English");
+                        "English",
+                        "1");
     }
 
     @Test
@@ -243,6 +244,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("True")
                 .active(true)
                 .subject(subject)
+                .userId("1")
                 .build();
     }
 
@@ -254,6 +256,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .active(true)
                 .subject(subject)
                 .alternatives(getAlternatives())
+                .userId("1")
                 .build();
     }
 

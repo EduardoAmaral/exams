@@ -25,4 +25,6 @@ public interface Question {
     String getTopic();
 
     Subject getSubject();
+
+    String getUserId();
 }

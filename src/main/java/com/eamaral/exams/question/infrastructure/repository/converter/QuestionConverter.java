@@ -24,6 +24,7 @@ public class QuestionConverter {
                     .topic(question.getTopic())
                     .subject(SubjectEntity.from(question.getSubject()))
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
+                    .userId(question.getUserId())
                     .build();
         } else if(QuestionType.TRUE_OR_FALSE.equals(question.getType())) {
             return TrueOrFalseEntity.builder()
@@ -36,6 +37,7 @@ public class QuestionConverter {
                     .type(question.getType())
                     .topic(question.getTopic())
                     .subject(SubjectEntity.from(question.getSubject()))
+                    .userId(question.getUserId())
                     .build();
         }
         throw new InvalidDataException("{question.type.invalid}");

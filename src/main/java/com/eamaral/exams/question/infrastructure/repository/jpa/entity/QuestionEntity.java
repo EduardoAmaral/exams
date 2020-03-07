@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -56,5 +57,9 @@ public abstract class QuestionEntity implements Question {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private SubjectEntity subject;
+
+    @Column
+    @NotEmpty(message = "{question.user.required}")
+    private String userId;
 
 }
