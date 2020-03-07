@@ -17,7 +17,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "question/subject", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/question/subject", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(tags = "Subject")
 public class SubjectController {
 

@@ -18,11 +18,14 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class QuestionControllerTest extends ControllerIntegrationTest {
+
+    public static final String ENDPOINT = "/api/question";
 
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
@@ -31,7 +34,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         when(questionService.findAll()).thenReturn(questions);
 
         mockMvc.perform(
-                get("/question"))
+                get(ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
@@ -61,7 +64,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         when(questionService.find(1L)).thenReturn(getTrueOrFalseQuestion("S1", "Question 1?", true, "True"));
 
         mockMvc.perform(
-                get("/question/1"))
+                get("/api/question/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
@@ -86,10 +89,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         when(questionService.save(any())).thenReturn(question);
 
         mockMvc.perform(
-                post("/question")
+                post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isCreated());
     }
 
@@ -102,10 +106,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .build();
 
         mockMvc.perform(
-                post("/question")
+                post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors", containsInAnyOrder(
                         "Question's alternatives are required",
@@ -124,10 +129,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         when(questionService.saveAll(any())).thenReturn(questions);
 
         mockMvc.perform(
-                post("/question/list")
+                post("/api/question/list")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dtos))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
@@ -163,10 +169,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         when(questionService.update(any())).thenReturn(question);
 
         mockMvc.perform(
-                put("/question")
+                put(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("New Statement")))
@@ -181,7 +188,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         doNothing().when(questionService).delete(1L);
 
         mockMvc.perform(
-                delete("/question/1")).andExpect(status().isNoContent());
+                delete("/api/question/1")
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
     }
 
     private QuestionDTO getTrueOrFalseQuestion(String solution, String statement, boolean sharable, String correctAnswer) {
@@ -227,7 +236,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .build());
     }
 
-    private List<AlternativeDTO> getAlternatives(){
+    private List<AlternativeDTO> getAlternatives() {
         return List.of(
                 AlternativeDTO.builder()
                         .description("A")

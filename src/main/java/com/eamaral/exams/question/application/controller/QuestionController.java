@@ -18,7 +18,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "question", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/question", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(tags = "Question")
 public class QuestionController {
 
@@ -38,7 +38,7 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity<List<QuestionDTO>> get(){
-        log.info("Getting all subjects");
+        log.info("Getting all questions");
         return ok(questionPort.findAll()
                 .stream()
                 .map(QuestionDTO::from)

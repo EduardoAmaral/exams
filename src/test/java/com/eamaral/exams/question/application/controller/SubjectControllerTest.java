@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class SubjectControllerTest extends ControllerIntegrationTest {
 
-    public static final String ENDPOINT = "/question/subject";
+    public static final String ENDPOINT = "/api/question/subject";
 
     @Test
     public void get_shouldReturnAllSubjects() throws Exception {
@@ -49,7 +50,8 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
                 post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isCreated());
     }
 
@@ -63,7 +65,8 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
                 post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto))
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 }
