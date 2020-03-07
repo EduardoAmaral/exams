@@ -5,8 +5,10 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.junit.ArchUnitRunner;
 import com.tngtech.archunit.lang.ArchRule;
+import io.swagger.annotations.Api;
 import org.junit.runner.RunWith;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
@@ -15,7 +17,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 @RunWith(ArchUnitRunner.class)
-@AnalyzeClasses(packages = "com.eamaral.exams", importOptions = { ImportOption.DoNotIncludeTests.class })
+@AnalyzeClasses(packages = "com.eamaral.exams", importOptions = {ImportOption.DoNotIncludeTests.class})
 public class ArchitectureTest {
 
     @ArchTest
@@ -52,5 +54,18 @@ public class ArchitectureTest {
             .that().haveSimpleNameEndingWith("Service")
             .should().resideInAPackage("..domain.service..")
             .because("Services belong to the domain layer");
+
+    @ArchTest
+    public static final ArchRule controllersShouldExposeApiDocumentation = classes()
+            .that().areAnnotatedWith(RestController.class)
+            .should().beAnnotatedWith(Api.class)
+            .because("Controllers should expose API documentation");
+
+
+    @ArchTest
+    public static final ArchRule controllersShouldDefineRequestMapping = classes()
+            .that().areAnnotatedWith(RestController.class)
+            .should().beAnnotatedWith(RequestMapping.class)
+            .because("Controllers should define their path URL mapping");
 
 }
