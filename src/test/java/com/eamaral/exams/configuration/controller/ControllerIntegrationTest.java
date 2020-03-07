@@ -2,6 +2,7 @@ package com.eamaral.exams.configuration.controller;
 
 import com.eamaral.exams.question.domain.service.QuestionService;
 import com.eamaral.exams.question.domain.service.SubjectService;
+import com.eamaral.exams.user.domain.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public abstract class ControllerIntegrationTest {
 
     @MockBean
     protected SubjectService subjectService;
+
+    @MockBean
+    protected UserService userService;
 
     @Autowired
     protected MockMvc mockMvc;

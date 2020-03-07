@@ -9,7 +9,6 @@ import com.eamaral.exams.question.domain.Question;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = new ArrayList<>(getDtoList());
 
-        when(questionService.findAll()).thenReturn(questions);
+        String userId = "1";
+        when(userService.getCurrentUserId()).thenReturn(userId);
+        when(questionService.findByUser(userId)).thenReturn(questions);
 
         mockMvc.perform(
                 get(ENDPOINT))
@@ -40,12 +41,12 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
                 .andExpect(jsonPath("$[0].solution", is("S1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$[0].type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
                 .andExpect(jsonPath("$[0].active", is(true)))
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
-                .andExpect(jsonPath("$[0].userId", is("1")))
+                .andExpect(jsonPath("$[0].userId", is(userId)))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
@@ -56,7 +57,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
-                .andExpect(jsonPath("$[1].userId", is("1")))
+                .andExpect(jsonPath("$[1].userId", is(userId)))
                 .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
@@ -71,7 +72,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
                 .andExpect(jsonPath("$.active", is(true)))
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))

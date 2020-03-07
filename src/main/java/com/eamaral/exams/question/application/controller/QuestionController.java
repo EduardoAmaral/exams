@@ -2,6 +2,7 @@ package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.port.QuestionPort;
+import com.eamaral.exams.user.domain.port.UserPort;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,15 @@ import static org.springframework.http.ResponseEntity.ok;
 public class QuestionController {
 
     private final QuestionPort questionPort;
+    private final UserPort userPort;
 
-    public QuestionController(QuestionPort questionPort) {
+    public QuestionController(QuestionPort questionPort, UserPort userPort) {
         this.questionPort = questionPort;
+        this.userPort = userPort;
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id){
+    public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id) {
         log.info("Getting question {}", id);
         QuestionDTO question = QuestionDTO.from(questionPort.find(id));
 
@@ -37,9 +40,12 @@ public class QuestionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<QuestionDTO>> get(){
-        log.info("Getting all questions");
-        return ok(questionPort.findAll()
+    public ResponseEntity<List<QuestionDTO>> get() {
+        String currentUserId = userPort.getCurrentUserId();
+
+        log.info("Getting all questions to user {}", currentUserId);
+
+        return ok(questionPort.findByUser(currentUserId)
                 .stream()
                 .map(QuestionDTO::from)
                 .collect(toList()));
@@ -54,7 +60,7 @@ public class QuestionController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
     public ResponseEntity<List<QuestionDTO>> createByList(@RequestBody @Validated List<QuestionDTO> questions) {
-        log.info("Saving  {} question(s)", questions.size());
+        log.info("Saving {} question(s)", questions.size());
         List<QuestionDTO> result = questionPort
                 .saveAll(new ArrayList<>(questions))
                 .stream()
@@ -72,7 +78,7 @@ public class QuestionController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Long id){
+    public void delete(@PathVariable("id") Long id) {
         log.info("Deleting question {}", id);
         questionPort.delete(id);
     }

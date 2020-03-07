@@ -32,20 +32,29 @@ public class QuestionServiceTest {
     private QuestionRepositoryPort repositoryPort;
 
     @Test
-    public void findAll_shouldReturnAllQuestions() {
+    public void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
+        String userId = "1";
+        String statement1 = "AAA";
+        String statement2 = "EEE";
         List<Question> questions = List.of(
                 QuestionDTO.builder()
-                        .statement("AAA")
+                        .statement(statement1)
+                        .userId(userId)
                         .build(),
                 QuestionDTO.builder()
-                        .statement("EEE")
+                        .statement(statement2)
+                        .userId(userId)
                         .build());
 
-        when(repositoryPort.findAll()).thenReturn(questions);
+        when(repositoryPort.findByUser(userId)).thenReturn(questions);
 
-        List<Question> result = service.findAll();
+        List<Question> result = service.findByUser(userId);
 
-        assertThat(result).extracting(Question::getStatement).containsOnly("AAA", "EEE");
+        assertThat(result)
+                .extracting(Question::getStatement, Question::getUserId)
+                .containsOnly(
+                        tuple(statement1, userId),
+                        tuple(statement2, userId));
     }
 
     @Test

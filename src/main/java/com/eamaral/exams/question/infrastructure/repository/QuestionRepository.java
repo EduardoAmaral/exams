@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionJpaRepository.hasStatementLike;
+import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionJpaRepository.hasUserId;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Repository
 public class QuestionRepository implements QuestionRepositoryPort {
@@ -26,8 +29,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public List<Question> findAll() {
-        return new ArrayList<>(repository.findAll());
+    public List<Question> findByUser(String userId) {
+        return new ArrayList<>(
+                repository.findAll(
+                        where(hasUserId(userId))));
     }
 
     @Override
@@ -49,8 +54,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public Optional<Question> findByStatement(String statement) {
-        return repository.findByStatement(statement);
+    public List<Question> findByStatement(String statement, String userId) {
+        return new ArrayList<>(repository.findAll(
+                where(hasUserId(userId))
+                        .and(hasStatementLike(statement))));
     }
 
     @Override

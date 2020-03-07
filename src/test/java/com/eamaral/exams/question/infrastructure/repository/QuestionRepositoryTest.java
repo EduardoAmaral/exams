@@ -61,12 +61,13 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findAll_whenQuestionsExist_shouldReturnAllQuestions() {
+    public void findByUser_shouldOnlyReturnQuestionsCreatedByTheUser() {
         List<Question> questions = getQuestions();
 
         repository.saveAll(questions);
 
-        List<Question> result = repository.findAll();
+        String userId = "1";
+        List<Question> result = repository.findByUser(userId);
 
         assertThat(result)
                 .extracting(Question::getStatement,
@@ -118,7 +119,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void findById_whenIdDoesNotExist_shouldReturnEmpty() {
-        Optional<Question> result = repository.find(1L);
+        long questionId = 1L;
+        Optional<Question> result = repository.find(questionId);
 
         assertThat(result).isEmpty();
     }
@@ -177,30 +179,34 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         Question question = getMultipleChoice();
         repository.save(question);
 
-        Optional<Question> result = repository.findByStatement(question.getStatement());
+        List<Question> result = repository.findByStatement(question.getStatement(), question.getUserId());
 
-        assertThat(result).isPresent();
+        assertThat(result).isNotEmpty();
     }
 
     @Test
     public void findByStatement_whenStatementDoesNotExist_shouldReturnEmpty() {
-        Optional<Question> result = repository.findByStatement("Hello World!");
+        String statement = "Hello World!";
+        String userId = "1";
+        List<Question> result = repository.findByStatement(statement, userId);
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void delete_shouldRemoveAQuestion() {
+        String userId = "1";
+
         Question question = getMultipleChoice();
         question = repository.save(question);
 
-        List<Question> questions = repository.findAll();
+        List<Question> questions = repository.findByUser(userId);
 
         assertThat(questions).hasSize(1);
 
         repository.delete(question);
 
-        questions = repository.findAll();
+        questions = repository.findByUser(userId);
 
         assertThat(questions).hasSize(0);
     }
@@ -234,7 +240,15 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     private List<Question> getQuestions() {
         return List.of(
                 getTrueOrFalseQuestion(),
-                getMultipleChoice());
+                getMultipleChoice(),
+                TrueOrFalseEntity.builder()
+                        .statement("Can I test TF?")
+                        .type(QuestionType.TRUE_OR_FALSE)
+                        .correctAnswer("True")
+                        .active(true)
+                        .subject(subject)
+                        .userId("20001")
+                        .build());
     }
 
     private TrueOrFalseEntity getTrueOrFalseQuestion() {

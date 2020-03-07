@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QuestionPort {
 
-    List<Question> findAll();
+    List<Question> findByUser(String userId);
 
     Question find(long id);
 

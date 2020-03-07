@@ -21,8 +21,8 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public List<Question> findAll() {
-        return repository.findAll();
+    public List<Question> findByUser(String userId) {
+        return repository.findByUser(userId);
     }
 
     @Override
