@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Configuration
 @ComponentScan(
         useDefaultFilters = false,
-        basePackages = {"com.eamaral.exams.**.application.**.controllers"},
+        basePackages = {"com.eamaral.exams.**.application.**.controller"},
         includeFilters = {
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = RestController.class)
         }

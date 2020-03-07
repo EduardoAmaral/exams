@@ -1,7 +1,7 @@
 package com.eamaral.exams.configuration.controller;
 
-import com.eamaral.exams.question.domain.services.QuestionService;
-import com.eamaral.exams.question.domain.services.SubjectService;
+import com.eamaral.exams.question.domain.service.QuestionService;
+import com.eamaral.exams.question.domain.service.SubjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
