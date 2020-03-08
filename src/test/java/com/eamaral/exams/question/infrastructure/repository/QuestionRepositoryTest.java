@@ -169,15 +169,16 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     public void findByFilterWithStatement_shouldReturnOnlyQuestionsThatStatementIsLikeTheArgument() {
         repository.saveAll(getQuestions());
 
+        String statementFilter = "Can";
         Question question = TrueOrFalseEntity.builder()
                 .userId("1")
-                .statement("Can")
+                .statement(statementFilter)
                 .build();
         List<Question> result = repository.findByFilter(question);
 
         assertThat(result)
                 .extracting(Question::getStatement)
-                .containsExactly("Can I test MC?", "Can I test TF?");
+                .allMatch(statement -> statement.contains(statementFilter), "The result should contain only questions where the statement is like the filter");
     }
 
     @Test
@@ -191,7 +192,9 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         List<Question> result = repository.findByFilter(question);
 
-        assertThat(result).hasSize(1);
+        assertThat(result)
+                .extracting(Question::getType)
+                .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should contain only questions where the type matches the filter");
     }
 
     @Test
