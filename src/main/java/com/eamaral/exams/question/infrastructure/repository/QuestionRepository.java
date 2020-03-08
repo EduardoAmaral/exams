@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionJpaRepository.hasUserId;
-import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionJpaRepository.matchFilters;
+import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionSpecification.hasUserId;
+import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionSpecification.matchFilters;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.jpa.domain.Specification.where;
 

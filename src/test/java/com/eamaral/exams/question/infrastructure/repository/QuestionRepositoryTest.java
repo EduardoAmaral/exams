@@ -175,7 +175,9 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .build();
         List<Question> result = repository.findByFilter(question);
 
-        assertThat(result).hasSize(2);
+        assertThat(result)
+                .extracting(Question::getStatement)
+                .containsExactly("Can I test MC?", "Can I test TF?");
     }
 
     @Test
