@@ -24,11 +24,15 @@ public class QuestionSpecification {
             predicates.add(cb.equal(question.get("userId"), query.getUserId()));
 
             if (query.getStatement() != null) {
-                predicates.add(cb.like(question.get("statement"), "%" + query.getStatement() + "%"));
+                predicates.add(cb.like(question.get("statement"), like(query.getStatement())));
             }
 
             if (query.getType() != null) {
                 predicates.add(cb.equal(question.get("type"), query.getType()));
+            }
+
+            if(query.getTopic() != null){
+                predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
             }
 
             cb.asc(question.get("statement"));
@@ -36,5 +40,9 @@ public class QuestionSpecification {
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static String like(String field) {
+        return "%" + field + "%";
     }
 }

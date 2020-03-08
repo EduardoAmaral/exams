@@ -166,23 +166,23 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findByFilterWithStatement_shouldReturnOnlyQuestionsThatStatementIsLikeTheArgument() {
+    public void findByFilterWithStatement_shouldReturnOnlyQuestionsThatMatchWithTheStatementFiltered() {
         repository.saveAll(getQuestions());
 
-        String statementFilter = "Can";
+        String statementFiltered = "Can";
         Question question = TrueOrFalseEntity.builder()
                 .userId("1")
-                .statement(statementFilter)
+                .statement(statementFiltered)
                 .build();
         List<Question> result = repository.findByFilter(question);
 
         assertThat(result)
                 .extracting(Question::getStatement)
-                .allMatch(statement -> statement.contains(statementFilter), "The result should contain only questions where the statement is like the filter");
+                .allMatch(statement -> statement.contains(statementFiltered), "The result should contain only questions where the statement is like the filter");
     }
 
     @Test
-    public void findByFilterWithType_shouldReturnOnlyQuestionsThatMatchWithTheType() {
+    public void findByFilterWithType_shouldReturnOnlyQuestionsThatMatchWithTheTypeFiltered() {
         repository.saveAll(getQuestions());
 
         Question question = TrueOrFalseEntity.builder()
@@ -195,6 +195,23 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         assertThat(result)
                 .extracting(Question::getType)
                 .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should contain only questions where the type matches the filter");
+    }
+
+    @Test
+    public void findByFilterWithTopic_shouldReturnOnlyQuestionsThatMatchWithTheTopicFiltered() {
+        repository.saveAll(getQuestions());
+
+        String topicFiltered = "language";
+        Question question = TrueOrFalseEntity.builder()
+                .userId("1")
+                .topic(topicFiltered)
+                .build();
+
+        List<Question> result = repository.findByFilter(question);
+
+        assertThat(result)
+                .extracting(Question::getTopic)
+                .allMatch(topic -> topic.toLowerCase().contains(topicFiltered), "The result should contain only questions where the topic matches the filter");
     }
 
     @Test
@@ -269,6 +286,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("True")
                 .active(true)
                 .subject(subject)
+                .topic("Language")
                 .userId("1")
                 .build();
     }
@@ -280,6 +298,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("B")
                 .active(true)
                 .subject(subject)
+                .topic("Test")
                 .alternatives(getAlternatives())
                 .userId("1")
                 .build();
