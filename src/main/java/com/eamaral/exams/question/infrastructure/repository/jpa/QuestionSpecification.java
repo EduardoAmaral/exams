@@ -21,8 +21,6 @@ public class QuestionSpecification {
         return (question, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(cb.equal(question.get("userId"), query.getUserId()));
-
             if (query.getStatement() != null) {
                 predicates.add(cb.like(question.get("statement"), like(query.getStatement())));
             }
@@ -31,9 +29,13 @@ public class QuestionSpecification {
                 predicates.add(cb.equal(question.get("type"), query.getType()));
             }
 
-            if(query.getTopic() != null){
+            if (query.getTopic() != null) {
                 predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
             }
+
+            Predicate userPredicate = cb.equal(question.get("userId"), query.getUserId());
+            Predicate sharablePredicate = cb.isTrue(question.get("sharable"));
+            predicates.add(cb.or(userPredicate, sharablePredicate));
 
             cb.asc(question.get("statement"));
             cb.asc(question.get("type"));

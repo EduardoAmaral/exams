@@ -215,6 +215,22 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
+    public void findByFilterWithSharableActive_shouldReturnOnlyQuestionsCreatedByTheUserOrShared() {
+        repository.saveAll(getQuestions());
+
+        String userId = "20001";
+        Question question = TrueOrFalseEntity.builder()
+                .userId(userId)
+                .build();
+
+        List<Question> result = repository.findByFilter(question);
+
+        assertThat(result)
+                .hasSize(2)
+                .allMatch(q -> q.getUserId().equals(userId) || q.isSharable(), "The result should contain only questions created by the user or shared questions");
+    }
+
+    @Test
     public void findByFilter_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
         List<Question> result = repository.findByFilter(TrueOrFalseEntity.builder().build());
 
@@ -285,6 +301,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
                 .active(true)
+                .sharable(true)
                 .subject(subject)
                 .topic("Language")
                 .userId("1")
@@ -297,6 +314,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
                 .active(true)
+                .sharable(false)
                 .subject(subject)
                 .topic("Test")
                 .alternatives(getAlternatives())
