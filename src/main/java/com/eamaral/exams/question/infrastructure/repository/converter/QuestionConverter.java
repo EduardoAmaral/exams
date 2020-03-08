@@ -1,18 +1,17 @@
 package com.eamaral.exams.question.infrastructure.repository.converter;
 
-import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.*;
 
 public class QuestionConverter {
 
-    private QuestionConverter(){
+    private QuestionConverter() {
         super();
     }
 
-    public static QuestionEntity from(Question question){
-        if(QuestionType.MULTIPLE_CHOICES.equals(question.getType())) {
+    public static QuestionEntity from(Question question) {
+        if (QuestionType.MULTIPLE_CHOICES.equals(question.getType())) {
             return MultipleChoiceEntity.builder()
                     .id(question.getId())
                     .active(question.isActive())
@@ -26,7 +25,7 @@ public class QuestionConverter {
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
                     .userId(question.getUserId())
                     .build();
-        } else if(QuestionType.TRUE_OR_FALSE.equals(question.getType())) {
+        } else {
             return TrueOrFalseEntity.builder()
                     .id(question.getId())
                     .active(question.isActive())
@@ -40,6 +39,5 @@ public class QuestionConverter {
                     .userId(question.getUserId())
                     .build();
         }
-        throw new InvalidDataException("{question.type.invalid}");
     }
 }

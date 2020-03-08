@@ -1,6 +1,5 @@
 package com.eamaral.exams.question.infrastructure.repository;
 
-import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Alternative;
@@ -126,14 +125,6 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void save_whenQuestionTypeIsInvalid_shouldThrowsException() {
-        assertThatThrownBy(
-                () -> repository.save(MultipleChoiceEntity.builder().build()),
-                "Question type informed is invalid")
-                .isInstanceOf(InvalidDataException.class);
-    }
-
-    @Test
     public void update_shouldUpdateTheFieldsOfAQuestion() {
         Question question = getMultipleChoice();
         question = repository.save(question);
@@ -175,20 +166,35 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findByStatement_whenQuestionWithTheStatementExists_shouldReturnAQuestionByItsExactlyStatement() {
-        Question question = getMultipleChoice();
-        repository.save(question);
+    public void findByFilterWithStatement_shouldReturnOnlyQuestionsThatStatementIsLikeTheArgument() {
+        repository.saveAll(getQuestions());
 
-        List<Question> result = repository.findByStatement(question.getStatement(), question.getUserId());
+        Question question = TrueOrFalseEntity.builder()
+                .userId("1")
+                .statement("Can")
+                .build();
+        List<Question> result = repository.findByFilter(question);
 
-        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(2);
     }
 
     @Test
-    public void findByStatement_whenStatementDoesNotExist_shouldReturnEmpty() {
-        String statement = "Hello World!";
-        String userId = "1";
-        List<Question> result = repository.findByStatement(statement, userId);
+    public void findByFilterWithType_shouldReturnOnlyQuestionsThatMatchWithTheType() {
+        repository.saveAll(getQuestions());
+
+        Question question = TrueOrFalseEntity.builder()
+                .userId("1")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .build();
+
+        List<Question> result = repository.findByFilter(question);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    public void findByFilter_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
+        List<Question> result = repository.findByFilter(TrueOrFalseEntity.builder().build());
 
         assertThat(result).isEmpty();
     }

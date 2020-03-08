@@ -26,7 +26,9 @@ public class SubjectEntity implements Subject {
     private String description;
 
     public static SubjectEntity from(Subject subject) {
-        return SubjectEntity.builder()
+        if (subject == null) return new SubjectEntity();
+
+        return builder()
                 .id(subject.getId())
                 .description(subject.getDescription())
                 .build();
