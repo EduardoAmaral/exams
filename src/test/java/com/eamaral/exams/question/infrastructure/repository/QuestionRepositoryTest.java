@@ -4,7 +4,6 @@ import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
-import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.AlternativeEntity;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.MultipleChoiceEntity;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
@@ -29,14 +28,23 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    private SubjectEntity subject;
+    private SubjectEntity english;
+    private SubjectEntity portuguese;
 
     @Before
     public void setUp() {
-        Subject english = SubjectEntity.builder()
-                .description("English")
-                .build();
-        subject = SubjectEntity.from(subjectRepository.save(english));
+
+        english = SubjectEntity.from(
+                subjectRepository.save(
+                        SubjectEntity.builder()
+                                .description("English")
+                                .build()));
+
+        portuguese = SubjectEntity.from(
+                subjectRepository.save(
+                        SubjectEntity.builder()
+                                .description("Portuguese")
+                                .build()));
     }
 
     @Test
@@ -138,7 +146,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .sharable(false)
                 .solution("Hello World!")
                 .topic("Greetings")
-                .subject(subject)
+                .subject(english)
                 .userId("1")
                 .build();
 
@@ -178,7 +186,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result)
                 .extracting(Question::getStatement)
-                .allMatch(statement -> statement.contains(statementFiltered), "The result should contain only questions where the statement is like the filter");
+                .allMatch(statement -> statement.contains(statementFiltered), "The result should contain only questions where their statement is like the filter");
     }
 
     @Test
@@ -194,7 +202,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result)
                 .extracting(Question::getType)
-                .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should contain only questions where the type matches the filter");
+                .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should contain only questions where their type matches the filter");
     }
 
     @Test
@@ -211,7 +219,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result)
                 .extracting(Question::getTopic)
-                .allMatch(topic -> topic.toLowerCase().contains(topicFiltered), "The result should contain only questions where the topic matches the filter");
+                .allMatch(topic -> topic.toLowerCase().contains(topicFiltered), "The result should contain only questions where their topic matches the filter");
     }
 
     @Test
@@ -228,6 +236,26 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         assertThat(result)
                 .hasSize(2)
                 .allMatch(q -> q.getUserId().equals(userId) || q.isSharable(), "The result should contain only questions created by the user or shared questions");
+    }
+
+    @Test
+    public void findByFilterWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
+        repository.saveAll(getQuestions());
+
+        String userId = "20001";
+        long subjectIdFiltered = 1L;
+
+        Question question = TrueOrFalseEntity.builder()
+                .userId(userId)
+                .subject(SubjectEntity.builder()
+                        .id(subjectIdFiltered)
+                        .build())
+                .build();
+
+        List<Question> result = repository.findByFilter(question);
+
+        assertThat(result).extracting(q -> q.getSubject().getId())
+                .allMatch(id -> id == subjectIdFiltered, "The result should contain only questions where their subject matches the filter");
     }
 
     @Test
@@ -258,7 +286,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     public void save_whenFieldsAreInvalid_shouldThrowsException() {
         Question question = MultipleChoiceEntity.builder()
-                .subject(subject)
+                .subject(english)
                 .alternatives(Collections.emptyList())
                 .correctAnswer("")
                 .statement("")
@@ -290,7 +318,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         .type(QuestionType.TRUE_OR_FALSE)
                         .correctAnswer("True")
                         .active(true)
-                        .subject(subject)
+                        .topic("Language; Latin Language")
+                        .subject(portuguese)
                         .userId("20001")
                         .build());
     }
@@ -302,7 +331,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("True")
                 .active(true)
                 .sharable(true)
-                .subject(subject)
+                .subject(english)
                 .topic("Language")
                 .userId("1")
                 .build();
@@ -315,7 +344,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("B")
                 .active(true)
                 .sharable(false)
-                .subject(subject)
+                .subject(english)
                 .topic("Test")
                 .alternatives(getAlternatives())
                 .userId("1")

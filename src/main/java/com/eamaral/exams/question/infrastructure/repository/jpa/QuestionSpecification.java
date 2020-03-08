@@ -33,6 +33,10 @@ public class QuestionSpecification {
                 predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
             }
 
+            if(query.getSubject().getId() != null){
+                predicates.add(cb.equal(question.get("subject"), query.getSubject()));
+            }
+
             Predicate userPredicate = cb.equal(question.get("userId"), query.getUserId());
             Predicate sharablePredicate = cb.isTrue(question.get("sharable"));
             predicates.add(cb.or(userPredicate, sharablePredicate));
