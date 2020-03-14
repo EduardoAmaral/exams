@@ -2,6 +2,7 @@ package com.eamaral.exams.question.infrastructure.repository.jpa;
 
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -17,35 +18,66 @@ public class QuestionSpecification {
         return (question, cq, cb) -> cb.equal(question.get("author"), author);
     }
 
-    public static Specification<QuestionEntity> matchFilters(QuestionEntity query) {
+    public static Specification<QuestionEntity> matchFilters(QuestionEntity query, String currentUser) {
         return (question, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (query.getStatement() != null) {
+            if (shouldFilterByStatement(query)) {
                 predicates.add(cb.like(question.get("statement"), like(query.getStatement())));
             }
 
-            if (query.getType() != null) {
+            if (shouldFilterByType(query)) {
                 predicates.add(cb.equal(question.get("type"), query.getType()));
             }
 
-            if (query.getTopic() != null) {
+            if (shouldFilterByTopic(query)) {
                 predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
             }
 
-            if (query.getSubject().getId() != null) {
+            if (shouldFilterBySubject(query)) {
                 predicates.add(cb.equal(question.get("subject"), query.getSubject()));
             }
 
-            Predicate userPredicate = cb.equal(question.get("author"), query.getAuthor());
             Predicate sharablePredicate = cb.isTrue(question.get("sharable"));
-            predicates.add(cb.or(userPredicate, sharablePredicate));
+
+            if (shouldFilterByAuthor(query) && !isAuthorTheCurrentUser(query, currentUser)) {
+                Predicate authorPredicate = cb.equal(question.get("author"), query.getAuthor());
+                predicates.add(cb.and(authorPredicate, sharablePredicate));
+            } else {
+                Predicate userPredicate = cb.equal(question.get("author"), currentUser);
+                predicates.add(cb.or(userPredicate, sharablePredicate));
+            }
 
             cb.asc(question.get("statement"));
             cb.asc(question.get("type"));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static boolean shouldFilterByAuthor(QuestionEntity query) {
+        return !StringUtils.isEmpty(query.getAuthor());
+    }
+
+    private static boolean shouldFilterByStatement(QuestionEntity query) {
+        return !StringUtils.isEmpty(query.getStatement());
+    }
+
+    private static boolean shouldFilterByType(QuestionEntity query) {
+        return query.getType() != null;
+    }
+
+    private static boolean shouldFilterByTopic(QuestionEntity query) {
+        return !StringUtils.isEmpty(query.getTopic());
+    }
+
+    private static boolean shouldFilterBySubject(QuestionEntity query) {
+        return query.getSubject() != null
+                && query.getSubject().getId() != null;
+    }
+
+    private static boolean isAuthorTheCurrentUser(QuestionEntity query, String currentUser) {
+        return currentUser.equals(query.getAuthor());
     }
 
     private static String like(String field) {

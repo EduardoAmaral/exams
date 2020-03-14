@@ -4,6 +4,8 @@ import com.eamaral.exams.question.application.dto.QuestionCriteriaDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.port.QuestionPort;
 import com.eamaral.exams.user.domain.port.UserPort;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -90,8 +92,12 @@ public class QuestionController {
     }
 
     @GetMapping(path = "/search")
-    public ResponseEntity<List<QuestionDTO>> search(QuestionCriteriaDTO criteria) {
-        return ok(questionPort.search(criteria.toQuestion())
+    public ResponseEntity<List<QuestionDTO>> search(QuestionCriteriaDTO criteria) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Search by criteria {} to user {}", mapper.writeValueAsString(criteria), currentUserId);
+
+        return ok(questionPort.search(criteria.toQuestion(), currentUserId)
                 .stream()
                 .map(QuestionDTO::from)
                 .collect(toList()));

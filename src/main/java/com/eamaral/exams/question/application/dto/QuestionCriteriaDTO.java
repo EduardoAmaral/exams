@@ -3,11 +3,13 @@ package com.eamaral.exams.question.application.dto;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)

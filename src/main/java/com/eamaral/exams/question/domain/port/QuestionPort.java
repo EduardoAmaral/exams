@@ -18,5 +18,5 @@ public interface QuestionPort {
 
     void delete(Long id, String currentUserId);
 
-    List<Question> search(Question criteria);
+    List<Question> search(Question criteria, String currentUser);
 }

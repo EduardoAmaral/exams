@@ -60,7 +60,7 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public List<Question> search(Question criteria) {
-        return repository.findByCriteria(criteria);
+    public List<Question> search(Question criteria, String currentUser) {
+        return repository.findByCriteria(criteria, currentUser);
     }
 }

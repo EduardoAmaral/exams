@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -254,6 +255,16 @@ public class QuestionServiceTest {
         Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUserId))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("Questions's user id can't be different from the question's creator");
+    }
+
+    @Test
+    public void search_shouldCallSearchByCriteria() {
+        String currentUser = "1";
+        when(repositoryPort.findByCriteria(any(), eq(currentUser))).thenReturn(emptyList());
+
+        service.search(QuestionDTO.builder().build(), currentUser);
+
+        verify(repositoryPort).findByCriteria(any(), eq(currentUser));
     }
 
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,

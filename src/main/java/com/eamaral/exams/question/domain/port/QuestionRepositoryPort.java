@@ -15,7 +15,7 @@ public interface QuestionRepositoryPort {
 
     List<Question> saveAll(List<Question> questions);
 
-    List<Question> findByCriteria(Question criteria);
+    List<Question> findByCriteria(Question criteria, String currentUser);
 
     void delete(Question question);
 }

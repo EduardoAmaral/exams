@@ -200,7 +200,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByStatement_shouldReturnAListOfQuestionByStatement() throws Exception {
         String statementCriteria = "Question";
 
-        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -217,7 +217,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByType_shouldReturnAListOfQuestionByType() throws Exception {
         QuestionType typeCriteria = QuestionType.TRUE_OR_FALSE;
 
-        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -234,7 +234,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByTopic_shouldReturnAListOfQuestionByTopic() throws Exception {
         String topicCriteria = "T01";
 
-        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -251,7 +251,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchBySubject_shouldReturnAListOfQuestionBySubject() throws Exception {
         Long subjectCriteria = 1L;
 
-        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -262,6 +262,21 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         assertThat(questionCaptor.getValue())
                 .extracting("subject.id")
                 .isEqualTo(subjectCriteria);
+    }
+
+    @Test
+    public void search_shouldUseCurrentUserAsParameter() throws Exception {
+        String currentUser = "1";
+
+        when(userPort.getCurrentUserId()).thenReturn("1");
+        when(questionPort.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+
+        mockMvc.perform(
+                get(ENDPOINT + "/search"))
+                .andExpect(status().isOk());
+
+        assertThat(stringCaptor.getValue())
+                .isEqualTo(currentUser);
     }
 
     private QuestionDTO getTrueOrFalseQuestion() {

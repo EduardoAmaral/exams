@@ -174,95 +174,120 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findByFilterWithStatement_shouldReturnOnlyQuestionsThatMatchWithTheStatementFiltered() {
+    public void findByCriteriaWithStatement_shouldReturnOnlyQuestionsThatMatchWithTheStatementFiltered() {
         repository.saveAll(getQuestions());
 
         String statementFiltered = "Can";
         Question question = TrueOrFalseEntity.builder()
-                .author("1")
                 .statement(statementFiltered)
                 .build();
-        List<Question> result = repository.findByCriteria(question);
+        List<Question> result = repository.findByCriteria(question, "1");
 
         assertThat(result)
                 .extracting(Question::getStatement)
-                .allMatch(statement -> statement.contains(statementFiltered), "The result should contain only questions where their statement is like the filter");
+                .allMatch(statement -> statement.contains(statementFiltered), "The result should only contain questions where their statement is like the filter");
     }
 
     @Test
-    public void findByFilterWithType_shouldReturnOnlyQuestionsThatMatchWithTheTypeFiltered() {
+    public void findByCriteriaWithType_shouldReturnOnlyQuestionsThatMatchWithTheTypeFiltered() {
         repository.saveAll(getQuestions());
 
         Question question = TrueOrFalseEntity.builder()
-                .author("1")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
 
-        List<Question> result = repository.findByCriteria(question);
+        List<Question> result = repository.findByCriteria(question, "1");
 
         assertThat(result)
                 .extracting(Question::getType)
-                .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should contain only questions where their type matches the filter");
+                .allMatch(type -> type == QuestionType.MULTIPLE_CHOICES, "The result should only contain questions where their type matches the filter");
     }
 
     @Test
-    public void findByFilterWithTopic_shouldReturnOnlyQuestionsThatMatchWithTheTopicFiltered() {
+    public void findByCriteriaWithTopic_shouldReturnOnlyQuestionsThatMatchWithTheTopicFiltered() {
         repository.saveAll(getQuestions());
 
         String topicFiltered = "language";
         Question question = TrueOrFalseEntity.builder()
-                .author("1")
                 .topic(topicFiltered)
                 .build();
 
-        List<Question> result = repository.findByCriteria(question);
+        List<Question> result = repository.findByCriteria(question, "1");
 
         assertThat(result)
                 .extracting(Question::getTopic)
-                .allMatch(topic -> topic.toLowerCase().contains(topicFiltered), "The result should contain only questions where their topic matches the filter");
+                .allMatch(topic -> topic.toLowerCase().contains(topicFiltered), "The result should only contain questions where their topic matches the filter");
     }
 
     @Test
-    public void findByFilterWithSharableActive_shouldReturnOnlyQuestionsCreatedByTheUserOrShared() {
+    public void findByCriteriaWithCurrentUser_shouldReturnOnlyQuestionsCreatedByTheCurrentUserOrShared() {
         repository.saveAll(getQuestions());
 
-        String author = "20001";
-        Question question = TrueOrFalseEntity.builder()
-                .author(author)
-                .build();
+        String currentUser = "20001";
+        Question question = TrueOrFalseEntity.builder().build();
 
-        List<Question> result = repository.findByCriteria(question);
+        List<Question> result = repository.findByCriteria(question, currentUser);
 
         assertThat(result)
                 .hasSize(2)
-                .allMatch(q -> q.getAuthor().equals(author) || q.isSharable(), "The result should contain only questions created by the user or shared questions");
+                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isSharable(), "The result should only contain questions created by the user or shared questions");
     }
 
     @Test
-    public void findByFilterWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
+    public void findByCriteriaWithCurrentUserAsAuthor_shouldReturnOnlyQuestionsCreatedByTheCurrentUserOrShared() {
         repository.saveAll(getQuestions());
 
-        String author = "20001";
+        String currentUser = "20001";
+        Question question = TrueOrFalseEntity.builder()
+                .author(currentUser)
+                .build();
+
+        List<Question> result = repository.findByCriteria(question, currentUser);
+
+        assertThat(result)
+                .hasSize(2)
+                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isSharable(), "The result should only contain questions created by the user or shared questions");
+    }
+
+    @Test
+    public void findByCriteriaWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
+        repository.saveAll(getQuestions());
+
         long subjectIdFiltered = 1L;
 
         Question question = TrueOrFalseEntity.builder()
-                .author(author)
                 .subject(SubjectEntity.builder()
                         .id(subjectIdFiltered)
                         .build())
                 .build();
 
-        List<Question> result = repository.findByCriteria(question);
+        List<Question> result = repository.findByCriteria(question, "20001");
 
         assertThat(result).extracting(q -> q.getSubject().getId())
-                .allMatch(id -> id == subjectIdFiltered, "The result should contain only questions where their subject matches the filter");
+                .allMatch(id -> id == subjectIdFiltered, "The result should only contain questions where their subject matches the filter");
     }
 
     @Test
-    public void findByFilter_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
-        List<Question> result = repository.findByCriteria(TrueOrFalseEntity.builder().build());
+    public void findByCriteria_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
+        List<Question> result = repository.findByCriteria(TrueOrFalseEntity.builder().build(), "");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findByCriteriaWithAuthor_shouldReturnAllSharedQuestionsFromTheAuthor() {
+        repository.saveAll(getQuestions());
+        
+        String author = "20001";
+        
+        Question criteria = TrueOrFalseEntity.builder()
+                .author(author)
+                .build();
+
+        List<Question> questions = repository.findByCriteria(criteria, "1");
+        
+        assertThat(questions).extracting(Question::getAuthor)
+                .allMatch(a -> a.equals(author), "The result should only contain questions where their author matches the filter and they are shared");
     }
 
     @Test

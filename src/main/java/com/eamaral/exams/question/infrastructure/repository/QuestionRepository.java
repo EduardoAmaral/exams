@@ -54,11 +54,11 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public List<Question> findByCriteria(Question criteria) {
+    public List<Question> findByCriteria(Question criteria, String currentUser) {
         QuestionEntity query = QuestionConverter.from(criteria);
 
         return new ArrayList<>(repository.findAll(
-                where(matchFilters(query))));
+                where(matchFilters(query, currentUser))));
     }
 
     @Override
