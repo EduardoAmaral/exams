@@ -58,4 +58,9 @@ public class QuestionService implements QuestionPort {
         question.validateUserId(currentUserId);
         repository.delete(question);
     }
+
+    @Override
+    public List<Question> search(Question criteria) {
+        return null;
+    }
 }

@@ -44,8 +44,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         List<Question> questions = new ArrayList<>(getDtoList());
 
         String userId = "1";
-        when(userService.getCurrentUserId()).thenReturn(userId);
-        when(questionService.findByUser(userId)).thenReturn(questions);
+        when(userPort.getCurrentUserId()).thenReturn(userId);
+        when(questionPort.findByUser(userId)).thenReturn(questions);
 
         mockMvc.perform(
                 get(ENDPOINT))
@@ -77,7 +77,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(questionService.find(1L)).thenReturn(getTrueOrFalseQuestion("S1", "Question 1?", true, "True"));
+        when(questionPort.find(1L)).thenReturn(getTrueOrFalseQuestion("S1", "Question 1?", true, "True"));
 
         mockMvc.perform(
                 get("/api/question/1"))
@@ -104,8 +104,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
         Question question = dto.toBuilder().id(1L).build();
 
-        when(userService.getCurrentUserId()).thenReturn(userId);
-        when(questionService.save(questionCaptor.capture())).thenReturn(question);
+        when(userPort.getCurrentUserId()).thenReturn(userId);
+        when(questionPort.save(questionCaptor.capture())).thenReturn(question);
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -144,8 +144,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         List<Question> questions = new ArrayList<>(dtos);
 
         String userId = "40030";
-        when(userService.getCurrentUserId()).thenReturn(userId);
-        when(questionService.saveAll(questionListCaptor.capture())).thenReturn(questions);
+        when(userPort.getCurrentUserId()).thenReturn(userId);
+        when(questionPort.saveAll(questionListCaptor.capture())).thenReturn(questions);
 
         mockMvc.perform(
                 post("/api/question/list")
@@ -171,7 +171,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .correctAnswer("False")
                 .build();
 
-        when(questionService.update(any())).thenReturn(question);
+        when(questionPort.update(any())).thenReturn(question);
 
         mockMvc.perform(
                 put(ENDPOINT)
@@ -192,8 +192,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void delete_shouldReturnSuccess() throws Exception {
         String userId = "590093";
 
-        when(userService.getCurrentUserId()).thenReturn(userId);
-        doNothing().when(questionService).delete(eq(1L), stringCaptor.capture());
+        when(userPort.getCurrentUserId()).thenReturn(userId);
+        doNothing().when(questionPort).delete(eq(1L), stringCaptor.capture());
 
         mockMvc.perform(
                 delete("/api/question/1")
@@ -201,6 +201,74 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isNoContent());
 
         assertThat(stringCaptor.getValue()).isEqualTo(userId);
+    }
+
+    @Test
+    public void searchByStatement_shouldReturnAListOfQuestionByStatement() throws Exception {
+        String statementCriteria = "Question";
+
+        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+
+        mockMvc.perform(
+                get(ENDPOINT + "/search")
+                        .param("statement", statementCriteria))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].statement", is("Question 1?")));
+
+        assertThat(questionCaptor.getValue())
+                .extracting("statement")
+                .isEqualTo(statementCriteria);
+    }
+
+    @Test
+    public void searchByType_shouldReturnAListOfQuestionByType() throws Exception {
+        QuestionType typeCriteria = QuestionType.TRUE_OR_FALSE;
+
+        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+
+        mockMvc.perform(
+                get(ENDPOINT + "/search")
+                        .param("type", typeCriteria.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].type", is(QuestionType.TRUE_OR_FALSE.toString())));
+
+        assertThat(questionCaptor.getValue())
+                .extracting("type")
+                .isEqualTo(typeCriteria);
+    }
+
+    @Test
+    public void searchByTopic_shouldReturnAListOfQuestionByTopic() throws Exception {
+        String topicCriteria = "T01";
+
+        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+
+        mockMvc.perform(
+                get(ENDPOINT + "/search")
+                        .param("topic", topicCriteria))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].topic", is(topicCriteria)));
+
+        assertThat(questionCaptor.getValue())
+                .extracting("topic")
+                .isEqualTo(topicCriteria);
+    }
+
+    @Test
+    public void searchBySubject_shouldReturnAListOfQuestionBySubject() throws Exception {
+        Long subjectCriteria = 1L;
+
+        when(questionPort.search(questionCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+
+        mockMvc.perform(
+                get(ENDPOINT + "/search")
+                        .param("subject", subjectCriteria.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].subject.id", is(subjectCriteria.intValue())));
+
+        assertThat(questionCaptor.getValue())
+                .extracting("subject.id")
+                .isEqualTo(subjectCriteria);
     }
 
     private QuestionDTO getTrueOrFalseQuestion(String solution, String statement, boolean sharable, String correctAnswer) {
@@ -215,6 +283,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .topic("T01")
                 .userId("1")
                 .subject(SubjectDTO.builder()
+                        .id(1L)
                         .description("English")
                         .build())
                 .alternatives(

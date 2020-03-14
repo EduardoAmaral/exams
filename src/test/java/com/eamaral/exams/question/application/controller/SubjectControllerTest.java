@@ -22,7 +22,7 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void get_shouldReturnAllSubjects() throws Exception {
-        when(subjectService.findAll()).thenReturn(new ArrayList<>(List.of(
+        when(subjectPort.findAll()).thenReturn(new ArrayList<>(List.of(
                 SubjectDTO.builder()
                         .id(1L)
                         .description("English")

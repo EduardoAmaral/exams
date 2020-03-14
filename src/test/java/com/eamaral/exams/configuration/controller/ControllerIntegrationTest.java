@@ -1,8 +1,8 @@
 package com.eamaral.exams.configuration.controller;
 
-import com.eamaral.exams.question.domain.service.QuestionService;
-import com.eamaral.exams.question.domain.service.SubjectService;
-import com.eamaral.exams.user.domain.service.UserService;
+import com.eamaral.exams.question.domain.port.QuestionPort;
+import com.eamaral.exams.question.domain.port.SubjectPort;
+import com.eamaral.exams.user.domain.port.UserPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ import org.springframework.test.web.servlet.MockMvc;
 public abstract class ControllerIntegrationTest {
 
     @MockBean
-    protected QuestionService questionService;
+    protected QuestionPort questionPort;
 
     @MockBean
-    protected SubjectService subjectService;
+    protected SubjectPort subjectPort;
 
     @MockBean
-    protected UserService userService;
+    protected UserPort userPort;
 
     @Autowired
     protected MockMvc mockMvc;

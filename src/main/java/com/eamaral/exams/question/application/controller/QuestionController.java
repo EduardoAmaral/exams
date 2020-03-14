@@ -1,5 +1,6 @@
 package com.eamaral.exams.question.application.controller;
 
+import com.eamaral.exams.question.application.dto.QuestionCriteriaDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.port.QuestionPort;
 import com.eamaral.exams.user.domain.port.UserPort;
@@ -86,6 +87,14 @@ public class QuestionController {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Deleting question {} to user {}", id, currentUserId);
         questionPort.delete(id, currentUserId);
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<QuestionDTO>> search(QuestionCriteriaDTO criteria) {
+        return ok(questionPort.search(criteria.toQuestion())
+                .stream()
+                .map(QuestionDTO::from)
+                .collect(toList()));
     }
 
 }

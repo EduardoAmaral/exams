@@ -17,4 +17,6 @@ public interface QuestionPort {
     Question update(Question question);
 
     void delete(Long id, String currentUserId);
+
+    List<Question> search(Question criteria);
 }
