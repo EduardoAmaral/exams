@@ -72,8 +72,7 @@ public class QuestionSpecification {
     }
 
     private static boolean shouldFilterBySubject(QuestionEntity query) {
-        return query.getSubject() != null
-                && query.getSubject().getId() != null;
+        return query.getSubject().getId() != null;
     }
 
     private static boolean isAuthorTheCurrentUser(QuestionEntity query, String currentUser) {
