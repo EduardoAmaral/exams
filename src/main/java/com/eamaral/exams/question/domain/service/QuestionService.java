@@ -1,6 +1,5 @@
 package com.eamaral.exams.question.domain.service;
 
-import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.port.QuestionPort;
@@ -45,9 +44,7 @@ public class QuestionService implements QuestionPort {
     public Question update(Question question) {
         Question oldQuestion = find(question.getId());
 
-        if (!oldQuestion.getType().equals(question.getType())) {
-            throw new InvalidDataException("{question.invalid.type.update}");
-        }
+        question.validate(oldQuestion);
 
         return repository.save(question);
     }

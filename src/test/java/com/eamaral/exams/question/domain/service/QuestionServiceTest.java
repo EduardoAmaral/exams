@@ -1,5 +1,6 @@
 package com.eamaral.exams.question.domain.service;
 
+import com.eamaral.exams.configuration.exception.ForbiddenException;
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.QuestionType;
@@ -177,7 +178,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenQuestionDoesntExist_shouldReturnNotFoundException() {
+    public void update_whenQuestionDoesntExist_shouldThrowNotFoundException() {
         Question question = QuestionDTO.builder().id(1L).build();
 
         when(repositoryPort.find(anyLong()))
@@ -186,6 +187,28 @@ public class QuestionServiceTest {
         Assertions.assertThatThrownBy(() -> service.update(question))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("{question.not.found}");
+    }
+
+    @Test
+    public void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
+        long questionId = 1L;
+        QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
+                .id(questionId)
+                .statement("A")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .userId("123");
+        Question question = builder
+                .build();
+
+        String savedUserId = "456";
+        when(repositoryPort.find(questionId))
+                .thenReturn(Optional.of(
+                        builder.userId(savedUserId)
+                                .build()));
+
+        Assertions.assertThatThrownBy(() -> service.update(question))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("{question.update.user.forbidden}");
     }
 
     @Test
@@ -221,6 +244,7 @@ public class QuestionServiceTest {
                 .active(true)
                 .sharable(false)
                 .correctAnswer(correctAnswer)
+                .userId("1")
                 .subject(SubjectDTO.builder()
                         .description("English")
                         .build())
