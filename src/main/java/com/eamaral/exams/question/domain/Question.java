@@ -30,10 +30,14 @@ public interface Question {
 
     String getUserId();
 
-    default void validate(Question oldQuestion) {
-        if (!oldQuestion.getUserId().equals(getUserId())) {
+    default void validateUserId(String userId){
+        if (!getUserId().equals(userId)) {
             throw new ForbiddenException("{question.update.user.forbidden}");
         }
+    }
+
+    default void validate(Question oldQuestion) {
+        validateUserId(oldQuestion.getUserId());
 
         if (!oldQuestion.getType().equals(getType())) {
             throw new InvalidDataException("{question.invalid.type.update}");

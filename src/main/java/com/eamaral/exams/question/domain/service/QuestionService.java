@@ -52,6 +52,7 @@ public class QuestionService implements QuestionPort {
     @Override
     public void delete(long id, String currentUserId) {
         Question question = find(id);
+        question.validateUserId(currentUserId);
         repository.delete(question);
     }
 }

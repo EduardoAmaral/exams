@@ -167,7 +167,6 @@ public class QuestionServiceTest {
         QuestionDTO.QuestionDTOBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
-
         when(repositoryPort.find(question.getId()))
                 .thenReturn(Optional.of(builder.type(QuestionType.MULTIPLE_CHOICES)
                         .build()));
@@ -213,12 +212,13 @@ public class QuestionServiceTest {
 
     @Test
     public void delete_shouldCallDeleteMethodFromRepository() {
-        Question question = QuestionDTO.builder().id(1L).build();
+        Question question = getQuestionBuilder("A", "B", "C").build();
+        long questionId = 1L;
 
-        when(repositoryPort.find(1L)).thenReturn(Optional.of(question));
+        when(repositoryPort.find(questionId)).thenReturn(Optional.of(question));
         doNothing().when(repositoryPort).delete(question);
 
-        service.delete(1L, "1");
+        service.delete(questionId, "1");
 
         verify(repositoryPort).delete(question);
     }
@@ -231,6 +231,23 @@ public class QuestionServiceTest {
         Assertions.assertThatThrownBy(() -> service.delete(1L, "1"))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("{question.not.found}");
+    }
+
+    @Test
+    public void delete_whenUserIsDifferentFromTheCreator_shouldReturnForbiddenException() {
+        long questionId = 1L;
+        String currentUserId = "1";
+        String savedUserId = "456";
+
+        when(repositoryPort.find(questionId))
+                .thenReturn(Optional.of(
+                        QuestionDTO.builder()
+                                .userId(savedUserId)
+                                .build()));
+
+        Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUserId))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("{question.update.user.forbidden}");
     }
 
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,
