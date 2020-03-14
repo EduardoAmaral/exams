@@ -73,8 +73,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         repository.saveAll(questions);
 
-        String userId = "1";
-        List<Question> result = repository.findByUser(userId);
+        String author = "1";
+        List<Question> result = repository.findByUser(author);
 
         assertThat(result)
                 .extracting(Question::getStatement,
@@ -147,7 +147,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .solution("Hello World!")
                 .topic("Greetings")
                 .subject(english)
-                .userId("1")
+                .author("1")
                 .build();
 
         question = repository.save(entity);
@@ -161,7 +161,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getTopic,
                         Question::isSharable,
                         q -> q.getSubject().getDescription(),
-                        Question::getUserId)
+                        Question::getAuthor)
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",
@@ -179,10 +179,10 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         String statementFiltered = "Can";
         Question question = TrueOrFalseEntity.builder()
-                .userId("1")
+                .author("1")
                 .statement(statementFiltered)
                 .build();
-        List<Question> result = repository.findByFilter(question);
+        List<Question> result = repository.findByCriteria(question);
 
         assertThat(result)
                 .extracting(Question::getStatement)
@@ -194,11 +194,11 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         repository.saveAll(getQuestions());
 
         Question question = TrueOrFalseEntity.builder()
-                .userId("1")
+                .author("1")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
 
-        List<Question> result = repository.findByFilter(question);
+        List<Question> result = repository.findByCriteria(question);
 
         assertThat(result)
                 .extracting(Question::getType)
@@ -211,11 +211,11 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         String topicFiltered = "language";
         Question question = TrueOrFalseEntity.builder()
-                .userId("1")
+                .author("1")
                 .topic(topicFiltered)
                 .build();
 
-        List<Question> result = repository.findByFilter(question);
+        List<Question> result = repository.findByCriteria(question);
 
         assertThat(result)
                 .extracting(Question::getTopic)
@@ -226,33 +226,33 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     public void findByFilterWithSharableActive_shouldReturnOnlyQuestionsCreatedByTheUserOrShared() {
         repository.saveAll(getQuestions());
 
-        String userId = "20001";
+        String author = "20001";
         Question question = TrueOrFalseEntity.builder()
-                .userId(userId)
+                .author(author)
                 .build();
 
-        List<Question> result = repository.findByFilter(question);
+        List<Question> result = repository.findByCriteria(question);
 
         assertThat(result)
                 .hasSize(2)
-                .allMatch(q -> q.getUserId().equals(userId) || q.isSharable(), "The result should contain only questions created by the user or shared questions");
+                .allMatch(q -> q.getAuthor().equals(author) || q.isSharable(), "The result should contain only questions created by the user or shared questions");
     }
 
     @Test
     public void findByFilterWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
         repository.saveAll(getQuestions());
 
-        String userId = "20001";
+        String author = "20001";
         long subjectIdFiltered = 1L;
 
         Question question = TrueOrFalseEntity.builder()
-                .userId(userId)
+                .author(author)
                 .subject(SubjectEntity.builder()
                         .id(subjectIdFiltered)
                         .build())
                 .build();
 
-        List<Question> result = repository.findByFilter(question);
+        List<Question> result = repository.findByCriteria(question);
 
         assertThat(result).extracting(q -> q.getSubject().getId())
                 .allMatch(id -> id == subjectIdFiltered, "The result should contain only questions where their subject matches the filter");
@@ -260,25 +260,25 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void findByFilter_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
-        List<Question> result = repository.findByFilter(TrueOrFalseEntity.builder().build());
+        List<Question> result = repository.findByCriteria(TrueOrFalseEntity.builder().build());
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void delete_shouldRemoveAQuestion() {
-        String userId = "1";
+        String author = "1";
 
         Question question = getMultipleChoice();
         question = repository.save(question);
 
-        List<Question> questions = repository.findByUser(userId);
+        List<Question> questions = repository.findByUser(author);
 
         assertThat(questions).hasSize(1);
 
         repository.delete(question);
 
-        questions = repository.findByUser(userId);
+        questions = repository.findByUser(author);
 
         assertThat(questions).hasSize(0);
     }
@@ -320,7 +320,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         .active(true)
                         .topic("Language; Latin Language")
                         .subject(portuguese)
-                        .userId("20001")
+                        .author("20001")
                         .build());
     }
 
@@ -333,7 +333,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .sharable(true)
                 .subject(english)
                 .topic("Language")
-                .userId("1")
+                .author("1")
                 .build();
     }
 
@@ -347,7 +347,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .subject(english)
                 .topic("Test")
                 .alternatives(getAlternatives())
-                .userId("1")
+                .author("1")
                 .build();
     }
 

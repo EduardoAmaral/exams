@@ -59,7 +59,7 @@ public abstract class QuestionEntity implements Question {
     private SubjectEntity subject;
 
     @Column
-    @NotEmpty(message = "{question.user.required}")
-    private String userId;
+    @NotEmpty(message = "{question.author.required}")
+    private String author;
 
 }

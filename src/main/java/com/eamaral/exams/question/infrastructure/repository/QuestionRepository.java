@@ -29,10 +29,10 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public List<Question> findByUser(String userId) {
+    public List<Question> findByUser(String author) {
         return new ArrayList<>(
                 repository.findAll(
-                        where(hasUserId(userId))));
+                        where(hasUserId(author))));
     }
 
     @Override
@@ -54,8 +54,8 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public List<Question> findByFilter(Question question) {
-        QuestionEntity query = QuestionConverter.from(question);
+    public List<Question> findByCriteria(Question criteria) {
+        QuestionEntity query = QuestionConverter.from(criteria);
 
         return new ArrayList<>(repository.findAll(
                 where(matchFilters(query))));

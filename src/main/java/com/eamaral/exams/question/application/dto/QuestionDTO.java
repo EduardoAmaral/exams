@@ -34,8 +34,6 @@ public class QuestionDTO implements Serializable, Question {
     @Size(max = 3000, message = "{question.solution.size}")
     private String solution;
 
-    private boolean active;
-
     private boolean sharable;
 
     @Builder.Default
@@ -50,20 +48,19 @@ public class QuestionDTO implements Serializable, Question {
     @NotNull(message = "{question.subject.required}")
     private SubjectDTO subject;
 
-    private String userId;
+    private String author;
 
     public static QuestionDTO from(Question question) {
         return QuestionDTO.builder()
                 .id(question.getId())
                 .statement(question.getStatement())
-                .active(question.isActive())
                 .solution(question.getSolution())
                 .type(question.getType())
                 .correctAnswer(question.getCorrectAnswer())
                 .topic(question.getTopic())
                 .alternatives(AlternativeDTO.from(question.getAlternatives()))
                 .subject(SubjectDTO.from(question.getSubject()))
-                .userId(question.getUserId())
+                .author(question.getAuthor())
                 .build();
     }
 

@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface QuestionPort {
 
-    List<Question> findByUser(String userId);
+    List<Question> findByUser(String author);
 
     Question find(Long id);
 
-    Question save(Question question);
+    void save(Question question);
 
     List<Question> saveAll(List<Question> question);
 

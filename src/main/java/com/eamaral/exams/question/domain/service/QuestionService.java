@@ -19,8 +19,8 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public List<Question> findByUser(String userId) {
-        return repository.findByUser(userId);
+    public List<Question> findByUser(String author) {
+        return repository.findByUser(author);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question save(Question question) {
-        return repository.save(question);
+    public void save(Question question) {
+        repository.save(question);
     }
 
     @Override
@@ -61,6 +61,6 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public List<Question> search(Question criteria) {
-        return null;
+        return repository.findByCriteria(criteria);
     }
 }

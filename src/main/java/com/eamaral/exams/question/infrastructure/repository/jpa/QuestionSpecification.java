@@ -13,8 +13,8 @@ public class QuestionSpecification {
         super();
     }
 
-    public static Specification<QuestionEntity> hasUserId(String userId) {
-        return (question, cq, cb) -> cb.equal(question.get("userId"), userId);
+    public static Specification<QuestionEntity> hasUserId(String author) {
+        return (question, cq, cb) -> cb.equal(question.get("author"), author);
     }
 
     public static Specification<QuestionEntity> matchFilters(QuestionEntity query) {
@@ -33,11 +33,11 @@ public class QuestionSpecification {
                 predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
             }
 
-            if(query.getSubject().getId() != null){
+            if (query.getSubject().getId() != null) {
                 predicates.add(cb.equal(question.get("subject"), query.getSubject()));
             }
 
-            Predicate userPredicate = cb.equal(question.get("userId"), query.getUserId());
+            Predicate userPredicate = cb.equal(question.get("author"), query.getAuthor());
             Predicate sharablePredicate = cb.isTrue(question.get("sharable"));
             predicates.add(cb.or(userPredicate, sharablePredicate));
 

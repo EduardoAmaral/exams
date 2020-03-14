@@ -16,8 +16,6 @@ public interface Question {
 
     String getSolution();
 
-    boolean isActive();
-
     boolean isSharable();
 
     List<Alternative> getAlternatives();
@@ -28,16 +26,16 @@ public interface Question {
 
     Subject getSubject();
 
-    String getUserId();
+    String getAuthor();
 
-    default void validateUserId(String userId) {
-        if (!getUserId().equals(userId)) {
+    default void validateUserId(String author) {
+        if (!getAuthor().equals(author)) {
             throw new ForbiddenException("Questions's user id can't be different from the question's creator");
         }
     }
 
     default void validate(Question oldQuestion) {
-        validateUserId(oldQuestion.getUserId());
+        validateUserId(oldQuestion.getAuthor());
 
         if (!oldQuestion.getType().equals(getType())) {
             throw new InvalidDataException("Question's type cannot be updated");

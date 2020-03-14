@@ -43,9 +43,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = new ArrayList<>(getDtoList());
 
-        String userId = "1";
-        when(userPort.getCurrentUserId()).thenReturn(userId);
-        when(questionPort.findByUser(userId)).thenReturn(questions);
+        String author = "1";
+        when(userPort.getCurrentUserId()).thenReturn(author);
+        when(questionPort.findByUser(author)).thenReturn(questions);
 
         mockMvc.perform(
                 get(ENDPOINT))
@@ -55,29 +55,27 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
                 .andExpect(jsonPath("$[0].solution", is("S1")))
                 .andExpect(jsonPath("$[0].type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
-                .andExpect(jsonPath("$[0].active", is(true)))
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
-                .andExpect(jsonPath("$[0].userId", is(userId)))
+                .andExpect(jsonPath("$[0].author", is(author)))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
                 .andExpect(jsonPath("$[1].solution", is("S2")))
                 .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
-                .andExpect(jsonPath("$[1].active", is(true)))
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
-                .andExpect(jsonPath("$[1].userId", is(userId)))
+                .andExpect(jsonPath("$[1].author", is(author)))
                 .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(questionPort.find(1L)).thenReturn(getTrueOrFalseQuestion("S1", "Question 1?", true, "True"));
+        when(questionPort.find(1L)).thenReturn(getTrueOrFalseQuestion());
 
         mockMvc.perform(
                 get("/api/question/1"))
@@ -86,26 +84,21 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
                 .andExpect(jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
-                .andExpect(jsonPath("$.active", is(true)))
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))
                 .andExpect(jsonPath("$.topic", is("T01")))
-                .andExpect(jsonPath("$.userId", is("1")))
+                .andExpect(jsonPath("$.author", is("1")))
                 .andExpect(jsonPath("$.subject.description", is("English")))
                 .andExpect(jsonPath("$.alternatives", hasSize(2)));
     }
 
     @Test
-    public void create_whenAllFieldsAreValid_shouldReturnAQuestionWithId() throws Exception {
-        String statement = "1 + 2 = ?";
-        String solution = "3";
-        String userId = "100";
-        QuestionDTO dto = getTrueOrFalseQuestion(solution, statement, false, "A");
+    public void create_whenAllFieldsAreValid_shouldReturnCreatedStatus() throws Exception {
+        String author = "100";
+        QuestionDTO dto = getTrueOrFalseQuestion();
 
-        Question question = dto.toBuilder().id(1L).build();
-
-        when(userPort.getCurrentUserId()).thenReturn(userId);
-        when(questionPort.save(questionCaptor.capture())).thenReturn(question);
+        when(userPort.getCurrentUserId()).thenReturn(author);
+        doNothing().when(questionPort).save(questionCaptor.capture());
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -115,7 +108,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isCreated());
 
-        assertThat(questionCaptor.getValue()).extracting("userId").isEqualTo(userId);
+        assertThat(questionCaptor.getValue()).extracting("author").isEqualTo(author);
     }
 
     @Test
@@ -143,8 +136,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
         List<Question> questions = new ArrayList<>(dtos);
 
-        String userId = "40030";
-        when(userPort.getCurrentUserId()).thenReturn(userId);
+        String author = "40030";
+        when(userPort.getCurrentUserId()).thenReturn(author);
         when(questionPort.saveAll(questionListCaptor.capture())).thenReturn(questions);
 
         mockMvc.perform(
@@ -156,13 +149,13 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isCreated());
 
         assertThat(questionListCaptor.getValue())
-                .withFailMessage("Expecting all elements to have user id %s", userId)
-                .allMatch(question -> question.getUserId().equals(userId));
+                .withFailMessage("Expecting all elements to have user id %s", author)
+                .allMatch(question -> question.getAuthor().equals(author));
     }
 
     @Test
     public void update_whenAllFieldsAreValid_shouldReturnAQuestionUpdated() throws Exception {
-        QuestionDTO dto = getTrueOrFalseQuestion("Solution", "Statement", true, "True");
+        QuestionDTO dto = getTrueOrFalseQuestion();
 
         Question question = dto.toBuilder()
                 .solution("New Solution")
@@ -190,9 +183,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void delete_shouldReturnSuccess() throws Exception {
-        String userId = "590093";
+        String author = "590093";
 
-        when(userPort.getCurrentUserId()).thenReturn(userId);
+        when(userPort.getCurrentUserId()).thenReturn(author);
         doNothing().when(questionPort).delete(eq(1L), stringCaptor.capture());
 
         mockMvc.perform(
@@ -200,7 +193,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isNoContent());
 
-        assertThat(stringCaptor.getValue()).isEqualTo(userId);
+        assertThat(stringCaptor.getValue()).isEqualTo(author);
     }
 
     @Test
@@ -271,17 +264,16 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .isEqualTo(subjectCriteria);
     }
 
-    private QuestionDTO getTrueOrFalseQuestion(String solution, String statement, boolean sharable, String correctAnswer) {
+    private QuestionDTO getTrueOrFalseQuestion() {
         return QuestionDTO.builder()
                 .id(1L)
-                .solution(solution)
-                .statement(statement)
+                .statement("Question 1?")
+                .solution("S1")
                 .type(QuestionType.TRUE_OR_FALSE)
-                .active(true)
-                .sharable(sharable)
-                .correctAnswer(correctAnswer)
+                .sharable(true)
+                .correctAnswer("True")
                 .topic("T01")
-                .userId("1")
+                .author("1")
                 .subject(SubjectDTO.builder()
                         .id(1L)
                         .description("English")
@@ -299,17 +291,16 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     private List<QuestionDTO> getDtoList() {
         return List.of(
-                getTrueOrFalseQuestion("S1", "Question 1?", true, "True"),
+                getTrueOrFalseQuestion(),
                 QuestionDTO.builder()
                         .id(2L)
                         .statement("Question 2?")
                         .solution("S2")
                         .type(QuestionType.MULTIPLE_CHOICES)
-                        .active(true)
                         .sharable(false)
                         .correctAnswer("A")
                         .topic("T02")
-                        .userId("1")
+                        .author("1")
                         .subject(SubjectDTO.builder()
                                 .description("English")
                                 .build())

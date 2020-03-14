@@ -59,7 +59,7 @@ public class QuestionController {
         log.info("Saving question by user {}", currentUserId);
 
         question = question.toBuilder()
-                .userId(currentUserId)
+                .author(currentUserId)
                 .build();
         questionPort.save(question);
     }
@@ -70,13 +70,13 @@ public class QuestionController {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
 
-        questions.replaceAll(question -> question.toBuilder().userId(currentUserId).build());
+        questions.replaceAll(question -> question.toBuilder().author(currentUserId).build());
         questionPort.saveAll(new ArrayList<>(questions));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
-        log.info("Updating question {} to user {}", question.getId(), question.getUserId());
+        log.info("Updating question {} to user {}", question.getId(), question.getAuthor());
         return ok(QuestionDTO.from(
                 questionPort.update(question)));
     }

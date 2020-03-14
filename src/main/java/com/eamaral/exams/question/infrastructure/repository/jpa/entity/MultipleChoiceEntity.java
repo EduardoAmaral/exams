@@ -37,14 +37,14 @@ public class MultipleChoiceEntity extends QuestionEntity {
             String correctAnswer,
             String topic,
             SubjectEntity subject,
-            String userId,
-            List<AlternativeEntity> alternatives){
-        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject, userId);
+            String author,
+            List<AlternativeEntity> alternatives) {
+        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject, author);
         this.alternatives = alternatives;
     }
 
     @Override
-    public List<Alternative> getAlternatives(){
+    public List<Alternative> getAlternatives() {
         return new ArrayList<>(alternatives);
     }
 

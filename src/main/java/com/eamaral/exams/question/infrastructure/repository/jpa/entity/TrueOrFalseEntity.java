@@ -26,8 +26,8 @@ public class TrueOrFalseEntity extends QuestionEntity {
                              String correctAnswer,
                              String topic,
                              SubjectEntity subject,
-                             String userId) {
-        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject, userId);
+                             String author) {
+        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject, author);
     }
 
     @Override

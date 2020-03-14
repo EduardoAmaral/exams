@@ -34,28 +34,28 @@ public class QuestionServiceTest {
 
     @Test
     public void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
-        String userId = "1";
+        String author = "1";
         String statement1 = "AAA";
         String statement2 = "EEE";
         List<Question> questions = List.of(
                 QuestionDTO.builder()
                         .statement(statement1)
-                        .userId(userId)
+                        .author(author)
                         .build(),
                 QuestionDTO.builder()
                         .statement(statement2)
-                        .userId(userId)
+                        .author(author)
                         .build());
 
-        when(repositoryPort.findByUser(userId)).thenReturn(questions);
+        when(repositoryPort.findByUser(author)).thenReturn(questions);
 
-        List<Question> result = service.findByUser(userId);
+        List<Question> result = service.findByUser(author);
 
         assertThat(result)
-                .extracting(Question::getStatement, Question::getUserId)
+                .extracting(Question::getStatement, Question::getAuthor)
                 .containsOnly(
-                        tuple(statement1, userId),
-                        tuple(statement2, userId));
+                        tuple(statement1, author),
+                        tuple(statement2, author));
     }
 
     @Test
@@ -109,11 +109,9 @@ public class QuestionServiceTest {
                     .build();
         });
 
-        Question result = service.save(question);
+        service.save(question);
 
-        assertThat(result)
-                .extracting(Question::getId, Question::getStatement)
-                .containsExactly(1L, "AAA");
+        verify(repositoryPort).save(question);
     }
 
     @Test
@@ -203,14 +201,14 @@ public class QuestionServiceTest {
                 .id(questionId)
                 .statement("A")
                 .type(QuestionType.MULTIPLE_CHOICES)
-                .userId("123");
+                .author("123");
         Question question = builder
                 .build();
 
         String savedUserId = "456";
         when(repositoryPort.find(questionId))
                 .thenReturn(Optional.of(
-                        builder.userId(savedUserId)
+                        builder.author(savedUserId)
                                 .build()));
 
         Assertions.assertThatThrownBy(() -> service.update(question))
@@ -250,7 +248,7 @@ public class QuestionServiceTest {
         when(repositoryPort.find(questionId))
                 .thenReturn(Optional.of(
                         QuestionDTO.builder()
-                                .userId(savedUserId)
+                                .author(savedUserId)
                                 .build()));
 
         Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUserId))
@@ -266,10 +264,9 @@ public class QuestionServiceTest {
                 .solution(solution)
                 .statement(statement)
                 .type(QuestionType.TRUE_OR_FALSE)
-                .active(true)
                 .sharable(false)
                 .correctAnswer(correctAnswer)
-                .userId("1")
+                .author("1")
                 .subject(SubjectDTO.builder()
                         .description("English")
                         .build())

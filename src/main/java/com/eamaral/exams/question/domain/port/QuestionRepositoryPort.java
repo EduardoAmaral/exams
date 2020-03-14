@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface QuestionRepositoryPort {
 
-    List<Question> findByUser(String userId);
+    List<Question> findByUser(String author);
 
     Optional<Question> find(Long id);
 
@@ -15,7 +15,7 @@ public interface QuestionRepositoryPort {
 
     List<Question> saveAll(List<Question> questions);
 
-    List<Question> findByFilter(Question question);
+    List<Question> findByCriteria(Question criteria);
 
     void delete(Question question);
 }

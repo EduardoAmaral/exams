@@ -14,8 +14,8 @@ public class QuestionConverter {
         if (QuestionType.MULTIPLE_CHOICES.equals(question.getType())) {
             return MultipleChoiceEntity.builder()
                     .id(question.getId())
-                    .active(question.isActive())
                     .correctAnswer(question.getCorrectAnswer())
+                    .active(true)
                     .sharable(question.isSharable())
                     .solution(question.getSolution())
                     .statement(question.getStatement())
@@ -23,20 +23,20 @@ public class QuestionConverter {
                     .topic(question.getTopic())
                     .subject(SubjectEntity.from(question.getSubject()))
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
-                    .userId(question.getUserId())
+                    .author(question.getAuthor())
                     .build();
         } else {
             return TrueOrFalseEntity.builder()
                     .id(question.getId())
-                    .active(question.isActive())
                     .correctAnswer(question.getCorrectAnswer())
+                    .active(true)
                     .sharable(question.isSharable())
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
                     .topic(question.getTopic())
                     .subject(SubjectEntity.from(question.getSubject()))
-                    .userId(question.getUserId())
+                    .author(question.getAuthor())
                     .build();
         }
     }
