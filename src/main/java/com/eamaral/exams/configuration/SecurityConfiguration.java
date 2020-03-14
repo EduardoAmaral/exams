@@ -21,9 +21,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                 .and()
                 .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+                .invalidateHttpSession(true);
     }
 
 }
