@@ -46,7 +46,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDTO>> get() {
         String currentUserId = userPort.getCurrentUserId();
 
-        log.info("Getting all questions to user {}", currentUserId);
+        log.info("Getting all questions to the user {}", currentUserId);
 
         return ok(questionPort.findByUser(currentUserId)
                 .stream()
@@ -70,7 +70,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createByList(@RequestBody @Validated List<QuestionDTO> questions) {
         String currentUserId = userPort.getCurrentUserId();
-        log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
+        log.info("Saving a list of {} questions to the user {}", questions.size(), currentUserId);
 
         questions.replaceAll(question -> question.toBuilder().author(currentUserId).build());
         questionPort.saveAll(new ArrayList<>(questions));
@@ -78,7 +78,7 @@ public class QuestionController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
-        log.info("Updating question {} to user {}", question.getId(), question.getAuthor());
+        log.info("Updating question {} to the user {}", question.getId(), question.getAuthor());
         return ok(QuestionDTO.from(
                 questionPort.update(question)));
     }
@@ -87,7 +87,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         String currentUserId = userPort.getCurrentUserId();
-        log.info("Deleting question {} to user {}", id, currentUserId);
+        log.info("Deleting question {} to the user {}", id, currentUserId);
         questionPort.delete(id, currentUserId);
     }
 
@@ -95,7 +95,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDTO>> search(QuestionCriteriaDTO criteria) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String currentUserId = userPort.getCurrentUserId();
-        log.info("Search by criteria {} to user {}", mapper.writeValueAsString(criteria), currentUserId);
+        log.info("Search by criteria {} to the user {}", mapper.writeValueAsString(criteria), currentUserId);
 
         return ok(questionPort.search(criteria.toQuestion(), currentUserId)
                 .stream()
