@@ -78,13 +78,21 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void findById_whenQuestionDoesntExist_shouldThrowsException() {
+    public void findById_whenQuestionDoesntExist_shouldThrowNotFoundException() {
         when(repositoryPort.find(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> service.find(1L),
-                "Question 1 not found")
-                .isInstanceOf(NotFoundException.class);
+                () -> service.find(1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Question 1 not found");
+    }
+
+    @Test
+    public void findById_whenIdIsNull_shouldThrowException() {
+        assertThatThrownBy(
+                () -> service.find(null))
+                .isInstanceOf(InvalidDataException.class)
+                .hasMessage("Question's id is required");
     }
 
     @Test
@@ -173,7 +181,7 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question))
                 .isInstanceOf(InvalidDataException.class)
-                .hasMessage("{question.invalid.type.update}");
+                .hasMessage("Question's type cannot be updated");
     }
 
     @Test
@@ -185,12 +193,12 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("{question.not.found}");
+                .hasMessage("Question 1 not found");
     }
 
     @Test
     public void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
-        long questionId = 1L;
+        Long questionId = 1L;
         QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -207,7 +215,7 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question))
                 .isInstanceOf(ForbiddenException.class)
-                .hasMessage("{question.update.user.forbidden}");
+                .hasMessage("Questions's user id can't be different from the question's creator");
     }
 
     @Test
@@ -230,7 +238,7 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.delete(1L, "1"))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("{question.not.found}");
+                .hasMessage("Question 1 not found");
     }
 
     @Test
@@ -247,7 +255,7 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUserId))
                 .isInstanceOf(ForbiddenException.class)
-                .hasMessage("{question.update.user.forbidden}");
+                .hasMessage("Questions's user id can't be different from the question's creator");
     }
 
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,

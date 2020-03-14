@@ -1,10 +1,10 @@
 package com.eamaral.exams.question.domain.service;
 
+import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.port.QuestionPort;
 import com.eamaral.exams.question.domain.port.QuestionRepositoryPort;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +14,6 @@ public class QuestionService implements QuestionPort {
 
     private final QuestionRepositoryPort repository;
 
-    @Autowired
     public QuestionService(QuestionRepositoryPort repository) {
         this.repository = repository;
     }
@@ -25,9 +24,13 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question find(long id) {
+    public Question find(Long id) {
+        if (id == null) {
+            throw new InvalidDataException("Question's id is required");
+        }
+
         return repository.find(id)
-                .orElseThrow(() -> new NotFoundException(String.format("{question.not.found}", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Question %d not found", id)));
     }
 
     @Override
@@ -50,7 +53,7 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public void delete(long id, String currentUserId) {
+    public void delete(Long id, String currentUserId) {
         Question question = find(id);
         question.validateUserId(currentUserId);
         repository.delete(question);

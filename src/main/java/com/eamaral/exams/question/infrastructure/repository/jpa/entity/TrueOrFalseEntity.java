@@ -34,9 +34,11 @@ public class TrueOrFalseEntity extends QuestionEntity {
     public List<Alternative> getAlternatives() {
         return List.of(
                 AlternativeEntity.builder()
+                        .id(1L)
                         .description("True")
                         .build(),
                 AlternativeEntity.builder()
+                        .id(2L)
                         .description("False")
                         .build());
     }

@@ -30,9 +30,9 @@ public interface Question {
 
     String getUserId();
 
-    default void validateUserId(String userId){
+    default void validateUserId(String userId) {
         if (!getUserId().equals(userId)) {
-            throw new ForbiddenException("{question.update.user.forbidden}");
+            throw new ForbiddenException("Questions's user id can't be different from the question's creator");
         }
     }
 
@@ -40,9 +40,7 @@ public interface Question {
         validateUserId(oldQuestion.getUserId());
 
         if (!oldQuestion.getType().equals(getType())) {
-            throw new InvalidDataException("{question.invalid.type.update}");
+            throw new InvalidDataException("Question's type cannot be updated");
         }
     }
-
-    ;
 }
