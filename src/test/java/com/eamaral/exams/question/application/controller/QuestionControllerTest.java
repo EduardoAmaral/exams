@@ -8,13 +8,17 @@ import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.Question;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -25,6 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class QuestionControllerTest extends ControllerIntegrationTest {
 
     public static final String ENDPOINT = "/api/question";
+
+    @Captor
+    private ArgumentCaptor<Question> questionCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<Question>> questionListCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> stringCaptor;
 
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
@@ -77,6 +90,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))
                 .andExpect(jsonPath("$.topic", is("T01")))
+                .andExpect(jsonPath("$.userId", is("1")))
                 .andExpect(jsonPath("$.subject.description", is("English")))
                 .andExpect(jsonPath("$.alternatives", hasSize(2)));
     }
@@ -85,11 +99,13 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void create_whenAllFieldsAreValid_shouldReturnAQuestionWithId() throws Exception {
         String statement = "1 + 2 = ?";
         String solution = "3";
+        String userId = "100";
         QuestionDTO dto = getTrueOrFalseQuestion(solution, statement, false, "A");
 
         Question question = dto.toBuilder().id(1L).build();
 
-        when(questionService.save(any())).thenReturn(question);
+        when(userService.getCurrentUserId()).thenReturn(userId);
+        when(questionService.save(questionCaptor.capture())).thenReturn(question);
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -98,6 +114,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isCreated());
+
+        assertThat(questionCaptor.getValue()).extracting("userId").isEqualTo(userId);
     }
 
     @Test
@@ -116,8 +134,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         "Question's type is required",
                         "Question's correct answer is required",
                         "Question's statement is required",
-                        "Question's subject is required",
-                        "Question's user is required")));
+                        "Question's subject is required")));
     }
 
     @Test
@@ -126,7 +143,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
         List<Question> questions = new ArrayList<>(dtos);
 
-        when(questionService.saveAll(any())).thenReturn(questions);
+        String userId = "40030";
+        when(userService.getCurrentUserId()).thenReturn(userId);
+        when(questionService.saveAll(questionListCaptor.capture())).thenReturn(questions);
 
         mockMvc.perform(
                 post("/api/question/list")
@@ -134,25 +153,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(dtos))
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].statement", is("Question 1?")))
-                .andExpect(jsonPath("$[0].solution", is("S1")))
-                .andExpect(jsonPath("$[0].type", is(QuestionType.TRUE_OR_FALSE.toString())))
-                .andExpect(jsonPath("$[0].active", is(true)))
-                .andExpect(jsonPath("$[0].sharable", is(false)))
-                .andExpect(jsonPath("$[0].correctAnswer", is("True")))
-                .andExpect(jsonPath("$[0].subject.description", is("English")))
-                .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].statement", is("Question 2?")))
-                .andExpect(jsonPath("$[1].solution", is("S2")))
-                .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
-                .andExpect(jsonPath("$[1].active", is(true)))
-                .andExpect(jsonPath("$[1].sharable", is(false)))
-                .andExpect(jsonPath("$[1].correctAnswer", is("A")))
-                .andExpect(jsonPath("$[1].subject.description", is("English")))
-                .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
+                .andExpect(status().isCreated());
+
+        assertThat(questionListCaptor.getValue())
+                .withFailMessage("Expecting all elements to have user id %s", userId)
+                .allMatch(question -> question.getUserId().equals(userId));
     }
 
     @Test
@@ -185,12 +190,17 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void delete_shouldReturnSuccess() throws Exception {
-        doNothing().when(questionService).delete(1L);
+        String userId = "590093";
+
+        when(userService.getCurrentUserId()).thenReturn(userId);
+        doNothing().when(questionService).delete(eq(1L), stringCaptor.capture());
 
         mockMvc.perform(
                 delete("/api/question/1")
                         .with(csrf()))
                 .andExpect(status().isNoContent());
+
+        assertThat(stringCaptor.getValue()).isEqualTo(userId);
     }
 
     private QuestionDTO getTrueOrFalseQuestion(String solution, String statement, boolean sharable, String correctAnswer) {

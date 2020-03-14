@@ -16,5 +16,5 @@ public interface QuestionPort {
 
     Question update(Question question);
 
-    void delete(long id);
+    void delete(long id, String currentUserId);
 }

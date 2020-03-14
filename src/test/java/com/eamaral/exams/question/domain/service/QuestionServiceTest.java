@@ -195,7 +195,7 @@ public class QuestionServiceTest {
         when(repositoryPort.find(1L)).thenReturn(Optional.of(question));
         doNothing().when(repositoryPort).delete(question);
 
-        service.delete(1L);
+        service.delete(1L, "1");
 
         verify(repositoryPort).delete(question);
     }
@@ -205,7 +205,7 @@ public class QuestionServiceTest {
         when(repositoryPort.find(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> service.delete(1L))
+        Assertions.assertThatThrownBy(() -> service.delete(1L, "1"))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("{question.not.found}");
     }

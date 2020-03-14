@@ -50,10 +50,9 @@ public class QuestionDTO implements Serializable, Question {
     @NotNull(message = "{question.subject.required}")
     private SubjectDTO subject;
 
-    @NotBlank(message = "{question.user.required}")
     private String userId;
 
-    public static QuestionDTO from(Question question){
+    public static QuestionDTO from(Question question) {
         return QuestionDTO.builder()
                 .id(question.getId())
                 .statement(question.getStatement())
@@ -69,7 +68,7 @@ public class QuestionDTO implements Serializable, Question {
     }
 
     @Override
-    public List<Alternative> getAlternatives(){
+    public List<Alternative> getAlternatives() {
         return new ArrayList<>(alternatives);
     }
 

@@ -54,24 +54,28 @@ public class QuestionController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Validated QuestionDTO question) {
-        log.info("Saving question {}", question.getStatement());
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Saving question by user {}", currentUserId);
+
+        question = question.toBuilder()
+                .userId(currentUserId)
+                .build();
         questionPort.save(question);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
-    public ResponseEntity<List<QuestionDTO>> createByList(@RequestBody @Validated List<QuestionDTO> questions) {
-        log.info("Saving {} question(s)", questions.size());
-        List<QuestionDTO> result = questionPort
-                .saveAll(new ArrayList<>(questions))
-                .stream()
-                .map(QuestionDTO::from)
-                .collect(toList());
-        return ok(result);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createByList(@RequestBody @Validated List<QuestionDTO> questions) {
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
+
+        questions.replaceAll(question -> question.toBuilder().userId(currentUserId).build());
+        questionPort.saveAll(new ArrayList<>(questions));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
-        log.info("Updating question {}", question.getId());
+        log.info("Updating question {} to user {}", question.getId(), question.getUserId());
         return ok(QuestionDTO.from(
                 questionPort.update(question)));
     }
@@ -79,8 +83,9 @@ public class QuestionController {
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
-        log.info("Deleting question {}", id);
-        questionPort.delete(id);
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Deleting question {} to user {}", id, currentUserId);
+        questionPort.delete(id, currentUserId);
     }
 
 }
