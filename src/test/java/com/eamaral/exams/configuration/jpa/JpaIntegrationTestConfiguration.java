@@ -27,6 +27,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EntityScan(basePackages = {"com.eamaral.exams.**.jpa"})
 @EnableJpaRepositories(basePackages = {"com.eamaral.exams.**.jpa"})
 @EnableTransactionManagement
-public class JPAIntegrationTestConfiguration {
+public class JpaIntegrationTestConfiguration {
 
 }

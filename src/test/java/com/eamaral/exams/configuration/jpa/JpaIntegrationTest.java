@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = { JPAIntegrationTestConfiguration.class }, properties = "spring.jpa.open-in-view=false")
+@SpringBootTest(classes = { JpaIntegrationTestConfiguration.class }, properties = "spring.jpa.open-in-view=false")
 @Transactional
 public abstract class JpaIntegrationTest {
 
