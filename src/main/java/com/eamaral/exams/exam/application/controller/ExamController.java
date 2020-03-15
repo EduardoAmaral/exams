@@ -52,4 +52,13 @@ public class ExamController {
                 .map(ExamDTO::from)
                 .collect(toList()));
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ExamDTO> getById(@PathVariable String id) {
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Getting exam {} to the user {}", id, currentUserId);
+
+        return ResponseEntity.ok(
+                ExamDTO.from(examPort.findById(id, currentUserId)));
+    }
 }

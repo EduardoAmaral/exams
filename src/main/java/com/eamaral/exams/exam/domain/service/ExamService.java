@@ -17,8 +17,13 @@ public class ExamService implements ExamPort {
     }
 
     @Override
-    public List<Exam> findByUser(String currentUserId) {
+    public List<Exam> findByUser(String currentUser) {
         return emptyList();
+    }
+
+    @Override
+    public Exam findById(String id, String currentUser) {
+        return null;
     }
 
 }

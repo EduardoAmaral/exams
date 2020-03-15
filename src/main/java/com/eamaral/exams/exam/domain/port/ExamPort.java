@@ -8,5 +8,7 @@ public interface ExamPort {
 
     void save(Exam exam);
 
-    List<Exam> findByUser(String currentUserId);
+    List<Exam> findByUser(String currentUser);
+
+    Exam findById(String id, String currentUser);
 }

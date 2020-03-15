@@ -104,20 +104,40 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].questions", hasSize(2)));
     }
 
+    @Test
+    public void getById_shouldReturnAnExistentExam() throws Exception {
+        String examId = "1";
+        String currentUser = "10001";
+
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+        when(examPort.findById(examId, currentUser)).thenReturn(getExam());
+
+        mockMvc.perform(get(String.format("%s/%s", ENDPOINT, examId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(examId)))
+                .andExpect(jsonPath("$.title", is("Exam 1")))
+                .andExpect(jsonPath("$.author", is(currentUser)))
+                .andExpect(jsonPath("$.questions", hasSize(2)));
+    }
+
     private List<Exam> getExams() {
         return List.of(
-                ExamDTO.builder()
-                        .id("1")
-                        .title("Exam 1")
-                        .author("10001")
-                        .questions(getQuestions())
-                        .build(),
+                getExam(),
                 ExamDTO.builder()
                         .id("2")
                         .title("Exam 2")
                         .author("10001")
                         .questions(getQuestions())
                         .build());
+    }
+
+    private ExamDTO getExam() {
+        return ExamDTO.builder()
+                .id("1")
+                .title("Exam 1")
+                .author("10001")
+                .questions(getQuestions())
+                .build();
     }
 
     private List<QuestionDTO> getQuestions() {
