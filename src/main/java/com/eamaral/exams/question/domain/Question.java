@@ -5,6 +5,10 @@ import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.QuestionType;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public interface Question {
 
@@ -38,7 +42,16 @@ public interface Question {
         validateUserId(oldQuestion.getAuthor());
 
         if (!oldQuestion.getType().equals(getType())) {
-            throw new InvalidDataException("Question's type cannot be updated");
+            throw new InvalidDataException("Question's type can't be updated");
+        }
+    }
+
+    default void validateAlternatives() {
+        if (!getAlternatives().stream()
+                .map(Alternative::getDescription)
+                .collect(toList())
+                .contains(getCorrectAnswer())) {
+            throw new InvalidDataException("The correct answer to the question must be one of your alternatives");
         }
     }
 }

@@ -35,6 +35,8 @@ public class QuestionService implements QuestionPort {
 
     @Override
     public void save(Question question) {
+        question.validateAlternatives();
+
         repository.save(question);
     }
 

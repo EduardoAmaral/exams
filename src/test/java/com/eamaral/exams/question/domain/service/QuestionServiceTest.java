@@ -102,15 +102,11 @@ public class QuestionServiceTest {
     public void save_shouldReturnAQuestion() {
         Question question = QuestionDTO.builder()
                 .statement("AAA")
+                .correctAnswer("True")
+                .alternatives(getAlternatives())
                 .build();
 
-        when(repositoryPort.save(question)).then(invocation -> {
-            Question q = invocation.getArgument(0);
-            return QuestionDTO.builder()
-                    .id("1")
-                    .statement(q.getStatement())
-                    .build();
-        });
+        when(repositoryPort.save(question)).thenReturn(any());
 
         service.save(question);
 
@@ -182,7 +178,7 @@ public class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question))
                 .isInstanceOf(InvalidDataException.class)
-                .hasMessage("Question's type cannot be updated");
+                .hasMessage("Question's type can't be updated");
     }
 
     @Test
@@ -270,6 +266,29 @@ public class QuestionServiceTest {
         verify(repositoryPort).findByCriteria(any(), eq(currentUser));
     }
 
+    @Test
+    public void save_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_toTrueOrFalseQuestion_shouldThrowInvalidDataException() {
+        Question question = QuestionDTO.builder()
+                .correctAnswer("Wrong")
+                .type(QuestionType.TRUE_OR_FALSE)
+                .build();
+
+        assertThatExceptionOfType(InvalidDataException.class).isThrownBy(() -> service.save(question))
+                .withMessage("The correct answer to the question must be one of your alternatives");
+    }
+
+    @Test
+    public void save_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_toMultipleChoicesQuestion_shouldThrowInvalidDataException() {
+        Question question = QuestionDTO.builder()
+                .correctAnswer("Wrong")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .alternatives(getAlternatives())
+                .build();
+
+        assertThatExceptionOfType(InvalidDataException.class).isThrownBy(() -> service.save(question))
+                .withMessage("The correct answer to the question must be one of your alternatives");
+    }
+
     private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,
                                                               String statement,
                                                               String correctAnswer) {
@@ -285,12 +304,16 @@ public class QuestionServiceTest {
                         .description("English")
                         .build())
                 .alternatives(
-                        List.of(
-                                AlternativeDTO.builder()
-                                        .description("True")
-                                        .build(),
-                                AlternativeDTO.builder()
-                                        .description("False")
-                                        .build()));
+                        getAlternatives());
+    }
+
+
+    private List<AlternativeDTO> getAlternatives() {
+        return List.of(AlternativeDTO.builder()
+                        .description("True")
+                        .build(),
+                AlternativeDTO.builder()
+                        .description("False")
+                        .build());
     }
 }
