@@ -112,7 +112,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void create_withoutStatementAndType_shouldReturnBadRequest() throws Exception {
+    public void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
         QuestionDTO dto = QuestionDTO.builder().build();
 
         mockMvc.perform(

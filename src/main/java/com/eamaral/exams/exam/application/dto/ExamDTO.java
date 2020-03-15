@@ -6,6 +6,8 @@ import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExamDTO implements Exam {
 
+    @NotBlank(message = "{exam.title.required}")
     private String title;
 
+    @NotEmpty(message = "{exam.questions.required}")
     private List<QuestionDTO> questions;
 
     private String author;
