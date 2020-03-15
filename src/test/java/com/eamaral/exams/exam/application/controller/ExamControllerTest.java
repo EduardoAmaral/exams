@@ -94,9 +94,11 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is("1")))
                 .andExpect(jsonPath("$[0].title", is("Exam 1")))
                 .andExpect(jsonPath("$[0].author", is(currentUser)))
                 .andExpect(jsonPath("$[0].questions", hasSize(2)))
+                .andExpect(jsonPath("$[1].id", is("2")))
                 .andExpect(jsonPath("$[1].title", is("Exam 2")))
                 .andExpect(jsonPath("$[1].author", is(currentUser)))
                 .andExpect(jsonPath("$[1].questions", hasSize(2)));
@@ -105,11 +107,13 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     private List<Exam> getExams() {
         return List.of(
                 ExamDTO.builder()
+                        .id("1")
                         .title("Exam 1")
                         .author("10001")
                         .questions(getQuestions())
                         .build(),
                 ExamDTO.builder()
+                        .id("2")
                         .title("Exam 2")
                         .author("10001")
                         .questions(getQuestions())

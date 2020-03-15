@@ -37,7 +37,8 @@ public class ExamDTO implements Exam {
         final ExamDTOBuilder builder = builder();
 
         if (exam != null) {
-            builder.title(exam.getTitle())
+            builder.id(exam.getId())
+                    .title(exam.getTitle())
                     .author(exam.getAuthor())
                     .questions(QuestionDTO.from(exam.getQuestions()));
         }
