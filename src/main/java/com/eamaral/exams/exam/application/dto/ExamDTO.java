@@ -19,6 +19,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExamDTO implements Exam {
 
+    private String id;
+
     @NotBlank(message = "{exam.title.required}")
     private String title;
 

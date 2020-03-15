@@ -24,13 +24,13 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question find(Long id) {
+    public Question find(String id) {
         if (id == null) {
             throw new InvalidDataException("Question's id is required");
         }
 
         return repository.find(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Question %d not found", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Question %s not found", id)));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public void delete(Long id, String currentUserId) {
+    public void delete(String id, String currentUserId) {
         Question question = find(id);
         question.validateUserId(currentUserId);
         repository.delete(question);

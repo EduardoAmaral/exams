@@ -35,7 +35,7 @@ public class QuestionController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<QuestionDTO> getById(@PathVariable("id") long id) {
+    public ResponseEntity<QuestionDTO> getById(@PathVariable("id") String id) {
         log.info("Getting question {}", id);
         QuestionDTO question = QuestionDTO.from(questionPort.find(id));
 
@@ -85,7 +85,7 @@ public class QuestionController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") String id) {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Deleting question {} to the user {}", id, currentUserId);
         questionPort.delete(id, currentUserId);

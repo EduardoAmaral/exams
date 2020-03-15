@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface Question {
 
-    Long getId();
+    String getId();
 
     String getStatement();
 

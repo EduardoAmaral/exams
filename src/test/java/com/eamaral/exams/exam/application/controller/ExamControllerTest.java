@@ -16,10 +16,11 @@ import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,13 +33,13 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     private ArgumentCaptor<Exam> examCaptor;
 
     @Test
-    public void save_shouldCreateAnExamAndReturnCreated() throws Exception {
+    public void create_shouldCreateAnExamAndReturnCreated() throws Exception {
         String title = "Exam";
         String currentUser = "90009";
 
         ExamDTO dto = ExamDTO.builder()
                 .title(title)
-                .questions(getQuestionsList())
+                .questions(getQuestions())
                 .build();
 
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
@@ -68,7 +69,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void save_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
+    public void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
         ExamDTO dto = ExamDTO.builder()
                 .questions(emptyList())
                 .build();
@@ -84,14 +85,45 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                         "Exam's questions are required")));
     }
 
-    private List<QuestionDTO> getQuestionsList() {
+    @Test
+    public void get_shouldReturnAllExamsCreatedByTheCurrentUser() throws Exception {
+        String currentUser = "10001";
+
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+        when(examPort.findByUser(currentUser)).thenReturn(getExams());
+
+        mockMvc.perform(get(ENDPOINT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title", is("Exam 1")))
+                .andExpect(jsonPath("$[0].author", is(currentUser)))
+                .andExpect(jsonPath("$[0].questions", hasSize(2)))
+                .andExpect(jsonPath("$[1].title", is("Exam 2")))
+                .andExpect(jsonPath("$[1].author", is(currentUser)))
+                .andExpect(jsonPath("$[1].questions", hasSize(2)));
+    }
+
+    private List<Exam> getExams() {
+        return List.of(
+                ExamDTO.builder()
+                        .title("Exam 1")
+                        .author("10001")
+                        .questions(getQuestions())
+                        .build(),
+                ExamDTO.builder()
+                        .title("Exam 2")
+                        .author("10001")
+                        .questions(getQuestions())
+                        .build());
+    }
+
+    private List<QuestionDTO> getQuestions() {
         return List.of(
                 QuestionDTO.builder()
-                        .id(1L)
+                        .id("1")
                         .type(QuestionType.TRUE_OR_FALSE)
                         .build(),
                 QuestionDTO.builder()
-                        .id(2L)
+                        .id("2")
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .build()
         );

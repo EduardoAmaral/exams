@@ -28,7 +28,7 @@ public class MultipleChoiceEntity extends QuestionEntity {
 
     @Builder
     public MultipleChoiceEntity(
-            Long id,
+            String id,
             String statement,
             QuestionType type,
             String solution,

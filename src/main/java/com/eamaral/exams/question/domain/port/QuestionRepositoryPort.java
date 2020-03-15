@@ -9,7 +9,7 @@ public interface QuestionRepositoryPort {
 
     List<Question> findByUser(String author);
 
-    Optional<Question> find(Long id);
+    Optional<Question> find(String id);
 
     Question save(Question question);
 

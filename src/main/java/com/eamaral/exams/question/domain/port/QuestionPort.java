@@ -8,7 +8,7 @@ public interface QuestionPort {
 
     List<Question> findByUser(String author);
 
-    Question find(Long id);
+    Question find(String id);
 
     void save(Question question);
 
@@ -16,7 +16,7 @@ public interface QuestionPort {
 
     Question update(Question question);
 
-    void delete(Long id, String currentUserId);
+    void delete(String id, String currentUserId);
 
     List<Question> search(Question criteria, String currentUser);
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface Exam {
 
+    String getId();
+
     String getTitle();
 
     List<Question> getQuestions();

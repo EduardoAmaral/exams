@@ -7,8 +7,13 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
@@ -29,11 +34,22 @@ public class ExamController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Validated ExamDTO exam) {
         String currentUserId = userPort.getCurrentUserId();
-        log.info("Saving a new exam to user {}", currentUserId);
+        log.info("Saving a new exam to the user {}", currentUserId);
 
         exam = exam.toBuilder()
                 .author(currentUserId)
                 .build();
         examPort.save(exam);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ExamDTO>> get() {
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Getting all exams for the user {}", currentUserId);
+
+        return ResponseEntity.ok(examPort.findByUser(currentUserId)
+                .stream()
+                .map(ExamDTO::from)
+                .collect(toList()));
     }
 }

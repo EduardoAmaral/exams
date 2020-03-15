@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QuestionDTO implements Serializable, Question {
 
-    private Long id;
+    private String id;
 
     @NotBlank(message = "{question.statement.required}")
     @Size(min = 4, max = 2000, message = "{question.statement.size}")

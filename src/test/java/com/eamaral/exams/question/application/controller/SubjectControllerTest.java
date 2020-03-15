@@ -24,11 +24,11 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
     public void get_shouldReturnAllSubjects() throws Exception {
         when(subjectPort.findAll()).thenReturn(new ArrayList<>(List.of(
                 SubjectDTO.builder()
-                        .id(1L)
+                        .id("1")
                         .description("English")
                         .build(),
                 SubjectDTO.builder()
-                        .id(2L)
+                        .id("2")
                         .description("French")
                         .build()
         )));

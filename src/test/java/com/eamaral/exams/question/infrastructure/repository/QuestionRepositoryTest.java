@@ -53,7 +53,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         Question result = repository.save(question);
 
-        assertThat(result.getId()).isNotZero();
+        assertThat(result.getId()).isNotBlank();
     }
 
     @Test
@@ -126,7 +126,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void findById_whenIdDoesNotExist_shouldReturnEmpty() {
-        long questionId = 1L;
+        String questionId = "1";
         Optional<Question> result = repository.find(questionId);
 
         assertThat(result).isEmpty();
@@ -253,7 +253,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     public void findByCriteriaWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
         repository.saveAll(getQuestions());
 
-        long subjectIdFiltered = 1L;
+        String subjectIdFiltered = "1";
 
         Question question = TrueOrFalseEntity.builder()
                 .subject(SubjectEntity.builder()

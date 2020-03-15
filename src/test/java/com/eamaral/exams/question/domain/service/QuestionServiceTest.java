@@ -63,16 +63,17 @@ public class QuestionServiceTest {
     public void findById_shouldReturnAQuestion() {
         Question question = getQuestionBuilder("A", "Statement", "True").build();
 
-        when(repositoryPort.find(1L)).thenReturn(Optional.of(question));
+        String questionId = "1";
+        when(repositoryPort.find(questionId)).thenReturn(Optional.of(question));
 
-        Question result = service.find(1L);
+        Question result = service.find(questionId);
 
         assertThat(result)
                 .extracting(Question::getId,
                         Question::getStatement,
                         Question::getType,
                         q -> q.getSubject().getDescription())
-                .containsExactly(1L,
+                .containsExactly(questionId,
                         "Statement",
                         QuestionType.TRUE_OR_FALSE,
                         "English");
@@ -80,10 +81,11 @@ public class QuestionServiceTest {
 
     @Test
     public void findById_whenQuestionDoesntExist_shouldThrowNotFoundException() {
-        when(repositoryPort.find(1L)).thenReturn(Optional.empty());
+        String questionId = "1";
+        when(repositoryPort.find(questionId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> service.find(1L))
+                () -> service.find(questionId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Question 1 not found");
     }
@@ -105,7 +107,7 @@ public class QuestionServiceTest {
         when(repositoryPort.save(question)).then(invocation -> {
             Question q = invocation.getArgument(0);
             return QuestionDTO.builder()
-                    .id(1L)
+                    .id("1")
                     .statement(q.getStatement())
                     .build();
         });
@@ -129,7 +131,7 @@ public class QuestionServiceTest {
             List<Question> args = invocation.getArgument(0);
             return args.stream().map(q ->
                     QuestionDTO.builder()
-                            .id(request.indexOf(q) + 1L)
+                            .id(String.valueOf(request.indexOf(q) + 1))
                             .statement(q.getStatement())
                             .build())
                     .collect(toList());
@@ -140,8 +142,8 @@ public class QuestionServiceTest {
         assertThat(result)
                 .extracting(Question::getId, Question::getStatement)
                 .containsExactlyInAnyOrder(
-                        tuple(1L, "AAA"),
-                        tuple(2L, "EEE")
+                        tuple("1", "AAA"),
+                        tuple("2", "EEE")
                 );
     }
 
@@ -185,9 +187,10 @@ public class QuestionServiceTest {
 
     @Test
     public void update_whenQuestionDoesntExist_shouldThrowNotFoundException() {
-        Question question = QuestionDTO.builder().id(1L).build();
+        String questionId = "1";
+        Question question = QuestionDTO.builder().id(questionId).build();
 
-        when(repositoryPort.find(anyLong()))
+        when(repositoryPort.find(questionId))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> service.update(question))
@@ -197,7 +200,7 @@ public class QuestionServiceTest {
 
     @Test
     public void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
-        Long questionId = 1L;
+        String questionId = "1";
         QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -220,7 +223,7 @@ public class QuestionServiceTest {
     @Test
     public void delete_shouldCallDeleteMethodFromRepository() {
         Question question = getQuestionBuilder("A", "B", "C").build();
-        long questionId = 1L;
+        String questionId = "1";
 
         when(repositoryPort.find(questionId)).thenReturn(Optional.of(question));
         doNothing().when(repositoryPort).delete(question);
@@ -232,17 +235,17 @@ public class QuestionServiceTest {
 
     @Test
     public void delete_whenQuestionDoesntExist_shouldReturnNotFoundException() {
-        when(repositoryPort.find(anyLong()))
+        when(repositoryPort.find(anyString()))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> service.delete(1L, "1"))
+        Assertions.assertThatThrownBy(() -> service.delete("1", "1"))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Question 1 not found");
     }
 
     @Test
     public void delete_whenUserIsDifferentFromTheCreator_shouldReturnForbiddenException() {
-        long questionId = 1L;
+        String questionId = "1";
         String currentUserId = "1";
         String savedUserId = "456";
 
@@ -271,7 +274,7 @@ public class QuestionServiceTest {
                                                               String statement,
                                                               String correctAnswer) {
         return QuestionDTO.builder()
-                .id(1L)
+                .id("1")
                 .solution(solution)
                 .statement(statement)
                 .type(QuestionType.TRUE_OR_FALSE)
