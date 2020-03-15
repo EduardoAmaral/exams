@@ -3,7 +3,6 @@ package com.eamaral.exams.question.infrastructure.repository;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
-import com.eamaral.exams.question.infrastructure.repository.SubjectRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

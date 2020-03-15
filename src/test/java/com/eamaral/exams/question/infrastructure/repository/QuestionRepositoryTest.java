@@ -264,7 +264,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         List<Question> result = repository.findByCriteria(question, "20001");
 
         assertThat(result).extracting(q -> q.getSubject().getId())
-                .allMatch(id -> id == subjectIdFiltered, "The result should only contain questions where their subject matches the filter");
+                .allMatch(id -> id.equals(subjectIdFiltered), "The result should only contain questions where their subject matches the filter");
     }
 
     @Test
@@ -277,15 +277,15 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     public void findByCriteriaWithAuthor_shouldReturnAllSharedQuestionsFromTheAuthor() {
         repository.saveAll(getQuestions());
-        
+
         String author = "20001";
-        
+
         Question criteria = TrueOrFalseEntity.builder()
                 .author(author)
                 .build();
 
         List<Question> questions = repository.findByCriteria(criteria, "1");
-        
+
         assertThat(questions).extracting(Question::getAuthor)
                 .allMatch(a -> a.equals(author), "The result should only contain questions where their author matches the filter and they are shared");
     }
@@ -318,8 +318,17 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
 
-        assertThatThrownBy(() -> repository.save(question))
-                .isInstanceOf(ConstraintViolationException.class);
+        List<String> validationMessages = List.of("Question's author id is required",
+                "Question's correct answer is required",
+                "Question's statement is required",
+                "Question's statement should have between 4 and 2000 characters",
+                "Question's alternatives are required");
+
+        assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> repository.save(question))
+                .matches(e -> e.getConstraintViolations().size() == 5)
+                .matches(e -> e.getConstraintViolations().stream().allMatch(
+                        v -> validationMessages.contains(v.getMessage())));
     }
 
     @Test
