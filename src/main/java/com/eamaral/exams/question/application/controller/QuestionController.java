@@ -36,10 +36,10 @@ public class QuestionController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<QuestionDTO> getById(@PathVariable("id") String id) {
-        log.info("Getting question {}", id);
-        QuestionDTO question = QuestionDTO.from(questionPort.find(id));
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Getting question {} to the user {}", id, currentUserId);
 
-        return ok(question);
+        return ok(QuestionDTO.from(questionPort.find(id, currentUserId)));
     }
 
     @GetMapping
@@ -78,9 +78,11 @@ public class QuestionController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
-        log.info("Updating question {} to the user {}", question.getId(), question.getAuthor());
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Updating question {} to the user {}", question.getId(), currentUserId);
+
         return ok(QuestionDTO.from(
-                questionPort.update(question)));
+                questionPort.update(question, currentUserId)));
     }
 
     @DeleteMapping(path = "/{id}")

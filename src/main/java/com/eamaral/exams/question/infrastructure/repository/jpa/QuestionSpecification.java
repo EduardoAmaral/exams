@@ -14,10 +14,6 @@ public class QuestionSpecification {
         super();
     }
 
-    public static Specification<QuestionEntity> hasUserId(String author) {
-        return (question, cq, cb) -> cb.equal(question.get("author"), author);
-    }
-
     public static Specification<QuestionEntity> matchFilters(QuestionEntity query, String currentUser) {
         return (question, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

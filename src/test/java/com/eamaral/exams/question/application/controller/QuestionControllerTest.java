@@ -39,13 +39,14 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     @Captor
     private ArgumentCaptor<String> stringCaptor;
 
+    private String currentUser = "1";
+
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = new ArrayList<>(getQuestionsDTO());
 
-        String author = "1";
-        when(userPort.getCurrentUserId()).thenReturn(author);
-        when(questionPort.findByUser(author)).thenReturn(questions);
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+        when(questionPort.findByUser(currentUser)).thenReturn(questions);
 
         mockMvc.perform(
                 get(ENDPOINT))
@@ -58,7 +59,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
-                .andExpect(jsonPath("$[0].author", is(author)))
+                .andExpect(jsonPath("$[0].author", is(currentUser)))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is("2")))
@@ -68,20 +69,22 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
-                .andExpect(jsonPath("$[1].author", is(author)))
+                .andExpect(jsonPath("$[1].author", is(currentUser)))
                 .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        String questionid = "1";
-        when(questionPort.find(questionid)).thenReturn(getTrueOrFalseQuestion());
+        String questionId = "1";
+
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+        when(questionPort.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion());
 
         mockMvc.perform(
                 get("/api/question/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(questionid)))
+                .andExpect(jsonPath("$.id", is(questionId)))
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
                 .andExpect(jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
@@ -95,10 +98,9 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void create_whenAllFieldsAreValid_shouldReturnCreatedStatus() throws Exception {
-        String author = "100";
         QuestionDTO dto = getTrueOrFalseQuestion();
 
-        when(userPort.getCurrentUserId()).thenReturn(author);
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
         doNothing().when(questionPort).save(questionCaptor.capture());
 
         mockMvc.perform(
@@ -109,7 +111,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isCreated());
 
-        assertThat(questionCaptor.getValue()).extracting("author").isEqualTo(author);
+        assertThat(questionCaptor.getValue()).extracting("author").isEqualTo(currentUser);
     }
 
     @Test
@@ -165,7 +167,8 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .correctAnswer("False")
                 .build();
 
-        when(questionPort.update(any())).thenReturn(question);
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+        when(questionPort.update(any(), eq(currentUser))).thenReturn(question);
 
         mockMvc.perform(
                 put(ENDPOINT)
@@ -268,9 +271,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void search_shouldUseCurrentUserAsParameter() throws Exception {
-        String currentUser = "1";
-
-        when(userPort.getCurrentUserId()).thenReturn("1");
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
         when(questionPort.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
@@ -290,7 +291,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .sharable(true)
                 .correctAnswer("True")
                 .topic("T01")
-                .author("1")
+                .author(currentUser)
                 .subject(SubjectDTO.builder()
                         .id("1")
                         .description("English")
@@ -317,7 +318,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .sharable(false)
                         .correctAnswer("A")
                         .topic("T02")
-                        .author("1")
+                        .author(currentUser)
                         .subject(SubjectDTO.builder()
                                 .description("English")
                                 .build())

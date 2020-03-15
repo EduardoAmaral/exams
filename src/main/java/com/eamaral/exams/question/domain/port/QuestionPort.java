@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface QuestionPort {
 
-    List<Question> findByUser(String author);
+    List<Question> findByUser(String currentUser);
 
-    Question find(String id);
+    Question find(String id, String currentUser);
 
     void save(Question question);
 
     List<Question> saveAll(List<Question> question);
 
-    Question update(Question question);
+    Question update(Question question, String currentUser);
 
-    void delete(String id, String currentUserId);
+    void delete(String id, String currentUser);
 
     List<Question> search(Question criteria, String currentUser);
 }

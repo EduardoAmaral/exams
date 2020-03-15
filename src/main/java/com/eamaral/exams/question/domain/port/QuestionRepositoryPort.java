@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface QuestionRepositoryPort {
 
-    List<Question> findByUser(String author);
+    List<Question> findByUser(String currentUser);
 
-    Optional<Question> find(String id);
+    Optional<Question> find(String id, String currentUser);
 
     Question save(Question question);
 

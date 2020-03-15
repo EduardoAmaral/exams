@@ -1,6 +1,5 @@
 package com.eamaral.exams.question.domain.service;
 
-import com.eamaral.exams.configuration.exception.ForbiddenException;
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.QuestionType;
@@ -33,30 +32,31 @@ public class QuestionServiceTest {
     @Mock
     private QuestionRepositoryPort repositoryPort;
 
+    private String currentUser = "1";
+
     @Test
     public void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
-        String author = "1";
         String statement1 = "AAA";
         String statement2 = "EEE";
         List<Question> questions = List.of(
                 QuestionDTO.builder()
                         .statement(statement1)
-                        .author(author)
+                        .author(currentUser)
                         .build(),
                 QuestionDTO.builder()
                         .statement(statement2)
-                        .author(author)
+                        .author(currentUser)
                         .build());
 
-        when(repositoryPort.findByUser(author)).thenReturn(questions);
+        when(repositoryPort.findByUser(currentUser)).thenReturn(questions);
 
-        List<Question> result = service.findByUser(author);
+        List<Question> result = service.findByUser(currentUser);
 
         assertThat(result)
                 .extracting(Question::getStatement, Question::getAuthor)
                 .containsOnly(
-                        tuple(statement1, author),
-                        tuple(statement2, author));
+                        tuple(statement1, currentUser),
+                        tuple(statement2, currentUser));
     }
 
     @Test
@@ -64,9 +64,9 @@ public class QuestionServiceTest {
         Question question = getQuestionBuilder("A", "Statement", "True").build();
 
         String questionId = "1";
-        when(repositoryPort.find(questionId)).thenReturn(Optional.of(question));
+        when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
 
-        Question result = service.find(questionId);
+        Question result = service.find(questionId, currentUser);
 
         assertThat(result)
                 .extracting(Question::getId,
@@ -82,18 +82,18 @@ public class QuestionServiceTest {
     @Test
     public void findById_whenQuestionDoesntExist_shouldThrowNotFoundException() {
         String questionId = "1";
-        when(repositoryPort.find(questionId)).thenReturn(Optional.empty());
+        when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> service.find(questionId))
+                () -> service.find(questionId, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("Question 1 not found");
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
     }
 
     @Test
     public void findById_whenIdIsNull_shouldThrowException() {
         assertThatThrownBy(
-                () -> service.find(null))
+                () -> service.find(null, currentUser))
                 .isInstanceOf(InvalidDataException.class)
                 .hasMessage("Question's id is required");
     }
@@ -151,10 +151,10 @@ public class QuestionServiceTest {
         Question response = getQuestionBuilder("New Solution", "New Statement", "True")
                 .build();
 
-        when(repositoryPort.find(question.getId())).thenReturn(Optional.of(question));
+        when(repositoryPort.find(question.getId(), currentUser)).thenReturn(Optional.of(question));
         when(repositoryPort.save(question)).thenReturn(response);
 
-        Question result = service.update(question);
+        Question result = service.update(question, currentUser);
 
         assertThat(result)
                 .extracting(
@@ -172,11 +172,11 @@ public class QuestionServiceTest {
         QuestionDTO.QuestionDTOBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
-        when(repositoryPort.find(question.getId()))
+        when(repositoryPort.find(question.getId(), currentUser))
                 .thenReturn(Optional.of(builder.type(QuestionType.MULTIPLE_CHOICES)
                         .build()));
 
-        Assertions.assertThatThrownBy(() -> service.update(question))
+        Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
                 .isInstanceOf(InvalidDataException.class)
                 .hasMessage("Question's type can't be updated");
     }
@@ -186,12 +186,12 @@ public class QuestionServiceTest {
         String questionId = "1";
         Question question = QuestionDTO.builder().id(questionId).build();
 
-        when(repositoryPort.find(questionId))
+        when(repositoryPort.find(questionId, currentUser))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> service.update(question))
+        Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("Question 1 not found");
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
     }
 
     @Test
@@ -200,20 +200,39 @@ public class QuestionServiceTest {
         QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
-                .type(QuestionType.MULTIPLE_CHOICES)
+                .correctAnswer("True")
+                .alternatives(getAlternatives())
+                .type(QuestionType.TRUE_OR_FALSE)
                 .author("123");
         Question question = builder
                 .build();
 
-        String savedUserId = "456";
-        when(repositoryPort.find(questionId))
-                .thenReturn(Optional.of(
-                        builder.author(savedUserId)
-                                .build()));
+        when(repositoryPort.find(questionId, currentUser))
+                .thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> service.update(question))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("Questions's user id can't be different from the question's creator");
+        Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
+    }
+
+    @Test
+    public void update_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_shouldThrowInvalidDataException() {
+        String questionId = "1";
+
+        Question question = QuestionDTO.builder()
+                .id(questionId)
+                .statement("A")
+                .correctAnswer("Wrong")
+                .alternatives(getAlternatives())
+                .type(QuestionType.TRUE_OR_FALSE)
+                .author("123").build();
+
+        when(repositoryPort.find(questionId, currentUser))
+                .thenReturn(Optional.of(question));
+
+        Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
+                .isInstanceOf(InvalidDataException.class)
+                .hasMessage("The correct answer to the question must be one of your alternatives");
     }
 
     @Test
@@ -221,7 +240,7 @@ public class QuestionServiceTest {
         Question question = getQuestionBuilder("A", "B", "C").build();
         String questionId = "1";
 
-        when(repositoryPort.find(questionId)).thenReturn(Optional.of(question));
+        when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
         doNothing().when(repositoryPort).delete(question);
 
         service.delete(questionId, "1");
@@ -231,34 +250,18 @@ public class QuestionServiceTest {
 
     @Test
     public void delete_whenQuestionDoesntExist_shouldReturnNotFoundException() {
-        when(repositoryPort.find(anyString()))
+        String questionId = "1";
+
+        when(repositoryPort.find(anyString(), eq(currentUser)))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> service.delete("1", "1"))
+        Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("Question 1 not found");
-    }
-
-    @Test
-    public void delete_whenUserIsDifferentFromTheCreator_shouldReturnForbiddenException() {
-        String questionId = "1";
-        String currentUserId = "1";
-        String savedUserId = "456";
-
-        when(repositoryPort.find(questionId))
-                .thenReturn(Optional.of(
-                        QuestionDTO.builder()
-                                .author(savedUserId)
-                                .build()));
-
-        Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUserId))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("Questions's user id can't be different from the question's creator");
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
     }
 
     @Test
     public void search_shouldCallSearchByCriteria() {
-        String currentUser = "1";
         when(repositoryPort.findByCriteria(any(), eq(currentUser))).thenReturn(emptyList());
 
         service.search(QuestionDTO.builder().build(), currentUser);
@@ -299,7 +302,7 @@ public class QuestionServiceTest {
                 .type(QuestionType.TRUE_OR_FALSE)
                 .sharable(false)
                 .correctAnswer(correctAnswer)
-                .author("1")
+                .author(currentUser)
                 .subject(SubjectDTO.builder()
                         .description("English")
                         .build())

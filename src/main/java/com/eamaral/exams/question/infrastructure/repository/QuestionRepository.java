@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionSpecification.hasUserId;
 import static com.eamaral.exams.question.infrastructure.repository.jpa.QuestionSpecification.matchFilters;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.jpa.domain.Specification.where;
@@ -29,16 +28,15 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public List<Question> findByUser(String author) {
+    public List<Question> findByUser(String currentUser) {
         return new ArrayList<>(
-                repository.findAll(
-                        where(hasUserId(author))));
+                repository.findAllByAuthorAndActiveIsTrue(currentUser));
     }
 
     @Override
-    public Optional<Question> find(String id) {
+    public Optional<Question> find(String id, String currentUser) {
         Optional<QuestionEntity> question = repository
-                .findById(id);
+                .findByIdAndAuthorOrSharableIsTrueAndActiveIsTrue(id, currentUser);
         return question.flatMap(Optional::of);
     }
 

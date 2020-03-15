@@ -31,6 +31,8 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     private SubjectEntity english;
     private SubjectEntity portuguese;
 
+    private String currentUser = "1";
+
     @Before
     public void setUp() {
 
@@ -92,7 +94,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Optional<Question> result = repository.find(question.getId());
+        Optional<Question> result = repository.find(question.getId(), currentUser);
 
         assertThat(result).isPresent();
 
@@ -111,7 +113,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         question = repository.save(question);
 
-        Optional<Question> result = repository.find(question.getId());
+        Optional<Question> result = repository.find(question.getId(), currentUser);
 
         assertThat(result).isPresent();
 
@@ -127,9 +129,31 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     public void findById_whenIdDoesNotExist_shouldReturnEmpty() {
         String questionId = "1";
-        Optional<Question> result = repository.find(questionId);
+        Optional<Question> result = repository.find(questionId, currentUser);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findById_whenIdExistsButIsNotSharableAndQuestionAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
+        Question question = getMultipleChoice();
+
+        question = repository.save(question);
+
+        Optional<Question> result = repository.find(question.getId(), "ABC");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findById_whenTheAuthorIsNotTheCurrentUserButQuestionIsShared_shouldReturnAQuestion() {
+        Question question = getTrueOrFalseQuestion();
+
+        question = repository.save(question);
+
+        Optional<Question> result = repository.find(question.getId(), "ABC");
+
+        assertThat(result).isNotEmpty();
     }
 
     @Test
@@ -181,7 +205,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
         Question question = TrueOrFalseEntity.builder()
                 .statement(statementFiltered)
                 .build();
-        List<Question> result = repository.findByCriteria(question, "1");
+        List<Question> result = repository.findByCriteria(question, currentUser);
 
         assertThat(result)
                 .extracting(Question::getStatement)
@@ -196,7 +220,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
 
-        List<Question> result = repository.findByCriteria(question, "1");
+        List<Question> result = repository.findByCriteria(question, currentUser);
 
         assertThat(result)
                 .extracting(Question::getType)
@@ -212,7 +236,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .topic(topicFiltered)
                 .build();
 
-        List<Question> result = repository.findByCriteria(question, "1");
+        List<Question> result = repository.findByCriteria(question, currentUser);
 
         assertThat(result)
                 .extracting(Question::getTopic)
@@ -284,7 +308,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .author(author)
                 .build();
 
-        List<Question> questions = repository.findByCriteria(criteria, "1");
+        List<Question> questions = repository.findByCriteria(criteria, currentUser);
 
         assertThat(questions).extracting(Question::getAuthor)
                 .allMatch(a -> a.equals(author), "The result should only contain questions where their author matches the filter and they are shared");
@@ -367,7 +391,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .sharable(true)
                 .subject(english)
                 .topic("Language")
-                .author("1")
+                .author(currentUser)
                 .build();
     }
 
@@ -381,7 +405,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .subject(english)
                 .topic("Test")
                 .alternatives(getAlternatives())
-                .author("1")
+                .author(currentUser)
                 .build();
     }
 

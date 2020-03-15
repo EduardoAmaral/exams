@@ -19,18 +19,18 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public List<Question> findByUser(String author) {
-        return repository.findByUser(author);
+    public List<Question> findByUser(String currentUser) {
+        return repository.findByUser(currentUser);
     }
 
     @Override
-    public Question find(String id) {
+    public Question find(String id, String currentUser) {
         if (id == null) {
             throw new InvalidDataException("Question's id is required");
         }
 
-        return repository.find(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Question %s not found", id)));
+        return repository.find(id, currentUser)
+                .orElseThrow(() -> new NotFoundException(String.format("Question's %s doesn't exist or it's not accessible to the user %s", id, currentUser)));
     }
 
     @Override
@@ -46,18 +46,18 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question update(Question question) {
-        Question oldQuestion = find(question.getId());
+    public Question update(Question question, String currentUser) {
+        Question oldQuestion = find(question.getId(), currentUser);
 
-        question.validate(oldQuestion);
+        question.validateTypeChange(oldQuestion);
+        question.validateAlternatives();
 
         return repository.save(question);
     }
 
     @Override
-    public void delete(String id, String currentUserId) {
-        Question question = find(id);
-        question.validateUserId(currentUserId);
+    public void delete(String id, String currentUser) {
+        Question question = find(id, currentUser);
         repository.delete(question);
     }
 
