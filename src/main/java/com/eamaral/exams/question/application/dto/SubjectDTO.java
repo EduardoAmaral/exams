@@ -21,9 +21,13 @@ public class SubjectDTO implements Serializable, Subject {
     private String description;
 
     public static SubjectDTO from(Subject subject) {
-        return SubjectDTO.builder()
-                .id(subject.getId())
-                .description(subject.getDescription())
-                .build();
+        final SubjectDTOBuilder builder = builder();
+
+        if (subject != null) {
+            builder.id(subject.getId())
+                    .description(subject.getDescription());
+        }
+
+        return builder.build();
     }
 }

@@ -41,7 +41,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
-        List<Question> questions = new ArrayList<>(getDtoList());
+        List<Question> questions = new ArrayList<>(getQuestionsDTO());
 
         String author = "1";
         when(userPort.getCurrentUserId()).thenReturn(author);
@@ -132,7 +132,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void createByList_whenAllFieldsAreValid_shouldReturnQuestionsWithId() throws Exception {
-        List<QuestionDTO> dtos = getDtoList();
+        List<QuestionDTO> dtos = getQuestionsDTO();
 
         List<Question> questions = new ArrayList<>(dtos);
 
@@ -200,7 +200,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByStatement_shouldReturnAListOfQuestionByStatement() throws Exception {
         String statementCriteria = "Question";
 
-        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -217,7 +217,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByType_shouldReturnAListOfQuestionByType() throws Exception {
         QuestionType typeCriteria = QuestionType.TRUE_OR_FALSE;
 
-        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -234,7 +234,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchByTopic_shouldReturnAListOfQuestionByTopic() throws Exception {
         String topicCriteria = "T01";
 
-        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -251,7 +251,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     public void searchBySubject_shouldReturnAListOfQuestionBySubject() throws Exception {
         Long subjectCriteria = 1L;
 
-        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -269,7 +269,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         String currentUser = "1";
 
         when(userPort.getCurrentUserId()).thenReturn("1");
-        when(questionPort.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getDtoList()));
+        when(questionPort.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search"))
@@ -304,7 +304,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .build();
     }
 
-    private List<QuestionDTO> getDtoList() {
+    private List<QuestionDTO> getQuestionsDTO() {
         return List.of(
                 getTrueOrFalseQuestion(),
                 QuestionDTO.builder()

@@ -30,4 +30,16 @@ public class ExamDTO implements Exam {
     public List<Question> getQuestions() {
         return new ArrayList<>(questions);
     }
+
+    public static ExamDTO from(Exam exam) {
+        final ExamDTOBuilder builder = builder();
+
+        if (exam != null) {
+            builder.title(exam.getTitle())
+                    .author(exam.getAuthor())
+                    .questions(QuestionDTO.from(exam.getQuestions()));
+        }
+
+        return builder.build();
+    }
 }

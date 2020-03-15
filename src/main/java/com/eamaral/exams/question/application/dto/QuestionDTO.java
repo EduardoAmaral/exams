@@ -14,6 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+
 @Getter
 @Setter
 @Builder(toBuilder = true)
@@ -51,17 +54,31 @@ public class QuestionDTO implements Serializable, Question {
     private String author;
 
     public static QuestionDTO from(Question question) {
-        return QuestionDTO.builder()
-                .id(question.getId())
-                .statement(question.getStatement())
-                .solution(question.getSolution())
-                .type(question.getType())
-                .correctAnswer(question.getCorrectAnswer())
-                .topic(question.getTopic())
-                .alternatives(AlternativeDTO.from(question.getAlternatives()))
-                .subject(SubjectDTO.from(question.getSubject()))
-                .author(question.getAuthor())
-                .build();
+        final QuestionDTOBuilder builder = builder();
+
+        if (question != null) {
+            builder.id(question.getId())
+                    .statement(question.getStatement())
+                    .solution(question.getSolution())
+                    .type(question.getType())
+                    .correctAnswer(question.getCorrectAnswer())
+                    .topic(question.getTopic())
+                    .alternatives(AlternativeDTO.from(question.getAlternatives()))
+                    .subject(SubjectDTO.from(question.getSubject()))
+                    .author(question.getAuthor());
+        }
+
+        return builder.build();
+    }
+
+    public static List<QuestionDTO> from(List<Question> questions) {
+        List<QuestionDTO> result = emptyList();
+        if (questions != null) {
+            result = questions.stream()
+                    .map(QuestionDTO::from)
+                    .collect(toList());
+        }
+        return result;
     }
 
     @Override
