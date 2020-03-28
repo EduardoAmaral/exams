@@ -13,7 +13,6 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "TB_QUESTION_MULTIPLE_CHOICE")
 @Getter
 @NoArgsConstructor
 public class MultipleChoiceEntity extends QuestionEntity {

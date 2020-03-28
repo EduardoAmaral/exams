@@ -7,11 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "TB_QUESTION_TRUE_OR_FALSE")
 @Getter
 @NoArgsConstructor
 public class TrueOrFalseEntity extends QuestionEntity {
