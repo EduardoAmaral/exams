@@ -4,7 +4,7 @@ import com.eamaral.exams.question.domain.Question;
 
 import java.util.List;
 
-public interface Exam {
+public interface ExamTemplate {
 
     String getId();
 

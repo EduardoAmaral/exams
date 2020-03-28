@@ -1,8 +1,8 @@
 package com.eamaral.exams.exam.infrastructure.repository;
 
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
-import com.eamaral.exams.exam.domain.Exam;
-import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
+import com.eamaral.exams.exam.domain.ExamTemplate;
+import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamTemplateEntity;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.infrastructure.repository.QuestionRepository;
@@ -22,11 +22,11 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class ExamRepositoryTest extends JpaIntegrationTest {
+public class ExamTemplateRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "10001";
     @Autowired
-    private ExamRepository repository;
+    private ExamTemplateRepository repository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -43,11 +43,11 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void save_whenFieldsAreValid_shouldReturnSuccess() {
-        Exam exam = getExam();
+        ExamTemplate examTemplate = getExamTemplate();
 
-        exam = repository.save(exam);
+        examTemplate = repository.save(examTemplate);
 
-        assertThat(exam.getId()).isNotBlank();
+        assertThat(examTemplate.getId()).isNotBlank();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
                 "Exam's author is required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> repository.save(ExamEntity.builder()
+                .isThrownBy(() -> repository.save(ExamTemplateEntity.builder()
                         .questions(emptyList())
                         .build()))
                 .matches(e -> e.getConstraintViolations().size() == 3)
@@ -66,10 +66,10 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findById_whenExamExistsAndCurrentUserIsItsAuthor_shouldReturnAnExam() {
-        Exam exam = repository.save(getExam());
+    public void findById_whenExamTemplateExistsAndCurrentUserIsItsAuthor_shouldReturnIt() {
+        ExamTemplate examTemplate = repository.save(getExamTemplate());
 
-        Optional<Exam> result = repository.findById(exam.getId(), currentUser);
+        Optional<ExamTemplate> result = repository.findById(examTemplate.getId(), currentUser);
 
         assertThat(result).isNotEmpty();
         assertThat(result.get())
@@ -79,43 +79,43 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findById_whenExamExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
-        Exam exam = repository.save(getExam());
+    public void findById_whenExamTemplateExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
+        ExamTemplate examTemplate = repository.save(getExamTemplate());
 
-        Optional<Exam> result = repository.findById(exam.getId(), "user");
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void findById_whenExamDoesNotExist_shouldReturnEmpty() {
-        Optional<Exam> result = repository.findById("1", "user");
+        Optional<ExamTemplate> result = repository.findById(examTemplate.getId(), "user");
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void findByUser_shouldReturnTheAuthorsExams() {
-        repository.save(getExam());
+    public void findById_whenExamTemplateDoesNotExist_shouldReturnEmpty() {
+        Optional<ExamTemplate> result = repository.findById("1", "user");
 
-        List<Exam> exams = repository.findByUser(currentUser);
-
-        assertThat(exams).isNotEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test
-    public void delete_shouldRemoveAnExam() {
-        Exam exam = repository.save(getExam());
+    public void findByUser_shouldReturnTheAuthorsExamTemplates() {
+        repository.save(getExamTemplate());
+
+        List<ExamTemplate> examTemplates = repository.findByUser(currentUser);
+
+        assertThat(examTemplates).isNotEmpty();
+    }
+
+    @Test
+    public void delete_shouldRemoveAnExamTemplate() {
+        ExamTemplate examTemplate = repository.save(getExamTemplate());
 
         assertThat(repository.findByUser(currentUser)).hasSize(1);
 
-        repository.delete(exam);
+        repository.delete(examTemplate);
 
         assertThat(repository.findByUser(currentUser)).hasSize(0);
     }
 
-    private Exam getExam() {
-        return ExamEntity.builder()
+    private ExamTemplate getExamTemplate() {
+        return ExamTemplateEntity.builder()
                 .title("Exam 1")
                 .author(currentUser)
                 .questions(questions)

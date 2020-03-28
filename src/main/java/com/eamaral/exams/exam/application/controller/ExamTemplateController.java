@@ -1,7 +1,7 @@
 package com.eamaral.exams.exam.application.controller;
 
-import com.eamaral.exams.exam.application.dto.ExamDTO;
-import com.eamaral.exams.exam.domain.port.ExamPort;
+import com.eamaral.exams.exam.application.dto.ExamTemplateDTO;
+import com.eamaral.exams.exam.domain.port.ExamTemplatePort;
 import com.eamaral.exams.user.domain.port.UserPort;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -17,49 +17,49 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "api/exam", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "Exam")
-public class ExamController {
+@RequestMapping(value = "api/exam/template", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(tags = "ExamTemplate")
+public class ExamTemplateController {
 
-    private final ExamPort examPort;
+    private final ExamTemplatePort examTemplatePort;
 
     private final UserPort userPort;
 
-    public ExamController(ExamPort examPort, UserPort userPort) {
-        this.examPort = examPort;
+    public ExamTemplateController(ExamTemplatePort examTemplatePort, UserPort userPort) {
+        this.examTemplatePort = examTemplatePort;
         this.userPort = userPort;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Validated ExamDTO exam) {
+    public void create(@RequestBody @Validated ExamTemplateDTO exam) {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Saving a new exam to the user {}", currentUserId);
 
         exam = exam.toBuilder()
                 .author(currentUserId)
                 .build();
-        examPort.save(exam);
+        examTemplatePort.save(exam);
     }
 
     @GetMapping
-    public ResponseEntity<List<ExamDTO>> get() {
+    public ResponseEntity<List<ExamTemplateDTO>> get() {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Getting all exams for the user {}", currentUserId);
 
-        return ResponseEntity.ok(examPort.findByUser(currentUserId)
+        return ResponseEntity.ok(examTemplatePort.findByUser(currentUserId)
                 .stream()
-                .map(ExamDTO::from)
+                .map(ExamTemplateDTO::from)
                 .collect(toList()));
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExamDTO> getById(@PathVariable String id) {
+    public ResponseEntity<ExamTemplateDTO> getById(@PathVariable String id) {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Getting exam {} to the user {}", id, currentUserId);
 
         return ResponseEntity.ok(
-                ExamDTO.from(examPort.findById(id, currentUserId)));
+                ExamTemplateDTO.from(examTemplatePort.findById(id, currentUserId)));
     }
 
     @DeleteMapping(path = "/{id}")
@@ -68,6 +68,6 @@ public class ExamController {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Deleting exam {} to the user {}", id, currentUserId);
 
-        examPort.delete(id, currentUserId);
+        examTemplatePort.delete(id, currentUserId);
     }
 }

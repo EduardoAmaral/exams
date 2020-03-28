@@ -2,8 +2,8 @@ package com.eamaral.exams.exam.application.controller;
 
 
 import com.eamaral.exams.configuration.controller.ControllerIntegrationTest;
-import com.eamaral.exams.exam.application.dto.ExamDTO;
-import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.exam.application.dto.ExamTemplateDTO;
+import com.eamaral.exams.exam.domain.ExamTemplate;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import org.junit.Test;
@@ -24,25 +24,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ExamControllerTest extends ControllerIntegrationTest {
+public class ExamTemplateControllerTest extends ControllerIntegrationTest {
 
-    private static final String ENDPOINT = "/api/exam";
+    private static final String ENDPOINT = "/api/exam/template";
 
     @Captor
-    private ArgumentCaptor<Exam> examCaptor;
+    private ArgumentCaptor<ExamTemplate> examCaptor;
+
     private final String currentUser = "10001";
 
     @Test
-    public void create_shouldCreateAnExamAndReturnCreated() throws Exception {
+    public void create_shouldCreateAnExamTemplateAndReturnCreated() throws Exception {
         String title = "Exam";
 
-        ExamDTO dto = ExamDTO.builder()
+        ExamTemplateDTO dto = ExamTemplateDTO.builder()
                 .title(title)
                 .questions(getQuestions())
                 .build();
 
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        doNothing().when(examPort).save(examCaptor.capture());
+        doNothing().when(examTemplatePort).save(examCaptor.capture());
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -52,24 +53,24 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isCreated());
 
-        verify(examPort).save(any());
+        verify(examTemplatePort).save(any());
 
-        Exam examSaved = examCaptor.getValue();
+        ExamTemplate examTemplateSaved = examCaptor.getValue();
 
-        assertThat(examSaved.getTitle())
+        assertThat(examTemplateSaved.getTitle())
                 .isEqualTo(title);
 
-        assertThat(examSaved.getQuestions())
+        assertThat(examTemplateSaved.getQuestions())
                 .extracting("id")
                 .matches(Objects::nonNull);
 
-        assertThat(examSaved.getAuthor())
+        assertThat(examTemplateSaved.getAuthor())
                 .isEqualTo(currentUser);
     }
 
     @Test
     public void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
-        ExamDTO dto = ExamDTO.builder()
+        ExamTemplateDTO dto = ExamTemplateDTO.builder()
                 .questions(emptyList())
                 .build();
         mockMvc.perform(
@@ -85,9 +86,9 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void get_shouldReturnAllExamsCreatedByTheCurrentUser() throws Exception {
+    public void get_shouldReturnAllExamTemplatesCreatedByTheCurrentUser() throws Exception {
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(examPort.findByUser(currentUser)).thenReturn(getExams());
+        when(examTemplatePort.findByUser(currentUser)).thenReturn(getExamTemplates());
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
@@ -102,11 +103,11 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void getById_shouldReturnAnExistentExam() throws Exception {
+    public void getById_shouldReturnAnExistentExamTemplate() throws Exception {
         String examId = "1";
 
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(examPort.findById(examId, currentUser)).thenReturn(getExam());
+        when(examTemplatePort.findById(examId, currentUser)).thenReturn(getExamTemplate());
 
         mockMvc.perform(get(String.format("%s/%s", ENDPOINT, examId)))
                 .andExpect(status().isOk())
@@ -126,13 +127,13 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isNoContent());
         verify(userPort).getCurrentUserId();
-        verify(examPort).delete(examId, currentUser);
+        verify(examTemplatePort).delete(examId, currentUser);
     }
 
-    private List<Exam> getExams() {
+    private List<ExamTemplate> getExamTemplates() {
         return List.of(
-                getExam(),
-                ExamDTO.builder()
+                getExamTemplate(),
+                ExamTemplateDTO.builder()
                         .id("2")
                         .title("Exam 2")
                         .author("10001")
@@ -140,8 +141,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                         .build());
     }
 
-    private ExamDTO getExam() {
-        return ExamDTO.builder()
+    private ExamTemplateDTO getExamTemplate() {
+        return ExamTemplateDTO.builder()
                 .id("1")
                 .title("Exam 1")
                 .author("10001")

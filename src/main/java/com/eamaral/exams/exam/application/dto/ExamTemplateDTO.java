@@ -1,6 +1,6 @@
 package com.eamaral.exams.exam.application.dto;
 
-import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.exam.domain.ExamTemplate;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,14 +17,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExamDTO implements Exam {
+public class ExamTemplateDTO implements ExamTemplate {
 
     private String id;
 
-    @NotBlank(message = "{exam.title.required}")
+    @NotBlank(message = "{exam.template.title.required}")
     private String title;
 
-    @NotEmpty(message = "{exam.questions.required}")
+    @NotEmpty(message = "{exam.template.questions.required}")
     private List<QuestionDTO> questions;
 
     private String author;
@@ -33,14 +33,14 @@ public class ExamDTO implements Exam {
         return new ArrayList<>(questions);
     }
 
-    public static ExamDTO from(Exam exam) {
-        final ExamDTOBuilder builder = builder();
+    public static ExamTemplateDTO from(ExamTemplate examTemplate) {
+        final ExamTemplateDTOBuilder builder = builder();
 
-        if (exam != null) {
-            builder.id(exam.getId())
-                    .title(exam.getTitle())
-                    .author(exam.getAuthor())
-                    .questions(QuestionDTO.from(exam.getQuestions()));
+        if (examTemplate != null) {
+            builder.id(examTemplate.getId())
+                    .title(examTemplate.getTitle())
+                    .author(examTemplate.getAuthor())
+                    .questions(QuestionDTO.from(examTemplate.getQuestions()));
         }
 
         return builder.build();

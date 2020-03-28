@@ -2,9 +2,9 @@ package com.eamaral.exams.exam.domain.service;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
-import com.eamaral.exams.exam.application.dto.ExamDTO;
-import com.eamaral.exams.exam.domain.Exam;
-import com.eamaral.exams.exam.domain.port.ExamRepositoryPort;
+import com.eamaral.exams.exam.application.dto.ExamTemplateDTO;
+import com.eamaral.exams.exam.domain.ExamTemplate;
+import com.eamaral.exams.exam.domain.port.ExamTemplateRepositoryPort;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,46 +19,46 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExamServiceTest {
+public class ExamTemplateServiceTest {
 
     @Mock
-    private ExamRepositoryPort examRepository;
+    private ExamTemplateRepositoryPort examRepository;
 
     @InjectMocks
-    private ExamService service;
+    private ExamTemplateService service;
     private final String currentUser = "10001";
 
     @Test
     public void save_shouldReturnSuccess() {
-        Exam exam = getExam();
+        ExamTemplate examTemplate = getExamTemplate();
 
-        service.save(exam);
+        service.save(examTemplate);
 
-        verify(examRepository).save(exam);
+        verify(examRepository).save(examTemplate);
     }
 
     @Test
-    public void findByUser_shouldReturnExamsCreatedByTheUser() {
-        when(examRepository.findByUser(currentUser)).thenReturn(List.of(getExam()));
+    public void findByUser_shouldReturnExamTemplatesCreatedByTheUser() {
+        when(examRepository.findByUser(currentUser)).thenReturn(List.of(getExamTemplate()));
 
-        List<Exam> exams = service.findByUser(currentUser);
+        List<ExamTemplate> examTemplates = service.findByUser(currentUser);
 
         verify(examRepository).findByUser(currentUser);
 
-        assertThat(exams).isNotEmpty();
+        assertThat(examTemplates).isNotEmpty();
     }
 
     @Test
-    public void findById_shouldReturnTheExam_whenItExists() {
+    public void findById_shouldReturnTheExamTemplate_whenItExists() {
         String examId = "1";
 
-        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExam()));
+        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExamTemplate()));
 
-        Exam exam = service.findById(examId, currentUser);
+        ExamTemplate examTemplate = service.findById(examId, currentUser);
 
         verify(examRepository).findById(examId, currentUser);
 
-        assertThat(exam).isNotNull();
+        assertThat(examTemplate).isNotNull();
     }
 
     @Test
@@ -84,9 +84,9 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void delete_whenExamBelongsToCurrentUser_shouldCallRepository() {
+    public void delete_whenExamTemplateBelongsToCurrentUser_shouldCallRepository() {
         String examId = "1";
-        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExam()));
+        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExamTemplate()));
 
         service.delete(examId, currentUser);
 
@@ -94,7 +94,7 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void delete_whenExamDoesNotBelongToCurrentUser_shouldThrownException() {
+    public void delete_whenExamTemplateDoesNotBelongToCurrentUser_shouldThrownException() {
         String examId = "1";
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.empty());
 
@@ -105,8 +105,8 @@ public class ExamServiceTest {
         verify(examRepository, never()).delete(any());
     }
 
-    private Exam getExam() {
-        return ExamDTO.builder()
+    private ExamTemplate getExamTemplate() {
+        return ExamTemplateDTO.builder()
                 .title("Exam 1")
                 .author(currentUser)
                 .questions(emptyList())

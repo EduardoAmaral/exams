@@ -2,35 +2,35 @@ package com.eamaral.exams.exam.domain.service;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
-import com.eamaral.exams.exam.domain.Exam;
-import com.eamaral.exams.exam.domain.port.ExamPort;
-import com.eamaral.exams.exam.domain.port.ExamRepositoryPort;
+import com.eamaral.exams.exam.domain.ExamTemplate;
+import com.eamaral.exams.exam.domain.port.ExamTemplatePort;
+import com.eamaral.exams.exam.domain.port.ExamTemplateRepositoryPort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 @Service
-public class ExamService implements ExamPort {
+public class ExamTemplateService implements ExamTemplatePort {
 
-    private final ExamRepositoryPort repository;
+    private final ExamTemplateRepositoryPort repository;
 
-    public ExamService(ExamRepositoryPort repository) {
+    public ExamTemplateService(ExamTemplateRepositoryPort repository) {
         this.repository = repository;
     }
 
     @Override
-    public void save(Exam exam) {
-        repository.save(exam);
+    public void save(ExamTemplate examTemplate) {
+        repository.save(examTemplate);
     }
 
     @Override
-    public List<Exam> findByUser(String currentUser) {
+    public List<ExamTemplate> findByUser(String currentUser) {
         return repository.findByUser(currentUser);
     }
 
     @Override
-    public Exam findById(String id, String currentUser) {
+    public ExamTemplate findById(String id, String currentUser) {
         if (StringUtils.isEmpty(id)) {
             throw new InvalidDataException("Exam's id is required");
         }
@@ -41,9 +41,9 @@ public class ExamService implements ExamPort {
 
     @Override
     public void delete(String examId, String currentUser) {
-        Exam examToBeDeleted = findById(examId, currentUser);
+        ExamTemplate examTemplateToBeDeleted = findById(examId, currentUser);
 
-        repository.delete(examToBeDeleted);
+        repository.delete(examTemplateToBeDeleted);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.eamaral.exams.exam.infrastructure.repository.jpa.entity;
 
-import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.exam.domain.ExamTemplate;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.infrastructure.repository.converter.QuestionConverter;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
@@ -19,45 +19,45 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Entity
-@Table(name = "TB_EXAM")
+@Table(name = "TB_EXAM_TEMPLATE")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Where(clause = "active = true")
-public class ExamEntity implements Exam {
+public class ExamTemplateEntity implements ExamTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @NotBlank(message = "{exam.title.required}")
+    @NotBlank(message = "{exam.template.title.required}")
     @Column
     private String title;
 
-    @NotBlank(message = "{exam.author.required}")
+    @NotBlank(message = "{exam.template.author.required}")
     @Column
     private String author;
 
     @Column
-    @NotEmpty(message = "{exam.questions.required}")
+    @NotEmpty(message = "{exam.template.questions.required}")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     private List<QuestionEntity> questions;
 
     @Column(nullable = false)
     private boolean active;
 
-    public static ExamEntity from(Exam exam) {
-        ExamEntityBuilder builder = builder();
+    public static ExamTemplateEntity from(ExamTemplate examTemplate) {
+        ExamTemplateEntityBuilder builder = builder();
 
-        if (exam != null) {
-            builder.author(exam.getAuthor())
-                    .id(exam.getId())
+        if (examTemplate != null) {
+            builder.author(examTemplate.getAuthor())
+                    .id(examTemplate.getId())
                     .active(true)
-                    .title(exam.getTitle());
+                    .title(examTemplate.getTitle());
 
-            if (exam.getQuestions() != null) {
-                builder.questions(exam.getQuestions()
+            if (examTemplate.getQuestions() != null) {
+                builder.questions(examTemplate.getQuestions()
                         .stream()
                         .map(QuestionConverter::from)
                         .collect(toList()));
