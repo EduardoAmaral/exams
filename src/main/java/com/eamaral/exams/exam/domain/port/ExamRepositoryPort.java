@@ -13,4 +13,5 @@ public interface ExamRepositoryPort {
 
     List<Exam> findByUser(String currentUser);
 
+    void delete(Exam exam);
 }

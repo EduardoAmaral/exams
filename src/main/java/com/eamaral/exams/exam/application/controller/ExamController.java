@@ -61,4 +61,13 @@ public class ExamController {
         return ResponseEntity.ok(
                 ExamDTO.from(examPort.findById(id, currentUserId)));
     }
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id){
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Deleting exam {} to the user {}", id, currentUserId);
+
+        examPort.delete(id, currentUserId);
+    }
 }

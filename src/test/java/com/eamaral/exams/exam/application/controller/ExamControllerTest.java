@@ -20,8 +20,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,11 +30,11 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     @Captor
     private ArgumentCaptor<Exam> examCaptor;
+    private final String currentUser = "10001";
 
     @Test
     public void create_shouldCreateAnExamAndReturnCreated() throws Exception {
         String title = "Exam";
-        String currentUser = "90009";
 
         ExamDTO dto = ExamDTO.builder()
                 .title(title)
@@ -87,8 +86,6 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void get_shouldReturnAllExamsCreatedByTheCurrentUser() throws Exception {
-        String currentUser = "10001";
-
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
         when(examPort.findByUser(currentUser)).thenReturn(getExams());
 
@@ -107,7 +104,6 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     @Test
     public void getById_shouldReturnAnExistentExam() throws Exception {
         String examId = "1";
-        String currentUser = "10001";
 
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
         when(examPort.findById(examId, currentUser)).thenReturn(getExam());
@@ -118,6 +114,19 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.title", is("Exam 1")))
                 .andExpect(jsonPath("$.author", is(currentUser)))
                 .andExpect(jsonPath("$.questions", hasSize(2)));
+    }
+
+    @Test
+    public void delete_shouldReturnNoContentStatus() throws Exception {
+        String examId = "1";
+        when(userPort.getCurrentUserId()).thenReturn(currentUser);
+
+        mockMvc.perform(
+                delete(ENDPOINT + "/" + examId)
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
+        verify(userPort).getCurrentUserId();
+        verify(examPort).delete(examId, currentUser);
     }
 
     private List<Exam> getExams() {

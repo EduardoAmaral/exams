@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -24,13 +23,12 @@ import static java.util.stream.Collectors.toList;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Where(clause = "active = true")
 public class ExamEntity implements Exam {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @NotBlank(message = "{exam.title.required}")
@@ -54,6 +52,7 @@ public class ExamEntity implements Exam {
 
         if (exam != null) {
             builder.author(exam.getAuthor())
+                    .id(exam.getId())
                     .active(true)
                     .title(exam.getTitle());
 

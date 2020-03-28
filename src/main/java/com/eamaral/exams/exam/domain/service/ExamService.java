@@ -10,8 +10,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
 @Service
 public class ExamService implements ExamPort {
 
@@ -33,12 +31,19 @@ public class ExamService implements ExamPort {
 
     @Override
     public Exam findById(String id, String currentUser) {
-        if(StringUtils.isEmpty(id)){
+        if (StringUtils.isEmpty(id)) {
             throw new InvalidDataException("Exam's id is required");
         }
 
         return repository.findById(id, currentUser)
                 .orElseThrow(() -> new NotFoundException(String.format("Exam %s was not found", id)));
+    }
+
+    @Override
+    public void delete(String examId, String currentUser) {
+        Exam examToBeDeleted = findById(examId, currentUser);
+
+        repository.delete(examToBeDeleted);
     }
 
 }

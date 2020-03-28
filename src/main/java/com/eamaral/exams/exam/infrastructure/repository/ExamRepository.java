@@ -35,4 +35,13 @@ public class ExamRepository implements ExamRepositoryPort {
         return new ArrayList<>(repository.findAllByAuthorAndActiveIsTrue(currentUser));
     }
 
+    @Override
+    public void delete(Exam exam) {
+        ExamEntity examToBeDeleted = ExamEntity.from(exam)
+                .toBuilder()
+                .active(false)
+                .build();
+        repository.save(examToBeDeleted);
+    }
+
 }

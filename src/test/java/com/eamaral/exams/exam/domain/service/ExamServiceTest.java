@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,6 +26,7 @@ public class ExamServiceTest {
 
     @InjectMocks
     private ExamService service;
+    private final String currentUser = "10001";
 
     @Test
     public void save_shouldReturnSuccess() {
@@ -39,8 +39,6 @@ public class ExamServiceTest {
 
     @Test
     public void findByUser_shouldReturnExamsCreatedByTheUser() {
-        String currentUser = "10001";
-
         when(examRepository.findByUser(currentUser)).thenReturn(List.of(getExam()));
 
         List<Exam> exams = service.findByUser(currentUser);
@@ -53,7 +51,6 @@ public class ExamServiceTest {
     @Test
     public void findById_shouldReturnTheExam_whenItExists() {
         String examId = "1";
-        String currentUser = "10001";
 
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExam()));
 
@@ -67,7 +64,6 @@ public class ExamServiceTest {
     @Test
     public void findById_whenNothingIsFound_shouldThrowNotFoundException() {
         String examId = "1";
-        String currentUser = "10001";
 
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.empty());
 
@@ -80,8 +76,6 @@ public class ExamServiceTest {
 
     @Test
     public void findById_whenIdIsNull_shouldThrowInvalidDataException() {
-        String currentUser = "10001";
-
         assertThatThrownBy(() -> service.findById(null, currentUser))
                 .isInstanceOf(InvalidDataException.class)
                 .hasMessage("Exam's id is required");
@@ -89,10 +83,32 @@ public class ExamServiceTest {
         verify(examRepository, never()).findById(null, currentUser);
     }
 
+    @Test
+    public void delete_whenExamBelongsToCurrentUser_shouldCallRepository() {
+        String examId = "1";
+        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExam()));
+
+        service.delete(examId, currentUser);
+
+        verify(examRepository).delete(any());
+    }
+
+    @Test
+    public void delete_whenExamDoesNotBelongToCurrentUser_shouldThrownException() {
+        String examId = "1";
+        when(examRepository.findById(examId, currentUser)).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> service.delete(examId, currentUser))
+                .withMessage("Exam 1 was not found");
+
+        verify(examRepository, never()).delete(any());
+    }
+
     private Exam getExam() {
         return ExamDTO.builder()
                 .title("Exam 1")
-                .author("10001")
+                .author(currentUser)
                 .questions(emptyList())
                 .build();
     }

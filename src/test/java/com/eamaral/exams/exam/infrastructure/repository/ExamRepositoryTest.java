@@ -103,6 +103,17 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
         assertThat(exams).isNotEmpty();
     }
 
+    @Test
+    public void delete_shouldRemoveAnExam() {
+        Exam exam = repository.save(getExam());
+
+        assertThat(repository.findByUser(currentUser)).hasSize(1);
+
+        repository.delete(exam);
+
+        assertThat(repository.findByUser(currentUser)).hasSize(0);
+    }
+
     private Exam getExam() {
         return ExamEntity.builder()
                 .title("Exam 1")
