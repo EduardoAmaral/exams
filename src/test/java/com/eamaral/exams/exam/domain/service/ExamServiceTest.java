@@ -50,9 +50,23 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenDoNotMockTestAndWithoutDates_shouldThrowDatesAreRequiredWhenNotAMockTest() {
+    public void create_whenNotMockTestAndWithoutDates_shouldThrowDatesAreRequiredWhenNotAMockTest() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(null)
+                .endDateTime(null)
+                .mockTest(false)
+                .build();
+
+        assertThatExceptionOfType(InvalidDataException.class)
+                .isThrownBy(() -> service.create(exam, currentUser))
+                .withMessage("Dates are required when not a mock test");
+
+        verify(examRepositoryPort, never()).save(any());
+    }
+
+    @Test
+    public void create_whenNotMockTestAndEndDateTimeIsNull_shouldThrowDatesAreRequiredWhenNotAMockTest() {
+        Exam exam = getExamBuilderWithDefault()
                 .endDateTime(null)
                 .mockTest(false)
                 .build();
@@ -115,6 +129,19 @@ public class ExamServiceTest {
         assertThatExceptionOfType(ForbiddenException.class)
                 .isThrownBy(() -> service.create(exam, differentUserId))
                 .withMessage("Unable to use other users' exam template");
+    }
+
+    @Test
+    public void create_whenMockTest_shouldNotValidateDates() {
+        Exam exam = getExamBuilderWithDefault()
+                .startDateTime(null)
+                .endDateTime(null)
+                .mockTest(true)
+                .build();
+
+        service.create(exam, currentUser);
+
+        verify(examRepositoryPort).save(exam);
     }
 
     private ExamDTO.ExamDTOBuilder getExamBuilderWithDefault() {
