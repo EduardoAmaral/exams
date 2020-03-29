@@ -30,7 +30,7 @@ public abstract class Exam {
             throw new InvalidDataException("Exam's template is required");
         }
 
-        if (!getTemplate().getAuthor().equals(currentUser)) {
+        if (!currentUser.equals(getTemplate().getAuthor())) {
             throw new ForbiddenException("Unable to use other users' exam template");
         }
     }

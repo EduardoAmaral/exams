@@ -9,6 +9,7 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -25,7 +26,7 @@ public class ExamTemplateDTO implements ExamTemplate {
     private String title;
 
     @NotEmpty(message = "{exam.template.questions.required}")
-    private List<QuestionDTO> questions;
+    private List<QuestionDTO> questions = Collections.emptyList();
 
     private String author;
 
