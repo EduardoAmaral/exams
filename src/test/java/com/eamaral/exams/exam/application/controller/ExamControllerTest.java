@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -90,14 +91,16 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findAvailable()).thenReturn(singletonList(getExam()));
 
         mockMvc.perform(get(ENDPOINT + "/available"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is("1")))
-                .andExpect(jsonPath("$[0].startDateTime", is(startDateTime.toString())))
-                .andExpect(jsonPath("$[0].endDateTime", is(endDateTime.toString())))
+                .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
+                .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].template.title", is(templateTitle)))
                 .andExpect(jsonPath("$[0].template.author", is(currentUserId)))

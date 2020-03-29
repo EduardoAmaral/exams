@@ -1,11 +1,14 @@
 package com.eamaral.exams.exam.application.dto;
 
 import com.eamaral.exams.exam.domain.Exam;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+import static java.util.Collections.emptyList;
 
 @Getter
 @Setter
@@ -20,8 +23,10 @@ public class ExamDTO extends Exam {
     @NotNull(message = "{exam.template.required}")
     private ExamTemplateDTO template;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime startDateTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime endDateTime;
 
     private boolean mockTest;
