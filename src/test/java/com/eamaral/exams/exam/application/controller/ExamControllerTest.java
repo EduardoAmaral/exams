@@ -33,6 +33,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     private final LocalDateTime startDateTime = LocalDateTime.now();
 
     private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Test
     public void create_shouldProvideAnExamBasedOnATemplate_AndReturnCreatedStatus() throws Exception {
@@ -72,14 +73,15 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
+
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findByUser(currentUserId)).thenReturn(singletonList(getExam()));
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is("1")))
-                .andExpect(jsonPath("$[0].startDateTime", is(startDateTime.toString())))
-                .andExpect(jsonPath("$[0].endDateTime", is(endDateTime.toString())))
+                .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
+                .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].template.title", is(templateTitle)))
                 .andExpect(jsonPath("$[0].template.author", is(currentUserId)))
@@ -91,8 +93,6 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findAvailable()).thenReturn(singletonList(getExam()));
 
