@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Where(clause = "active = true")
+@Where(clause = "deleted = false")
 public class ExamEntity extends Exam {
 
     @Id
@@ -36,14 +36,13 @@ public class ExamEntity extends Exam {
     private boolean mockTest;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean deleted;
 
     public static ExamEntity from(Exam exam) {
         ExamEntityBuilder builder = builder();
 
         if (exam != null) {
             builder.id(exam.getId())
-                    .active(true)
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
                     .mockTest(exam.isMockTest())
