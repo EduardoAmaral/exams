@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class ExamTemplateRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "10001";
+
     @Autowired
     private ExamTemplateRepository repository;
 

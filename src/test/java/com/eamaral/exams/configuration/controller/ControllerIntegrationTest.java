@@ -1,5 +1,6 @@
 package com.eamaral.exams.configuration.controller;
 
+import com.eamaral.exams.exam.domain.port.ExamPort;
 import com.eamaral.exams.exam.domain.port.ExamTemplatePort;
 import com.eamaral.exams.question.domain.port.QuestionPort;
 import com.eamaral.exams.question.domain.port.SubjectPort;
@@ -33,6 +34,9 @@ public abstract class ControllerIntegrationTest {
 
     @MockBean
     protected ExamTemplatePort examTemplatePort;
+
+    @MockBean
+    protected ExamPort examPort;
 
     @Autowired
     protected MockMvc mockMvc;

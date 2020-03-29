@@ -2,7 +2,7 @@ package com.eamaral.exams.exam.infrastructure.repository;
 
 import com.eamaral.exams.exam.domain.ExamTemplate;
 import com.eamaral.exams.exam.domain.port.ExamTemplateRepositoryPort;
-import com.eamaral.exams.exam.infrastructure.repository.jpa.ExamJpaRepository;
+import com.eamaral.exams.exam.infrastructure.repository.jpa.ExamTemplateJpaRepository;
 import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamTemplateEntity;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 @Repository
 public class ExamTemplateRepository implements ExamTemplateRepositoryPort {
 
-    private final ExamJpaRepository repository;
+    private final ExamTemplateJpaRepository repository;
 
-    public ExamTemplateRepository(ExamJpaRepository repository) {
+    public ExamTemplateRepository(ExamTemplateJpaRepository repository) {
         this.repository = repository;
     }
 
