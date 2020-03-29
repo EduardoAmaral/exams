@@ -26,4 +26,18 @@ public class ExamDTO extends Exam {
 
     private boolean mockTest;
 
+    public static ExamDTO from(Exam exam) {
+        ExamDTOBuilder builder = builder();
+
+        if (exam != null) {
+            builder.id(exam.getId())
+                    .startDateTime(exam.getStartDateTime())
+                    .endDateTime(exam.getEndDateTime())
+                    .mockTest(exam.isMockTest())
+                    .template(ExamTemplateDTO.from(exam.getTemplate()))
+                    .build();
+        }
+
+        return builder.build();
+    }
 }

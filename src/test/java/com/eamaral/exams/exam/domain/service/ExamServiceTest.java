@@ -144,6 +144,20 @@ public class ExamServiceTest {
         verify(examRepositoryPort).save(exam);
     }
 
+    @Test
+    public void findByUser_shouldRetrieveAllExamsByUser() {
+        service.findByUser(currentUser);
+
+        verify(examRepositoryPort).findByUser(currentUser);
+    }
+
+    @Test
+    public void findAvailable_shouldRetrieveAllAvailableExams() {
+        service.findAvailable();
+
+        verify(examRepositoryPort).findAvailable();
+    }
+
     private ExamDTO.ExamDTOBuilder getExamBuilderWithDefault() {
         return ExamDTO.builder()
                 .template(getExamTemplate())

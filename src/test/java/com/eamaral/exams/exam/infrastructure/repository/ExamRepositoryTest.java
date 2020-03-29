@@ -46,18 +46,60 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void create_shouldSaveAnExam() {
-        Exam exam = getExam();
+        Exam exam = getExam().build();
         exam = repository.save(exam);
         assertThat(exam.getId()).isNotBlank();
     }
 
-    private Exam getExam() {
+    @Test
+    public void findByUser_shouldReturnAllExamsCreatedByTheUser() {
+        repository.save(getExam().build());
+        List<Exam> exams = repository.findByUser(currentUser);
+
+        assertThat(exams).hasSize(1);
+    }
+
+    @Test
+    public void findByUser_shouldReturnEmpty_whenCurrentUserDoesntHaveAnyExam() {
+        repository.save(getExam().build());
+        List<Exam> exams = repository.findByUser("000009");
+
+        assertThat(exams).hasSize(0);
+    }
+
+    @Test
+    public void findAvailable_shouldReturnAllExamsWhereTheCurrentDateIsBetweenTheirInterval_orIsAMockTest() {
+        repository.save(getExam()
+                .startDateTime(LocalDateTime.MIN)
+                .endDateTime(LocalDateTime.MIN)
+                .mockTest(true)
+                .build());
+
+        LocalDateTime today = LocalDateTime.now();
+        repository.save(getExam()
+                .startDateTime(today.minusMinutes(30))
+                .endDateTime(today.plusHours(2))
+                .mockTest(false)
+                .build());
+
+        LocalDateTime nextDay = today.plusDays(1);
+        repository.save(getExam()
+                .startDateTime(nextDay)
+                .endDateTime(nextDay.plusHours(2))
+                .mockTest(false)
+                .build());
+
+        List<Exam> exams = repository.findAvailable();
+
+        assertThat(exams).hasSize(2);
+    }
+
+    private ExamEntity.ExamEntityBuilder getExam() {
         return ExamEntity.builder()
                 .template(template)
-                .startDateTime(LocalDateTime.MIN)
-                .endDateTime(LocalDateTime.MAX)
-                .mockTest(false)
-                .build();
+                .startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now().plusHours(2))
+                .mockTest(false);
     }
 
     private void persistTemplate(List<QuestionEntity> questions) {

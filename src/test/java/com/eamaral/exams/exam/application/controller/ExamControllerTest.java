@@ -8,24 +8,33 @@ import com.eamaral.exams.question.application.dto.QuestionDTO;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ExamControllerTest extends ControllerIntegrationTest {
 
-
     private static final String ENDPOINT = "/api/exam";
+
+    private final String currentUserId = "100023";
+
+    private final String templateTitle = "Exam 1";
+
+    private final LocalDateTime startDateTime = LocalDateTime.now();
+
+    private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
 
     @Test
     public void create_shouldProvideAnExamBasedOnATemplate_AndReturnCreatedStatus() throws Exception {
-        String currentUserId = "100023";
         ExamDTO dto = ExamDTO.builder()
                 .template(getExamTemplate())
                 .build();
@@ -60,11 +69,60 @@ public class ExamControllerTest extends ControllerIntegrationTest {
         verify(examPort, never()).create(any(), anyString());
     }
 
+    @Test
+    public void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
+        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
+        when(examPort.findByUser(currentUserId)).thenReturn(singletonList(getExam()));
+
+        mockMvc.perform(get(ENDPOINT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].startDateTime", is(startDateTime.toString())))
+                .andExpect(jsonPath("$[0].endDateTime", is(endDateTime.toString())))
+                .andExpect(jsonPath("$[0].mockTest", is(false)))
+                .andExpect(jsonPath("$[0].template.title", is(templateTitle)))
+                .andExpect(jsonPath("$[0].template.author", is(currentUserId)))
+                .andExpect(jsonPath("$[0].template.questions", hasSize(2)));
+
+        verify(userPort).getCurrentUserId();
+        verify(examPort).findByUser(currentUserId);
+    }
+
+    @Test
+    public void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
+        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
+        when(examPort.findAvailable()).thenReturn(singletonList(getExam()));
+
+        mockMvc.perform(get(ENDPOINT + "/available"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].startDateTime", is(startDateTime.toString())))
+                .andExpect(jsonPath("$[0].endDateTime", is(endDateTime.toString())))
+                .andExpect(jsonPath("$[0].mockTest", is(false)))
+                .andExpect(jsonPath("$[0].template.title", is(templateTitle)))
+                .andExpect(jsonPath("$[0].template.author", is(currentUserId)))
+                .andExpect(jsonPath("$[0].template.questions", hasSize(2)));
+
+        verify(userPort).getCurrentUserId();
+        verify(examPort).findAvailable();
+    }
+
+    private ExamDTO getExam() {
+        return ExamDTO.builder()
+                .id("1")
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .mockTest(false)
+                .template(getExamTemplate())
+                .build();
+    }
+
+
     private ExamTemplateDTO getExamTemplate() {
         return ExamTemplateDTO.builder()
                 .id("1")
-                .title("Exam 1")
-                .author("10001")
+                .title(templateTitle)
+                .author(currentUserId)
                 .questions(getQuestions())
                 .build();
     }
