@@ -129,6 +129,8 @@ public class ExamServiceTest {
         assertThatExceptionOfType(ForbiddenException.class)
                 .isThrownBy(() -> service.create(exam, differentUserId))
                 .withMessage("Unable to use other users' exam template");
+
+        verify(examRepositoryPort, never()).save(any());
     }
 
     @Test
@@ -142,6 +144,20 @@ public class ExamServiceTest {
         service.create(exam, currentUser);
 
         verify(examRepositoryPort).save(exam);
+    }
+
+    @Test
+    public void create_whenDatesAreInThePast_shouldThrowCouldNotCreateExamInThePast() {
+        Exam exam = getExamBuilderWithDefault()
+                .startDateTime(LocalDateTime.now().minusHours(1))
+                .endDateTime(LocalDateTime.now().plusHours(3))
+                .build();
+
+        assertThatExceptionOfType(InvalidDataException.class)
+                .isThrownBy(() -> service.create(exam, currentUser))
+                .withMessage("Couldn't create exam starting in the past");
+
+        verify(examRepositoryPort, never()).save(any());
     }
 
     @Test

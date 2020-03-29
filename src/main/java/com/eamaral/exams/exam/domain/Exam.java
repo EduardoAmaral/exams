@@ -44,6 +44,10 @@ public abstract class Exam {
             throw new InvalidDataException("The start time must be before the end time");
         }
 
+        if(getStartDateTime().isBefore(LocalDateTime.now())){
+            throw new InvalidDataException("Couldn't create exam starting in the past");
+        }
+
         if (getStartDateTime().plusMinutes(30).isAfter(getEndDateTime())) {
             throw new InvalidDataException("The exam duration must be at least 30 minutes");
         }
