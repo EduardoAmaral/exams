@@ -58,7 +58,7 @@ public class ExamController {
 
         return ok(examPort.findAvailable()
                 .stream()
-                .map(ExamDTO::from)
+                .map(ExamDTO::fromExamWithoutQuestions)
                 .collect(toList()));
     }
 }

@@ -45,4 +45,15 @@ public class ExamDTO extends Exam {
 
         return builder.build();
     }
+
+    public static ExamDTO fromExamWithoutQuestions(Exam exam) {
+        ExamDTO dto = from(exam);
+
+        return dto.toBuilder()
+                .template(dto.template
+                        .toBuilder()
+                        .questions(emptyList())
+                        .build())
+                .build();
+    }
 }

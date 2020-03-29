@@ -104,7 +104,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].template.title", is(templateTitle)))
                 .andExpect(jsonPath("$[0].template.author", is(currentUserId)))
-                .andExpect(jsonPath("$[0].template.questions", hasSize(2)));
+                .andExpect(jsonPath("$[0].template.questions", hasSize(0)));
 
         verify(userPort).getCurrentUserId();
         verify(examPort).findAvailable();
