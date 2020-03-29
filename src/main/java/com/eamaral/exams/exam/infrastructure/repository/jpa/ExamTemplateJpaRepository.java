@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 public interface ExamTemplateJpaRepository extends JpaRepository<ExamTemplateEntity, Long> {
 
-    Optional<ExamTemplateEntity> findByIdAndAuthorAndActiveIsTrue(Long id, String author);
+    Optional<ExamTemplateEntity> findByIdAndAuthorAndDeletedIsFalse(Long id, String author);
 
-    List<ExamTemplateEntity> findAllByAuthorAndActiveIsTrue(String author);
+    List<ExamTemplateEntity> findAllByAuthorAndDeletedIsFalse(String author);
 
 }

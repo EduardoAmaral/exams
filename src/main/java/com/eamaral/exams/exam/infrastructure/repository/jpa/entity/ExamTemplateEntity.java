@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Where(clause = "active = true")
+@Where(clause = "deleted = false")
 public class ExamTemplateEntity implements ExamTemplate {
 
     @Id
@@ -44,7 +44,7 @@ public class ExamTemplateEntity implements ExamTemplate {
     private List<QuestionEntity> questions;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean deleted;
 
     public static ExamTemplateEntity from(ExamTemplate examTemplate) {
         ExamTemplateEntityBuilder builder = builder();
@@ -52,7 +52,6 @@ public class ExamTemplateEntity implements ExamTemplate {
         if (examTemplate != null) {
             builder.author(examTemplate.getAuthor())
                     .id(examTemplate.getId())
-                    .active(true)
                     .title(examTemplate.getTitle());
 
             if (examTemplate.getQuestions() != null) {

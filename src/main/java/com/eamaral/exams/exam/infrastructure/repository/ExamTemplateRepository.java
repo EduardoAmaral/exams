@@ -26,20 +26,20 @@ public class ExamTemplateRepository implements ExamTemplateRepositoryPort {
 
     @Override
     public Optional<ExamTemplate> findById(Long id, String currentUser) {
-        return repository.findByIdAndAuthorAndActiveIsTrue(id, currentUser)
+        return repository.findByIdAndAuthorAndDeletedIsFalse(id, currentUser)
                 .flatMap(Optional::of);
     }
 
     @Override
     public List<ExamTemplate> findByUser(String currentUser) {
-        return new ArrayList<>(repository.findAllByAuthorAndActiveIsTrue(currentUser));
+        return new ArrayList<>(repository.findAllByAuthorAndDeletedIsFalse(currentUser));
     }
 
     @Override
     public void delete(ExamTemplate examTemplate) {
         ExamTemplateEntity examToBeDeleted = ExamTemplateEntity.from(examTemplate)
                 .toBuilder()
-                .active(false)
+                .deleted(true)
                 .build();
         repository.save(examToBeDeleted);
     }
