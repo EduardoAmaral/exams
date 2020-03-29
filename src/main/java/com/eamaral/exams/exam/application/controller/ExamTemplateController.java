@@ -54,7 +54,7 @@ public class ExamTemplateController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExamTemplateDTO> getById(@PathVariable String id) {
+    public ResponseEntity<ExamTemplateDTO> getById(@PathVariable Long id) {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Getting exam {} to the user {}", id, currentUserId);
 
@@ -64,7 +64,7 @@ public class ExamTemplateController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String id){
+    public void delete(@PathVariable Long id){
         String currentUserId = userPort.getCurrentUserId();
         log.info("Deleting exam {} to the user {}", id, currentUserId);
 

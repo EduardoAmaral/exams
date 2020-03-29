@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public abstract class Exam {
 
-    public abstract String getId();
+    public abstract Long getId();
 
     public abstract ExamTemplate getTemplate();
 

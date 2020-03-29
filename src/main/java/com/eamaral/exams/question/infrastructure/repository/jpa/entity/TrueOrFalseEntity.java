@@ -15,7 +15,7 @@ import java.util.List;
 public class TrueOrFalseEntity extends QuestionEntity {
 
     @Builder
-    public TrueOrFalseEntity(String id,
+    public TrueOrFalseEntity(Long id,
                              String statement,
                              QuestionType type,
                              String solution,

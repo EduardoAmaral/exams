@@ -19,7 +19,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExamTemplateDTO implements ExamTemplate {
 
-    private String id;
+    private Long id;
 
     @NotBlank(message = "{exam.template.title.required}")
     private String title;

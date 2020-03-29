@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 public class MultipleChoiceEntity extends QuestionEntity {
 
-    @Column
     @NotEmpty(message = "{question.alternatives.required}")
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -27,7 +29,7 @@ public class MultipleChoiceEntity extends QuestionEntity {
 
     @Builder
     public MultipleChoiceEntity(
-            String id,
+            Long id,
             String statement,
             QuestionType type,
             String solution,

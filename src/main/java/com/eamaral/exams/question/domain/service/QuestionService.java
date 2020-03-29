@@ -24,7 +24,7 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public Question find(String id, String currentUser) {
+    public Question find(Long id, String currentUser) {
         if (id == null) {
             throw new InvalidDataException("Question's id is required");
         }
@@ -56,7 +56,7 @@ public class QuestionService implements QuestionPort {
     }
 
     @Override
-    public void delete(String id, String currentUser) {
+    public void delete(Long id, String currentUser) {
         Question question = find(id, currentUser);
         repository.delete(question);
     }

@@ -30,7 +30,7 @@ public class ExamTemplateService implements ExamTemplatePort {
     }
 
     @Override
-    public ExamTemplate findById(String id, String currentUser) {
+    public ExamTemplate findById(Long id, String currentUser) {
         if (StringUtils.isEmpty(id)) {
             throw new InvalidDataException("Exam's id is required");
         }
@@ -40,8 +40,8 @@ public class ExamTemplateService implements ExamTemplatePort {
     }
 
     @Override
-    public void delete(String examId, String currentUser) {
-        ExamTemplate examTemplateToBeDeleted = findById(examId, currentUser);
+    public void delete(Long id, String currentUser) {
+        ExamTemplate examTemplateToBeDeleted = findById(id, currentUser);
 
         repository.delete(examTemplateToBeDeleted);
     }

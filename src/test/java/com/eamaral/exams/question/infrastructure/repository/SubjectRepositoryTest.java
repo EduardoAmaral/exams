@@ -26,7 +26,7 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
 
         Subject subject = repository.save(entity);
 
-        assertThat(subject.getId()).isNotBlank();
+        assertThat(subject.getId()).isNotZero();
     }
 
     @Test

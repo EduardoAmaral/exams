@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ExamTemplateJpaRepository extends JpaRepository<ExamTemplateEntity, String> {
+public interface ExamTemplateJpaRepository extends JpaRepository<ExamTemplateEntity, Long> {
 
-    Optional<ExamTemplateEntity> findByIdAndAuthorAndActiveIsTrue(String id, String author);
+    Optional<ExamTemplateEntity> findByIdAndAuthorAndActiveIsTrue(Long id, String author);
 
     List<ExamTemplateEntity> findAllByAuthorAndActiveIsTrue(String author);
 

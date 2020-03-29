@@ -48,7 +48,7 @@ public class ExamTemplateRepositoryTest extends JpaIntegrationTest {
 
         examTemplate = repository.save(examTemplate);
 
-        assertThat(examTemplate.getId()).isNotBlank();
+        assertThat(examTemplate.getId()).isNotZero();
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ExamTemplateRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void findById_whenExamTemplateDoesNotExist_shouldReturnEmpty() {
-        Optional<ExamTemplate> result = repository.findById("1", "user");
+        Optional<ExamTemplate> result = repository.findById(1L, "user");
 
         assertThat(result).isEmpty();
     }

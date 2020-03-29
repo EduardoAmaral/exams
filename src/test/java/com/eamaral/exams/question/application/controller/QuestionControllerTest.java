@@ -40,6 +40,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     private ArgumentCaptor<String> stringCaptor;
 
     private String currentUser = "1";
+    private final Long questionId = 1L;
 
     @Test
     public void get_shouldReturnAllQuestions() throws Exception {
@@ -52,7 +53,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 get(ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
                 .andExpect(jsonPath("$[0].solution", is("S1")))
                 .andExpect(jsonPath("$[0].type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
@@ -62,7 +63,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].author", is(currentUser)))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
-                .andExpect(jsonPath("$[1].id", is("2")))
+                .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
                 .andExpect(jsonPath("$[1].solution", is("S2")))
                 .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
@@ -76,15 +77,13 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        String questionId = "1";
-
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
         when(questionPort.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion());
 
         mockMvc.perform(
                 get("/api/question/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(questionId)))
+                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
                 .andExpect(jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
@@ -177,7 +176,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is("1")))
+                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("New Statement")))
                 .andExpect(jsonPath("$.solution", is("New Solution")))
                 .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
@@ -188,7 +187,6 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
     @Test
     public void delete_shouldReturnSuccess() throws Exception {
         String author = "590093";
-        String questionId = "1";
 
         when(userPort.getCurrentUserId()).thenReturn(author);
         doNothing().when(questionPort).delete(eq(questionId), stringCaptor.capture());
@@ -254,15 +252,15 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void searchBySubject_shouldReturnAListOfQuestionBySubject() throws Exception {
-        String subjectCriteria = "1";
+        long subjectCriteria = 1;
 
         when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
-                        .param("subject", subjectCriteria))
+                        .param("subject", String.valueOf(subjectCriteria)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].subject.id", is(subjectCriteria)));
+                .andExpect(jsonPath("$[0].subject.id", is(1)));
 
         assertThat(questionCaptor.getValue())
                 .extracting("subject.id")
@@ -284,7 +282,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
 
     private QuestionDTO getTrueOrFalseQuestion() {
         return QuestionDTO.builder()
-                .id("1")
+                .id(questionId)
                 .statement("Question 1?")
                 .solution("S1")
                 .type(QuestionType.TRUE_OR_FALSE)
@@ -293,7 +291,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .topic("T01")
                 .author(currentUser)
                 .subject(SubjectDTO.builder()
-                        .id("1")
+                        .id(1L)
                         .description("English")
                         .build())
                 .alternatives(
@@ -311,7 +309,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
         return List.of(
                 getTrueOrFalseQuestion(),
                 QuestionDTO.builder()
-                        .id("2")
+                        .id(2L)
                         .statement("Question 2?")
                         .solution("S2")
                         .type(QuestionType.MULTIPLE_CHOICES)

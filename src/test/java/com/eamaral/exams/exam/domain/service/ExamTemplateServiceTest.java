@@ -26,7 +26,10 @@ public class ExamTemplateServiceTest {
 
     @InjectMocks
     private ExamTemplateService service;
+
     private final String currentUser = "10001";
+
+    private final Long examId = 1L;
 
     @Test
     public void save_shouldReturnSuccess() {
@@ -50,8 +53,6 @@ public class ExamTemplateServiceTest {
 
     @Test
     public void findById_shouldReturnTheExamTemplate_whenItExists() {
-        String examId = "1";
-
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExamTemplate()));
 
         ExamTemplate examTemplate = service.findById(examId, currentUser);
@@ -63,8 +64,6 @@ public class ExamTemplateServiceTest {
 
     @Test
     public void findById_whenNothingIsFound_shouldThrowNotFoundException() {
-        String examId = "1";
-
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.findById(examId, currentUser))
@@ -85,7 +84,6 @@ public class ExamTemplateServiceTest {
 
     @Test
     public void delete_whenExamTemplateBelongsToCurrentUser_shouldCallRepository() {
-        String examId = "1";
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.of(getExamTemplate()));
 
         service.delete(examId, currentUser);
@@ -95,7 +93,6 @@ public class ExamTemplateServiceTest {
 
     @Test
     public void delete_whenExamTemplateDoesNotBelongToCurrentUser_shouldThrownException() {
-        String examId = "1";
         when(examRepository.findById(examId, currentUser)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(NotFoundException.class)

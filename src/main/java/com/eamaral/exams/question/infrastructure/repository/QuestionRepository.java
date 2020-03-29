@@ -34,7 +34,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     }
 
     @Override
-    public Optional<Question> find(String id, String currentUser) {
+    public Optional<Question> find(Long id, String currentUser) {
         Optional<QuestionEntity> question = repository
                 .findByIdAndAuthorOrSharableIsTrueAndActiveIsTrue(id, currentUser);
         return question.flatMap(Optional::of);

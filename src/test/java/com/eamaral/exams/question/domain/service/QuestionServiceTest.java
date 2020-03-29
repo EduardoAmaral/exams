@@ -34,6 +34,8 @@ public class QuestionServiceTest {
 
     private String currentUser = "1";
 
+    private final Long questionId = 1L;
+
     @Test
     public void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
         String statement1 = "AAA";
@@ -63,7 +65,6 @@ public class QuestionServiceTest {
     public void findById_shouldReturnAQuestion() {
         Question question = getQuestionBuilder("A", "Statement", "True").build();
 
-        String questionId = "1";
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
 
         Question result = service.find(questionId, currentUser);
@@ -81,7 +82,6 @@ public class QuestionServiceTest {
 
     @Test
     public void findById_whenQuestionDoesntExist_shouldThrowNotFoundException() {
-        String questionId = "1";
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
@@ -127,7 +127,7 @@ public class QuestionServiceTest {
             List<Question> args = invocation.getArgument(0);
             return args.stream().map(q ->
                     QuestionDTO.builder()
-                            .id(String.valueOf(request.indexOf(q) + 1))
+                            .id(request.indexOf(q) + 1L)
                             .statement(q.getStatement())
                             .build())
                     .collect(toList());
@@ -138,8 +138,8 @@ public class QuestionServiceTest {
         assertThat(result)
                 .extracting(Question::getId, Question::getStatement)
                 .containsExactlyInAnyOrder(
-                        tuple("1", "AAA"),
-                        tuple("2", "EEE")
+                        tuple(1L, "AAA"),
+                        tuple(2L, "EEE")
                 );
     }
 
@@ -183,7 +183,6 @@ public class QuestionServiceTest {
 
     @Test
     public void update_whenQuestionDoesntExist_shouldThrowNotFoundException() {
-        String questionId = "1";
         Question question = QuestionDTO.builder().id(questionId).build();
 
         when(repositoryPort.find(questionId, currentUser))
@@ -196,7 +195,6 @@ public class QuestionServiceTest {
 
     @Test
     public void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
-        String questionId = "1";
         QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -217,8 +215,6 @@ public class QuestionServiceTest {
 
     @Test
     public void update_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_shouldThrowInvalidDataException() {
-        String questionId = "1";
-
         Question question = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -238,7 +234,6 @@ public class QuestionServiceTest {
     @Test
     public void delete_shouldCallDeleteMethodFromRepository() {
         Question question = getQuestionBuilder("A", "B", "C").build();
-        String questionId = "1";
 
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
         doNothing().when(repositoryPort).delete(question);
@@ -250,9 +245,7 @@ public class QuestionServiceTest {
 
     @Test
     public void delete_whenQuestionDoesntExist_shouldReturnNotFoundException() {
-        String questionId = "1";
-
-        when(repositoryPort.find(anyString(), eq(currentUser)))
+        when(repositoryPort.find(anyLong(), eq(currentUser)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUser))
@@ -296,7 +289,7 @@ public class QuestionServiceTest {
                                                               String statement,
                                                               String correctAnswer) {
         return QuestionDTO.builder()
-                .id("1")
+                .id(questionId)
                 .solution(solution)
                 .statement(statement)
                 .type(QuestionType.TRUE_OR_FALSE)

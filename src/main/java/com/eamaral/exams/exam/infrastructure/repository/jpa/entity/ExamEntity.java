@@ -21,7 +21,7 @@ public class ExamEntity extends Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ExamTemplateEntity template;

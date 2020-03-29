@@ -32,6 +32,7 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
     private ArgumentCaptor<ExamTemplate> examCaptor;
 
     private final String currentUser = "10001";
+    private final Long examId = 1L;
 
     @Test
     public void create_shouldCreateAnExamTemplateAndReturnCreated() throws Exception {
@@ -92,11 +93,11 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].title", is("Exam 1")))
                 .andExpect(jsonPath("$[0].author", is(currentUser)))
                 .andExpect(jsonPath("$[0].questions", hasSize(2)))
-                .andExpect(jsonPath("$[1].id", is("2")))
+                .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].title", is("Exam 2")))
                 .andExpect(jsonPath("$[1].author", is(currentUser)))
                 .andExpect(jsonPath("$[1].questions", hasSize(2)));
@@ -104,14 +105,12 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getById_shouldReturnAnExistentExamTemplate() throws Exception {
-        String examId = "1";
-
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
         when(examTemplatePort.findById(examId, currentUser)).thenReturn(getExamTemplate());
 
         mockMvc.perform(get(String.format("%s/%s", ENDPOINT, examId)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(examId)))
+                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("Exam 1")))
                 .andExpect(jsonPath("$.author", is(currentUser)))
                 .andExpect(jsonPath("$.questions", hasSize(2)));
@@ -119,7 +118,6 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void delete_shouldReturnNoContentStatus() throws Exception {
-        String examId = "1";
         when(userPort.getCurrentUserId()).thenReturn(currentUser);
 
         mockMvc.perform(
@@ -134,7 +132,7 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
         return List.of(
                 getExamTemplate(),
                 ExamTemplateDTO.builder()
-                        .id("2")
+                        .id(2L)
                         .title("Exam 2")
                         .author("10001")
                         .questions(getQuestions())
@@ -143,7 +141,7 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
 
     private ExamTemplateDTO getExamTemplate() {
         return ExamTemplateDTO.builder()
-                .id("1")
+                .id(1L)
                 .title("Exam 1")
                 .author("10001")
                 .questions(getQuestions())
@@ -153,11 +151,11 @@ public class ExamTemplateControllerTest extends ControllerIntegrationTest {
     private List<QuestionDTO> getQuestions() {
         return List.of(
                 QuestionDTO.builder()
-                        .id("1")
+                        .id(1L)
                         .type(QuestionType.TRUE_OR_FALSE)
                         .build(),
                 QuestionDTO.builder()
-                        .id("2")
+                        .id(2L)
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .build()
         );

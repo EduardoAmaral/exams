@@ -21,7 +21,7 @@ public class QuestionCriteriaDTO {
 
     private String topic;
 
-    private String subject;
+    private Long subject;
 
     private String author;
 

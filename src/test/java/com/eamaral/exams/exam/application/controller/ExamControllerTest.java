@@ -79,7 +79,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
                 .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
@@ -98,7 +98,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
         mockMvc.perform(get(ENDPOINT + "/available"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("1")))
+                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
                 .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
@@ -112,7 +112,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     private ExamDTO getExam() {
         return ExamDTO.builder()
-                .id("1")
+                .id(1L)
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)
                 .mockTest(false)
@@ -123,7 +123,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
 
     private ExamTemplateDTO getExamTemplate() {
         return ExamTemplateDTO.builder()
-                .id("1")
+                .id(1L)
                 .title(templateTitle)
                 .author(currentUserId)
                 .questions(getQuestions())
@@ -133,11 +133,11 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     private List<QuestionDTO> getQuestions() {
         return List.of(
                 QuestionDTO.builder()
-                        .id("1")
+                        .id(1L)
                         .type(QuestionType.TRUE_OR_FALSE)
                         .build(),
                 QuestionDTO.builder()
-                        .id("2")
+                        .id(2L)
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .build()
         );

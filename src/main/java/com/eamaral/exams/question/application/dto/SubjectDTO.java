@@ -15,7 +15,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubjectDTO implements Serializable, Subject {
 
-    private String id;
+    private Long id;
 
     @NotBlank(message = "{subject.description.required}")
     private String description;

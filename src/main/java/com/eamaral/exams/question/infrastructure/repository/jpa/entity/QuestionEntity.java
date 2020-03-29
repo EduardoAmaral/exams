@@ -19,13 +19,13 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "TB_QUESTION")
 @Where(clause = "active = true")
 public abstract class QuestionEntity implements Question {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(columnDefinition = "varchar(2000)")
     @NotBlank(message = "{question.statement.required}")

@@ -29,7 +29,7 @@ public class ExamTemplateEntity implements ExamTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @NotBlank(message = "{exam.template.title.required}")
     @Column
@@ -39,7 +39,6 @@ public class ExamTemplateEntity implements ExamTemplate {
     @Column
     private String author;
 
-    @Column
     @NotEmpty(message = "{exam.template.questions.required}")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     private List<QuestionEntity> questions;

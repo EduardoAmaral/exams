@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.toList;
 
 public interface Question {
 
-    String getId();
+    Long getId();
 
     String getStatement();
 

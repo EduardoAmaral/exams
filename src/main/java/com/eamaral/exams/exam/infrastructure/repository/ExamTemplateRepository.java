@@ -25,7 +25,7 @@ public class ExamTemplateRepository implements ExamTemplateRepositoryPort {
     }
 
     @Override
-    public Optional<ExamTemplate> findById(String id, String currentUser) {
+    public Optional<ExamTemplate> findById(Long id, String currentUser) {
         return repository.findByIdAndAuthorAndActiveIsTrue(id, currentUser)
                 .flatMap(Optional::of);
     }

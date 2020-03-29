@@ -10,7 +10,7 @@ public interface ExamTemplatePort {
 
     List<ExamTemplate> findByUser(String currentUser);
 
-    ExamTemplate findById(String id, String currentUser);
+    ExamTemplate findById(Long id, String currentUser);
 
-    void delete(String examId, String currentUser);
+    void delete(Long id, String currentUser);
 }

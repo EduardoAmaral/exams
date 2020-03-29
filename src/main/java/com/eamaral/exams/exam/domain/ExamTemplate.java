@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ExamTemplate {
 
-    String getId();
+    Long getId();
 
     String getTitle();
 

@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface QuestionJpaRepository extends JpaRepository<QuestionEntity, String>, JpaSpecificationExecutor<QuestionEntity> {
+public interface QuestionJpaRepository extends JpaRepository<QuestionEntity, Long>, JpaSpecificationExecutor<QuestionEntity> {
 
-    Optional<QuestionEntity> findByIdAndAuthorOrSharableIsTrueAndActiveIsTrue(String id, String author);
+    Optional<QuestionEntity> findByIdAndAuthorOrSharableIsTrueAndActiveIsTrue(Long id, String author);
 
     List<QuestionEntity> findAllByAuthorAndActiveIsTrue(String author);
 

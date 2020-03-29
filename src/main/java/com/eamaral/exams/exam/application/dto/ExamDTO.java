@@ -18,7 +18,7 @@ import static java.util.Collections.emptyList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExamDTO extends Exam {
 
-    private String id;
+    private Long id;
 
     @NotNull(message = "{exam.template.required}")
     private ExamTemplateDTO template;

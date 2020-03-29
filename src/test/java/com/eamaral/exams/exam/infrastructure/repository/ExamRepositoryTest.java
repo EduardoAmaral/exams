@@ -48,7 +48,7 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     public void create_shouldSaveAnExam() {
         Exam exam = getExam().build();
         exam = repository.save(exam);
-        assertThat(exam.getId()).isNotBlank();
+        assertThat(exam.getId()).isNotZero();
     }
 
     @Test

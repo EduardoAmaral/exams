@@ -9,7 +9,7 @@ public interface ExamTemplateRepositoryPort {
 
     ExamTemplate save(ExamTemplate examTemplate);
 
-    Optional<ExamTemplate> findById(String id, String currentUser);
+    Optional<ExamTemplate> findById(Long id, String currentUser);
 
     List<ExamTemplate> findByUser(String currentUser);
 

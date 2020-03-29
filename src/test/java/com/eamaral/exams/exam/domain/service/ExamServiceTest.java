@@ -184,7 +184,7 @@ public class ExamServiceTest {
 
     private ExamTemplateDTO getExamTemplate() {
         return ExamTemplateDTO.builder()
-                .id("1")
+                .id(1L)
                 .title("Exam 1")
                 .author(currentUser)
                 .questions(getQuestions())
@@ -194,11 +194,11 @@ public class ExamServiceTest {
     private List<QuestionDTO> getQuestions() {
         return List.of(
                 QuestionDTO.builder()
-                        .id("1")
+                        .id(1L)
                         .type(QuestionType.TRUE_OR_FALSE)
                         .build(),
                 QuestionDTO.builder()
-                        .id("2")
+                        .id(2L)
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .build()
         );
