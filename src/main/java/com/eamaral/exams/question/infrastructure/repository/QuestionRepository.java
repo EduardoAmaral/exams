@@ -30,13 +30,13 @@ public class QuestionRepository implements QuestionRepositoryPort {
     @Override
     public List<Question> findByUser(String currentUser) {
         return new ArrayList<>(
-                repository.findAllByAuthorAndActiveIsTrue(currentUser));
+                repository.findAllByAuthorAndDeletedIsFalse(currentUser));
     }
 
     @Override
     public Optional<Question> find(Long id, String currentUser) {
         Optional<QuestionEntity> question = repository
-                .findByIdAndAuthorOrSharableIsTrueAndActiveIsTrue(id, currentUser);
+                .findByIdAndAuthorOrSharableIsTrueAndDeletedIsFalse(id, currentUser);
         return question.flatMap(Optional::of);
     }
 
@@ -62,7 +62,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     @Override
     public void delete(Question question) {
         QuestionEntity questionEntity = QuestionConverter.from(question);
-        questionEntity.setActive(false);
+        questionEntity.setDeleted(true);
         repository.save(questionEntity);
     }
 

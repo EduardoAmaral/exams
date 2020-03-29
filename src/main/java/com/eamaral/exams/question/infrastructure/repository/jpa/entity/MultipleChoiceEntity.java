@@ -33,14 +33,14 @@ public class MultipleChoiceEntity extends QuestionEntity {
             String statement,
             QuestionType type,
             String solution,
-            boolean active,
+            boolean deleted,
             boolean sharable,
             String correctAnswer,
             String topic,
             SubjectEntity subject,
             String author,
             List<AlternativeEntity> alternatives) {
-        super(id, statement, type, solution, active, sharable, correctAnswer, topic, subject, author);
+        super(id, statement, type, solution, deleted, sharable, correctAnswer, topic, subject, author);
         this.alternatives = alternatives;
     }
 

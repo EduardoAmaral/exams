@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "TB_QUESTION")
-@Where(clause = "active = true")
+@Where(clause = "deleted = false")
 public abstract class QuestionEntity implements Question {
 
     @Id
@@ -43,10 +43,10 @@ public abstract class QuestionEntity implements Question {
 
     @Column(nullable = false)
     @Setter
-    private boolean active = true;
+    private boolean deleted;
 
     @Column(nullable = false)
-    private boolean sharable = false;
+    private boolean sharable;
 
     @Column
     @NotBlank(message = "{question.answer.required}")
