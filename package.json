@@ -20,7 +20,8 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^2.0.2",
-    "husky": "^4.2.3"
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.10"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,9 +50,9 @@
     }
   },
   "lint-staged": {
-    "*.js": [
-      "./node_modules/.bin/eslint — fix",
-      "git add"
+    "*.{js,jsx}": [
+      "npx prettier --write",
+      "eslint src --ext .js,.jsx --fix"
     ]
   }
 }
