@@ -11,4 +11,8 @@ public interface ExamPort {
     List<Exam> findByUser(String currentUser);
 
     List<Exam> findAvailable();
+
+    Exam findById(Long id, String currentUser);
+
+    void delete(Long id, String currentUser);
 }

@@ -1,15 +1,16 @@
 package com.eamaral.exams.exam.domain;
 
-import com.eamaral.exams.configuration.exception.ForbiddenException;
 import com.eamaral.exams.configuration.exception.InvalidDataException;
+import com.eamaral.exams.question.domain.Question;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public abstract class Exam {
 
     public abstract Long getId();
 
-    public abstract ExamTemplate getTemplate();
+    public abstract String getTitle();
 
     public abstract LocalDateTime getStartDateTime();
 
@@ -17,21 +18,13 @@ public abstract class Exam {
 
     public abstract boolean isMockTest();
 
-    public void validate(String currentUser) {
-        validateTemplate(currentUser);
+    public abstract String getAuthor();
 
+    public abstract List<Question> getQuestions();
+
+    public void validate() {
         if (!isMockTest()) {
             validateDates();
-        }
-    }
-
-    private void validateTemplate(String currentUser) {
-        if (getTemplate() == null) {
-            throw new InvalidDataException("Exam's template is required");
-        }
-
-        if (!currentUser.equals(getTemplate().getAuthor())) {
-            throw new ForbiddenException("Unable to use other users' exam template");
         }
     }
 
@@ -44,7 +37,7 @@ public abstract class Exam {
             throw new InvalidDataException("The start time must be before the end time");
         }
 
-        if(getStartDateTime().isBefore(LocalDateTime.now())){
+        if (getStartDateTime().isBefore(LocalDateTime.now())) {
             throw new InvalidDataException("Couldn't create exam starting in the past");
         }
 

@@ -11,10 +11,6 @@ public class ExamSpecification {
         super();
     }
 
-    public static Specification<ExamEntity> authorEqualsTo(String author) {
-        return (exam, cq, cb) -> cb.equal(exam.get("template").get("author"), author);
-    }
-
     public static Specification<ExamEntity> isAvailableNow(LocalDateTime currentDateTime) {
         return (exam, cq, cb) -> {
             Predicate availableByDate = cb.and(

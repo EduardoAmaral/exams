@@ -3,7 +3,6 @@ package com.eamaral.exams.exam.infrastructure.repository;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
-import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamTemplateEntity;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.infrastructure.repository.QuestionRepository;
@@ -14,19 +13,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ExamRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private ExamRepository repository;
-
-    @Autowired
-    private ExamTemplateRepository examTemplateRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -36,19 +35,31 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "10001";
 
-    private ExamTemplateEntity template;
+    private List<QuestionEntity> questions;
 
     @Before
     public void setUp() {
-        List<QuestionEntity> questions = persistQuestions();
-        persistTemplate(questions);
+        persistQuestions();
     }
 
     @Test
-    public void create_shouldSaveAnExam() {
+    public void save_shouldSaveAnExam() {
         Exam exam = getExam().build();
         exam = repository.save(exam);
         assertThat(exam.getId()).isNotZero();
+    }
+
+    @Test
+    public void save_whenAuthorIsNotInformed_shouldThrowConstraintViolationException() {
+        List<String> validationMessages = List.of("Exam's title is required",
+                "Exam's questions are required",
+                "Exam's author is required");
+
+        assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> repository.save(ExamEntity.builder().build()))
+                .matches(e -> e.getConstraintViolations().size() == 3)
+                .matches(e -> e.getConstraintViolations().stream().allMatch(
+                        v -> validationMessages.contains(v.getMessage())));
     }
 
     @Test
@@ -94,25 +105,57 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
         assertThat(exams).hasSize(2);
     }
 
+    @Test
+    public void findById_whenExamExistsAndCurrentUserIsItsAuthor_shouldReturnIt() {
+        Exam exam = repository.save(getExam().build());
+
+        Optional<Exam> result = repository.findById(exam.getId(), currentUser);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get())
+                .extracting("title", "author")
+                .containsExactly("Exam 1", currentUser);
+        assertThat(result.get().getQuestions()).hasSize(2);
+    }
+
+    @Test
+    public void findById_whenExamExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
+        Exam exam = repository.save(getExam().build());
+
+        Optional<Exam> result = repository.findById(exam.getId(), "user");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findById_whenExamDoesNotExist_shouldReturnEmpty() {
+        Optional<Exam> result = repository.findById(1L, "user");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void delete_shouldRemoveAnExamTemplate() {
+        Exam exam = repository.save(getExam().build());
+
+        assertThat(repository.findByUser(currentUser)).hasSize(1);
+
+        repository.delete(exam);
+
+        assertThat(repository.findByUser(currentUser)).hasSize(0);
+    }
+
     private ExamEntity.ExamEntityBuilder getExam() {
         return ExamEntity.builder()
-                .template(template)
+                .title("Exam 1")
+                .author(currentUser)
+                .questions(questions)
                 .startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now().plusHours(2))
                 .mockTest(false);
     }
 
-    private void persistTemplate(List<QuestionEntity> questions) {
-        ExamTemplateEntity entity = ExamTemplateEntity.builder()
-                .title("Exam 1")
-                .author(currentUser)
-                .questions(questions)
-                .build();
-
-        this.template = ExamTemplateEntity.from(examTemplateRepository.save(entity));
-    }
-
-    private List<QuestionEntity> persistQuestions() {
+    private void persistQuestions() {
         SubjectEntity subject = SubjectEntity.from(subjectRepository.save(SubjectEntity.builder()
                 .description("English")
                 .build()));
@@ -136,7 +179,7 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
                         .author(currentUser)
                         .build());
 
-        return questionRepository.saveAll(questions)
+        this.questions = questionRepository.saveAll(questions)
                 .stream()
                 .map(QuestionConverter::from)
                 .collect(toList());

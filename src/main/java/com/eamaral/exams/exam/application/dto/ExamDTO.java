@@ -1,12 +1,17 @@
 package com.eamaral.exams.exam.application.dto;
 
 import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.question.application.dto.QuestionDTO;
+import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
 
@@ -20,8 +25,8 @@ public class ExamDTO extends Exam {
 
     private Long id;
 
-    @NotNull(message = "{exam.template.required}")
-    private ExamTemplateDTO template;
+    @NotBlank(message = "{exam.title.required}")
+    private String title;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime startDateTime;
@@ -31,6 +36,15 @@ public class ExamDTO extends Exam {
 
     private boolean mockTest;
 
+    private String author;
+
+    @NotEmpty(message = "{exam.questions.required}")
+    private List<QuestionDTO> questions;
+
+    public List<Question> getQuestions() {
+        return questions != null ? new ArrayList<>(questions) : emptyList();
+    }
+
     public static ExamDTO from(Exam exam) {
         ExamDTOBuilder builder = builder();
 
@@ -39,7 +53,9 @@ public class ExamDTO extends Exam {
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
                     .mockTest(exam.isMockTest())
-                    .template(ExamTemplateDTO.from(exam.getTemplate()))
+                    .author(exam.getAuthor())
+                    .title(exam.getTitle())
+                    .questions(QuestionDTO.from(exam.getQuestions()))
                     .build();
         }
 
@@ -50,10 +66,7 @@ public class ExamDTO extends Exam {
         ExamDTO dto = from(exam);
 
         return dto.toBuilder()
-                .template(dto.template
-                        .toBuilder()
-                        .questions(emptyList())
-                        .build())
+                .questions(emptyList())
                 .build();
     }
 }

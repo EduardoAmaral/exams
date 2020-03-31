@@ -21,7 +21,7 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
     public static final String ENDPOINT = "/api/question/subject";
 
     @Test
-    public void get_shouldReturnAllSubjects() throws Exception {
+    public void list_shouldReturnAllSubjects() throws Exception {
         when(subjectPort.findAll()).thenReturn(new ArrayList<>(List.of(
                 SubjectDTO.builder()
                         .id(1L)

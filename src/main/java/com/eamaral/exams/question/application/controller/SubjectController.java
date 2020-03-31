@@ -28,7 +28,7 @@ public class SubjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SubjectDTO>> get(){
+    public ResponseEntity<List<SubjectDTO>> list(){
         log.info("Getting all subjects");
         return ok(subjectPort.findAll()
                 .stream()

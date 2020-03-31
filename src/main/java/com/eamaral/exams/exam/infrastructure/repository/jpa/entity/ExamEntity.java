@@ -1,6 +1,9 @@
 package com.eamaral.exams.exam.infrastructure.repository.jpa.entity;
 
 import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.infrastructure.repository.converter.QuestionConverter;
+import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,14 +11,21 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name = "TB_EXAM")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Where(clause = "deleted = false")
 public class ExamEntity extends Exam {
 
@@ -23,8 +33,9 @@ public class ExamEntity extends Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private ExamTemplateEntity template;
+    @Column
+    @NotBlank(message = "{exam.title.required}")
+    private String title;
 
     @Column
     private LocalDateTime startDateTime;
@@ -34,6 +45,14 @@ public class ExamEntity extends Exam {
 
     @Column(nullable = false)
     private boolean mockTest;
+
+    @Column
+    @NotBlank(message = "{exam.author.required}")
+    private String author;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @NotEmpty(message = "{exam.questions.required}")
+    private List<QuestionEntity> questions;
 
     @Column(nullable = false)
     private boolean deleted;
@@ -46,9 +65,21 @@ public class ExamEntity extends Exam {
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
                     .mockTest(exam.isMockTest())
-                    .template(ExamTemplateEntity.from(exam.getTemplate()));
+                    .title(exam.getTitle())
+                    .author(exam.getAuthor());
+
+            if (exam.getQuestions() != null) {
+                builder.questions(exam.getQuestions()
+                        .stream()
+                        .map(QuestionConverter::from)
+                        .collect(toList()));
+            }
         }
 
         return builder.build();
+    }
+
+    public List<Question> getQuestions() {
+        return questions != null ? new ArrayList<>(questions) : emptyList();
     }
 }

@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static com.eamaral.exams.exam.infrastructure.repository.ExamSpecification.authorEqualsTo;
 import static com.eamaral.exams.exam.infrastructure.repository.ExamSpecification.isAvailableNow;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 @Repository
 public class ExamRepository implements ExamRepositoryPort {
@@ -32,8 +31,7 @@ public class ExamRepository implements ExamRepositoryPort {
 
     @Override
     public List<Exam> findByUser(String currentUser) {
-        return new ArrayList<>(repository.findAll(
-                where(authorEqualsTo(currentUser))));
+        return new ArrayList<>(repository.findAllByAuthorAndDeletedIsFalse(currentUser));
     }
 
     @Override
@@ -41,5 +39,21 @@ public class ExamRepository implements ExamRepositoryPort {
         return new ArrayList<>(
                 repository.findAll(isAvailableNow(LocalDateTime.now()))
         );
+    }
+
+    @Override
+    public Optional<Exam> findById(Long id, String currentUser) {
+        return repository.findByIdAndAuthorAndDeletedIsFalse(id, currentUser)
+                .flatMap(Optional::of);
+    }
+
+    @Override
+    public void delete(Exam exam) {
+        ExamEntity examToBeDeleted = ExamEntity.from(exam)
+                .toBuilder()
+                .deleted(true)
+                .build();
+
+        repository.save(examToBeDeleted);
     }
 }

@@ -61,4 +61,22 @@ public class ExamController {
                 .map(ExamDTO::fromExamWithoutQuestions)
                 .collect(toList()));
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ExamDTO> getById(@PathVariable Long id) {
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Getting exam {} to the user {}", id, currentUserId);
+
+        return ResponseEntity.ok(
+                ExamDTO.from(examPort.findById(id, currentUserId)));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        String currentUserId = userPort.getCurrentUserId();
+        log.info("Deleting exam {} to the user {}", id, currentUserId);
+
+        examPort.delete(id, currentUserId);
+    }
 }
