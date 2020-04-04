@@ -56,7 +56,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
                 .andExpect(jsonPath("$[0].solution", is("S1")))
-                .andExpect(jsonPath("$[0].type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$[0].type", Matchers.is("True Or False")))
                 .andExpect(jsonPath("$[0].sharable", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].topic", is("T01")))
@@ -66,7 +66,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
                 .andExpect(jsonPath("$[1].solution", is("S2")))
-                .andExpect(jsonPath("$[1].type", is(QuestionType.MULTIPLE_CHOICES.toString())))
+                .andExpect(jsonPath("$[1].type", is("Multiple Choices")))
                 .andExpect(jsonPath("$[1].sharable", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].topic", is("T02")))
@@ -86,7 +86,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
-                .andExpect(jsonPath("$.type", Matchers.is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$.type", Matchers.is("True Or False")))
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))
                 .andExpect(jsonPath("$.topic", is("T01")))
@@ -179,7 +179,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.statement", is("New Statement")))
                 .andExpect(jsonPath("$.solution", is("New Solution")))
-                .andExpect(jsonPath("$.type", is(QuestionType.TRUE_OR_FALSE.toString())))
+                .andExpect(jsonPath("$.type", is("True Or False")))
                 .andExpect(jsonPath("$.sharable", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("False")));
     }
@@ -226,7 +226,7 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                 get(ENDPOINT + "/search")
                         .param("type", typeCriteria.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].type", is(QuestionType.TRUE_OR_FALSE.toString())));
+                .andExpect(jsonPath("$[0].type", is("True Or False")));
 
         assertThat(questionCaptor.getValue())
                 .extracting("type")
