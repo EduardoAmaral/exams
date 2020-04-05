@@ -31,6 +31,8 @@ public class AuthController {
     @GetMapping
     public ResponseEntity<Boolean> auth() {
         String userId = userPort.getCurrentUserId();
+        log.info("Authenticating {}", userId);
+        
         boolean authenticated = userId != null && !Arrays.asList(unauthenticatedUsers).contains(userId);
 
         return ok(authenticated);
