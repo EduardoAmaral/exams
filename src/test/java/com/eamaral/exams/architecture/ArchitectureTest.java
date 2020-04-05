@@ -58,6 +58,7 @@ public class ArchitectureTest {
     @ArchTest
     public static final ArchRule controllersShouldExposeApiDocumentation = classes()
             .that().areAnnotatedWith(RestController.class)
+            .and().haveSimpleNameNotContaining("AuthController")
             .should().beAnnotatedWith(Api.class)
             .because("Controllers should expose API documentation");
 
