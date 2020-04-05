@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import './app/config/axiosConfig';
+import './global-style.scss';
 
 ReactDOM.render(
   <React.StrictMode>

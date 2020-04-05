@@ -1,10 +1,13 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 import { Provider } from 'react-redux';
+import { Router } from 'react-router';
 import { AUTH } from './app/config/endpoint';
 import store from './app/store/store';
 import reducer from './app/store/modules/auth/reducer';
 import { AUTH_AUTHENTICATED } from './app/store/modules/auth/action';
+import Routes from './routes';
+import history from './app/config/history';
 
 const getAuthentication = (dispatch) => {
   axios.get(AUTH).then((response) => {
@@ -21,8 +24,10 @@ function App() {
 
   return (
     <Provider store={store}>
-      <div className="ui container" data-testid="app">
-        {state ? <span>Authenticated</span> : getAuthentication(dispatch)}
+      <div data-testid="app">
+        <Router history={history}>
+          {state ? <Routes /> : getAuthentication(dispatch)}
+        </Router>
       </div>
     </Provider>
   );
