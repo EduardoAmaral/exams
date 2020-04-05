@@ -37,6 +37,15 @@ export default function QuestionContainer() {
           ))}
         </tbody>
       </table>
+      <div className="right">
+        <button
+          className="positive ui button"
+          type="button"
+          data-testid="question-create-button"
+        >
+          Create Question
+        </button>
+      </div>
     </>
   );
 }

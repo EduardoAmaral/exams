@@ -83,4 +83,14 @@ describe('Question Page', () => {
     const { getByText } = render(<QuestionContainer />);
     expect(getByText('Loading')).toBeDefined();
   });
+
+  it('should render a creat button', async () => {
+    const { getByText } = render(<QuestionContainer />);
+
+    await waitForElementToBeRemoved(() => getByText('Loading'));
+
+    const button = screen.getByTestId('question-create-button');
+    expect(button).toBeDefined();
+    expect(button).toHaveTextContent('Create Question');
+  });
 });
