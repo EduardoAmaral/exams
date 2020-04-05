@@ -1,13 +1,11 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App test', () => {
   it('should render the App component', () => {
-    const wrapper = mount(<App />);
+    render(<App />);
 
-    const text = wrapper.find('div').text();
-
-    expect(text).toEqual('Hello Exams!');
+    expect(screen.getByTestId('app')).toBeDefined();
   });
 });
