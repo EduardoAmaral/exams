@@ -60,5 +60,6 @@
       "npx prettier --write",
       "eslint src --ext .js,.jsx --fix"
     ]
-  }
+  },
+  "proxy": "http://localhost:8081/"
 }
