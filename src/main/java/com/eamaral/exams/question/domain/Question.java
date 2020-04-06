@@ -17,7 +17,7 @@ public interface Question {
 
     String getSolution();
 
-    boolean isSharable();
+    boolean isShared();
 
     List<Alternative> getAlternatives();
 

@@ -37,7 +37,7 @@ public class QuestionDTO implements Serializable, Question {
     @Size(max = 3000, message = "{question.solution.size}")
     private String solution;
 
-    private boolean sharable;
+    private boolean shared;
 
     @Builder.Default
     @NotEmpty(message = "{question.alternatives.required}")

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface QuestionJpaRepository extends JpaRepository<QuestionEntity, Long>, JpaSpecificationExecutor<QuestionEntity> {
 
-    Optional<QuestionEntity> findByIdAndAuthorOrSharableIsTrueAndDeletedIsFalse(Long id, String author);
+    Optional<QuestionEntity> findByIdAndAuthorOrSharedIsTrueAndDeletedIsFalse(Long id, String author);
 
     List<QuestionEntity> findAllByAuthorAndDeletedIsFalse(String author);
 

@@ -167,7 +167,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(question.getType())
                 .correctAnswer("World")
                 .statement("Hello")
-                .sharable(false)
+                .shared(false)
                 .solution("Hello World!")
                 .topic("Greetings")
                 .subject(english)
@@ -183,7 +183,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getSolution,
                         Question::getCorrectAnswer,
                         Question::getTopic,
-                        Question::isSharable,
+                        Question::isShared,
                         q -> q.getSubject().getDescription(),
                         Question::getAuthor)
                 .containsExactlyInAnyOrder(
@@ -254,7 +254,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result)
                 .hasSize(2)
-                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isSharable(), "The result should only contain questions created by the user or shared questions");
+                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isShared(), "The result should only contain questions created by the user or shared questions");
     }
 
     @Test
@@ -270,7 +270,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result)
                 .hasSize(2)
-                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isSharable(), "The result should only contain questions created by the user or shared questions");
+                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isShared(), "The result should only contain questions created by the user or shared questions");
     }
 
     @Test
@@ -386,7 +386,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .statement("Can I test TF?")
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
-                .sharable(true)
+                .shared(true)
                 .subject(english)
                 .topic("Language")
                 .author(currentUser)
@@ -398,7 +398,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .statement("Can I test MC?")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
-                .sharable(false)
+                .shared(false)
                 .subject(english)
                 .topic("Test")
                 .alternatives(getAlternatives())

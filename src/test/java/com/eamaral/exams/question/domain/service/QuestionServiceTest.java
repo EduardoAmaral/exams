@@ -293,7 +293,7 @@ public class QuestionServiceTest {
                 .solution(solution)
                 .statement(statement)
                 .type(QuestionType.TRUE_OR_FALSE)
-                .sharable(false)
+                .shared(false)
                 .correctAnswer(correctAnswer)
                 .author(currentUser)
                 .subject(SubjectDTO.builder()

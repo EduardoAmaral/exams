@@ -46,7 +46,7 @@ public abstract class QuestionEntity implements Question {
     private boolean deleted;
 
     @Column(nullable = false)
-    private boolean sharable;
+    private boolean shared;
 
     @Column
     @NotBlank(message = "{question.answer.required}")
