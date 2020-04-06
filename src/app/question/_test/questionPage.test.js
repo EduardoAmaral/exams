@@ -1,14 +1,16 @@
 import React from 'react';
 import {
   render,
-  screen,
+  fireEvent,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import axios from 'axios';
-import QuestionContainer from '../questionContainer';
+import QuestionPage from '../questionPage';
 import { GET_QUESTION } from '../../config/endpoint';
+import history from '../../config/history';
 
 jest.mock('axios');
+jest.mock('../../config/history');
 
 describe('Question Page', () => {
   const questions = [
@@ -38,39 +40,37 @@ describe('Question Page', () => {
     });
   });
 
+  afterEach(() => axios.get.mockRestore());
+
   it('should call the questions get endpoint', async () => {
-    render(<QuestionContainer />);
+    render(<QuestionPage />);
 
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(GET_QUESTION);
   });
 
-  it('should render a table', async () => {
-    const { getByText } = render(<QuestionContainer />);
+  it('should render the question page', async () => {
+    const { getByText, getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByText('Loading'));
 
-    expect(screen.getByTestId('question-table')).toBeDefined();
+    expect(getByTestId('question-page')).toBeDefined();
   });
 
   it('should render the table question header', async () => {
-    const { getByText } = render(<QuestionContainer />);
+    const { getByText, getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByText('Loading'));
 
-    expect(screen.getByTestId('question-header-statement')).toHaveTextContent(
+    expect(getByTestId('question-header-statement')).toHaveTextContent(
       'Statement'
     );
-    expect(screen.getByTestId('question-header-subject')).toHaveTextContent(
-      'Subject'
-    );
-    expect(screen.getByTestId('question-header-type')).toHaveTextContent(
-      'Type'
-    );
+    expect(getByTestId('question-header-subject')).toHaveTextContent('Subject');
+    expect(getByTestId('question-header-type')).toHaveTextContent('Type');
   });
 
   it('should render questions when endpoint return them', async () => {
-    const { container, getByText } = render(<QuestionContainer />);
+    const { container, getByText } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByText('Loading'));
 
@@ -80,17 +80,28 @@ describe('Question Page', () => {
   });
 
   it('should render a loading while calling endpoint', () => {
-    const { getByText } = render(<QuestionContainer />);
+    const { getByText } = render(<QuestionPage />);
     expect(getByText('Loading')).toBeDefined();
   });
 
-  it('should render a creat button', async () => {
-    const { getByText } = render(<QuestionContainer />);
+  it('should render a create question button', async () => {
+    const { getByText, getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByText('Loading'));
 
-    const button = screen.getByTestId('question-create-button');
+    const button = getByTestId('question-create-button');
     expect(button).toBeDefined();
     expect(button).toHaveTextContent('Create Question');
+  });
+
+  it('should redirect to create question page', async () => {
+    const { getByText } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByText('Loading'));
+
+    fireEvent.click(getByText('Create Question'));
+
+    expect(history.push).toBeCalledTimes(1);
+    expect(history.push).toBeCalledWith('/question/create');
   });
 });

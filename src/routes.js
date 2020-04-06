@@ -1,11 +1,13 @@
 import React from 'react';
 import { Route, Switch } from 'react-router';
-import QuestionContainer from './app/question/questionContainer';
+import QuestionPage from './app/question/questionPage';
+import QuestionCreatePage from './app/question/questionCreatePage';
 
 export default function Routes() {
   return (
     <Switch>
-      <Route path="/" component={QuestionContainer} exact />
+      <Route path="/" component={QuestionPage} exact />
+      <Route path="/question/create" component={QuestionCreatePage} />
     </Switch>
   );
 }
