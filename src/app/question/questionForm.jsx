@@ -80,7 +80,7 @@ export default function QuestionForm({
                   setQuestion({
                     ...question,
                     type: event.target.value,
-                    alternatives: multipleChoicesAlternatives,
+                    alternatives: [],
                   });
                 }
               }}
