@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import history from '../config/history';
 
 export default function QuestionForm({
   questionParam = {},
   subjects = [],
-  onSubmit,
+  onSubmit = () => {},
 }) {
   const [question, setQuestion] = useState(questionParam);
 
@@ -26,7 +27,7 @@ export default function QuestionForm({
     { description: 'False' },
   ];
 
-  const submitForm = (event) => {
+  const onSubmitForm = (event) => {
     event.preventDefault();
 
     onSubmit({
@@ -37,8 +38,16 @@ export default function QuestionForm({
     });
   };
 
+  const onCancelClick = () => {
+    history.goBack();
+  };
+
   return (
-    <form data-testid="question-form" className="ui form" onSubmit={submitForm}>
+    <form
+      data-testid="question-form"
+      className="ui form"
+      onSubmit={onSubmitForm}
+    >
       <div className="field">
         <label data-testid="question-form-statement-label">
           Statement
@@ -76,6 +85,7 @@ export default function QuestionForm({
                 }
               }}
             >
+              <option value="" label="Select an option" />
               {types.map((type) => (
                 <option
                   key={type.value}
@@ -101,6 +111,7 @@ export default function QuestionForm({
                 });
               }}
             >
+              <option value="" label="Select an option" />
               {subjects.map((subject) => (
                 <option
                   value={subject.id}
@@ -176,6 +187,14 @@ export default function QuestionForm({
           data-testid="question-form-save-button"
         >
           Save
+        </button>
+        <button
+          className="ui button"
+          type="button"
+          data-testid="question-form-cancel-button"
+          onClick={onCancelClick}
+        >
+          Cancel
         </button>
       </div>
     </form>

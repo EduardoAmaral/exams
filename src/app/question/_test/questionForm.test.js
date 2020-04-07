@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import QuestionForm from '../questionForm';
+import history from '../../config/history';
 
 describe('Question Form', () => {
   const subjects = [
@@ -42,7 +43,7 @@ describe('Question Form', () => {
       container.querySelectorAll(
         '[data-testid="question-form-type-input"] option'
       )
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it('should render a text input and label to question subject', () => {
@@ -60,7 +61,7 @@ describe('Question Form', () => {
       container.querySelectorAll(
         '[data-testid="question-form-subject-input"] option'
       )
-    ).toHaveLength(2);
+    ).toHaveLength(subjects.length + 1);
   });
 
   it('should render a text input and label to question solution', () => {
@@ -93,6 +94,20 @@ describe('Question Form', () => {
     );
     expect(getByTestId('question-form-alternative-False')).toHaveTextContent(
       'False'
+    );
+  });
+
+  it('should render a save button', () => {
+    const { getByTestId } = render(<QuestionForm />);
+
+    expect(getByTestId('question-form-save-button')).toHaveTextContent('Save');
+  });
+
+  it('should render a save button', () => {
+    const { getByTestId } = render(<QuestionForm />);
+
+    expect(getByTestId('question-form-cancel-button')).toHaveTextContent(
+      'Cancel'
     );
   });
 
@@ -139,8 +154,17 @@ describe('Question Form', () => {
 
     fireEvent.click(getByTestId('question-form-save-button'));
 
-    expect(onSubmit).toBeCalled();
+    expect(onSubmit).toBeCalledTimes(1);
 
     expect(onSubmit).toBeCalledWith(savedQuestion);
+  });
+
+  it('should return to the previous page when click on cancel', () => {
+    history.goBack = jest.fn();
+    const { getByTestId } = render(<QuestionForm />);
+
+    fireEvent.click(getByTestId('question-form-cancel-button'));
+
+    expect(history.goBack).toBeCalledTimes(1);
   });
 });
