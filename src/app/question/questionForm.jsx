@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-export default function QuestionForm({ questionParam = {}, subjects = [] }) {
+export default function QuestionForm({
+  questionParam = {},
+  subjects = [],
+  onSubmit,
+}) {
   const [question, setQuestion] = useState(questionParam);
 
   const TRUE_OR_FALSE = 'TRUE_OR_FALSE';
@@ -18,12 +22,23 @@ export default function QuestionForm({ questionParam = {}, subjects = [] }) {
   ];
 
   const trueOrFalseAlternatives = [
-    { description: 'True', dataTestId: 'question-form-alternative-true' },
-    { description: 'False', dataTestId: 'question-form-alternative-false' },
+    { description: 'True' },
+    { description: 'False' },
   ];
 
+  const submitForm = (event) => {
+    event.preventDefault();
+
+    onSubmit({
+      ...question,
+      subject: {
+        id: question.subject,
+      },
+    });
+  };
+
   return (
-    <form data-testid="question-form" className="ui form">
+    <form data-testid="question-form" className="ui form" onSubmit={submitForm}>
       <div className="field">
         <label data-testid="question-form-statement-label">
           Statement
@@ -115,6 +130,7 @@ export default function QuestionForm({ questionParam = {}, subjects = [] }) {
           Topics
           <input
             data-testid="question-form-topic-input"
+            type="text"
             value={question.topic}
             onChange={(event) => {
               setQuestion({ ...question, topic: event.target.value });
@@ -128,7 +144,9 @@ export default function QuestionForm({ questionParam = {}, subjects = [] }) {
           {question.type === TRUE_OR_FALSE
             ? question.alternatives.map((alternative) => (
                 <div className="inline field" key={alternative.description}>
-                  <label data-testid={alternative.dataTestId}>
+                  <label
+                    data-testid={`question-form-alternative-${alternative.description}`}
+                  >
                     <input
                       className="ui radio"
                       type="radio"
@@ -150,6 +168,15 @@ export default function QuestionForm({ questionParam = {}, subjects = [] }) {
               ))
             : null}
         </label>
+      </div>
+      <div className="ui buttons">
+        <button
+          className="ui primary button"
+          type="submit"
+          data-testid="question-form-save-button"
+        >
+          Save
+        </button>
       </div>
     </form>
   );

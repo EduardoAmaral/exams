@@ -14,16 +14,14 @@ describe('Question Form', () => {
     },
   ];
 
-  const question = {};
-
   it('should render a form', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     expect(getByTestId('question-form')).toBeDefined();
   });
 
   it('should render a text input and label to question statement', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     expect(getByTestId('question-form-statement-label')).toHaveTextContent(
       'Statement'
@@ -32,16 +30,14 @@ describe('Question Form', () => {
   });
 
   it('should render a text input and label to question type', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     expect(getByTestId('question-form-type-label')).toHaveTextContent('Type');
     expect(getByTestId('question-form-type-input')).toBeDefined();
   });
 
   it('should render types', () => {
-    const { container } = render(
-      <QuestionForm question={question} subjects={subjects} />
-    );
+    const { container } = render(<QuestionForm subjects={subjects} />);
     expect(
       container.querySelectorAll(
         '[data-testid="question-form-type-input"] option'
@@ -50,9 +46,7 @@ describe('Question Form', () => {
   });
 
   it('should render a text input and label to question subject', () => {
-    const { getByTestId } = render(
-      <QuestionForm question={question} subjects={subjects} />
-    );
+    const { getByTestId } = render(<QuestionForm subjects={subjects} />);
 
     expect(getByTestId('question-form-subject-label')).toHaveTextContent(
       'Subject'
@@ -61,9 +55,7 @@ describe('Question Form', () => {
   });
 
   it('should render all subjects', () => {
-    const { container } = render(
-      <QuestionForm question={question} subjects={subjects} />
-    );
+    const { container } = render(<QuestionForm subjects={subjects} />);
     expect(
       container.querySelectorAll(
         '[data-testid="question-form-subject-input"] option'
@@ -72,7 +64,7 @@ describe('Question Form', () => {
   });
 
   it('should render a text input and label to question solution', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     expect(getByTestId('question-form-solution-label')).toHaveTextContent(
       'Solution'
@@ -81,7 +73,7 @@ describe('Question Form', () => {
   });
 
   it('should render a text input and label to question topic', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     expect(getByTestId('question-form-topic-label')).toHaveTextContent(
       'Topics'
@@ -90,17 +82,65 @@ describe('Question Form', () => {
   });
 
   it('should render alternatives true and false when True Or False type is selected', () => {
-    const { getByTestId } = render(<QuestionForm question={question} />);
+    const { getByTestId } = render(<QuestionForm />);
 
     fireEvent.change(getByTestId('question-form-type-input'), {
       target: { value: 'TRUE_OR_FALSE' },
     });
 
-    expect(getByTestId('question-form-alternative-true')).toHaveTextContent(
+    expect(getByTestId('question-form-alternative-True')).toHaveTextContent(
       'True'
     );
-    expect(getByTestId('question-form-alternative-false')).toHaveTextContent(
+    expect(getByTestId('question-form-alternative-False')).toHaveTextContent(
       'False'
     );
+  });
+
+  it('should save a question when click on save', () => {
+    const onSubmit = jest.fn();
+
+    const savedQuestion = {
+      statement: 'Statement',
+      type: 'TRUE_OR_FALSE',
+      solution: 'Solution',
+      topic: 'Topic 1; Topic 2;',
+      subject: {
+        id: '1',
+      },
+      correctAnswer: 'True',
+      alternatives: [{ description: 'True' }, { description: 'False' }],
+    };
+
+    const { getByTestId } = render(
+      <QuestionForm subjects={subjects} onSubmit={onSubmit} />
+    );
+
+    fireEvent.change(getByTestId('question-form-statement-input'), {
+      target: { value: 'Statement' },
+    });
+
+    fireEvent.change(getByTestId('question-form-type-input'), {
+      target: { value: 'TRUE_OR_FALSE' },
+    });
+
+    fireEvent.change(getByTestId('question-form-subject-input'), {
+      target: { value: 1 },
+    });
+
+    fireEvent.change(getByTestId('question-form-solution-input'), {
+      target: { value: 'Solution' },
+    });
+
+    fireEvent.change(getByTestId('question-form-topic-input'), {
+      target: { value: 'Topic 1; Topic 2;' },
+    });
+
+    fireEvent.click(getByTestId('question-form-alternative-True'));
+
+    fireEvent.click(getByTestId('question-form-save-button'));
+
+    expect(onSubmit).toBeCalled();
+
+    expect(onSubmit).toBeCalledWith(savedQuestion);
   });
 });
