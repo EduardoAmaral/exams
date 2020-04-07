@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import history from '../config/history';
 
 export default function QuestionForm({
-  questionParam = {},
+  questionData = {},
   subjects = [],
   onSubmit = () => {},
 }) {
-  const [question, setQuestion] = useState(questionParam);
+  const [question, setQuestion] = useState(questionData);
 
   const TRUE_OR_FALSE = 'TRUE_OR_FALSE';
   const MULTIPLE_CHOICES = 'MULTIPLE_CHOICES';
@@ -80,7 +80,7 @@ export default function QuestionForm({
                   setQuestion({
                     ...question,
                     type: event.target.value,
-                    alternatives: [],
+                    alternatives: multipleChoicesAlternatives,
                   });
                 }
               }}

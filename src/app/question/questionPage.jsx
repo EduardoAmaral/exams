@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { GET_QUESTION } from '../config/endpoint';
+import { QUESTION } from '../config/endpoint';
 import QuestionItem from './questionItem';
 import Loading from '../loading/loading';
 import history from '../config/history';
@@ -12,7 +12,7 @@ export default function QuestionPage() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(GET_QUESTION)
+      .get(QUESTION)
       .then((response) => {
         setLoading(false);
         setQuestions(response.data);

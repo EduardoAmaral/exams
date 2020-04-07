@@ -1,7 +1,11 @@
 import React from 'react';
-import { render, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import axios from 'axios';
-import { GET_SUBJECT } from '../../config/endpoint';
+import { QUESTION, SUBJECT } from "../../config/endpoint";
 import QuestionCreatePage from '../questionCreatePage';
 
 jest.mock('axios');
@@ -23,6 +27,10 @@ describe('Question Create Page', () => {
     axios.get.mockResolvedValueOnce({
       data: subjects,
     });
+
+    axios.post.mockResolvedValueOnce({
+      status: 201,
+    });
   });
 
   afterEach(() => axios.get.mockRestore());
@@ -39,7 +47,7 @@ describe('Question Create Page', () => {
     render(<QuestionCreatePage />);
 
     expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(GET_SUBJECT);
+    expect(axios.get).toHaveBeenCalledWith(SUBJECT);
   });
 
   it('should render a loading while calling an endpoint', () => {
@@ -53,5 +61,16 @@ describe('Question Create Page', () => {
     await waitForElementToBeRemoved(() => getByText('Loading'));
 
     expect(getByTestId('question-form')).toBeDefined();
+  });
+
+  it('should call the question save endpoint when save a form', async () => {
+    const { getByTestId, getByText } = render(<QuestionCreatePage />);
+
+    await waitForElementToBeRemoved(() => getByText('Loading'));
+
+    fireEvent.click(getByTestId('question-form-save-button'));
+
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));
   });
 });

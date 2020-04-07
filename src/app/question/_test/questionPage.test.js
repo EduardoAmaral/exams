@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import QuestionPage from '../questionPage';
-import { GET_QUESTION } from '../../config/endpoint';
+import { QUESTION } from '../../config/endpoint';
 import history from '../../config/history';
 
 jest.mock('axios');
@@ -46,7 +46,7 @@ describe('Question Page', () => {
     render(<QuestionPage />);
 
     expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(GET_QUESTION);
+    expect(axios.get).toHaveBeenCalledWith(QUESTION);
   });
 
   it('should render the question page', async () => {

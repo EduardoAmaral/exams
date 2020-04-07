@@ -7,3 +7,12 @@
 textarea {
   resize: none !important;
 }
+
+label {
+  font-size: 16px !important;
+}
+
+[type=radio] {
+  height: 16px;
+  margin: 4px;
+}

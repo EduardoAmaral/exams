@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { GET_SUBJECT } from '../config/endpoint';
+import { QUESTION, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
+import history from '../config/history';
 
 export default function QuestionCreatePage() {
   const [subjects, setSubjects] = useState([]);
@@ -12,7 +13,7 @@ export default function QuestionCreatePage() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(GET_SUBJECT)
+      .get(SUBJECT)
       .then((response) => {
         setLoading(false);
         setSubjects(response.data);
@@ -23,6 +24,16 @@ export default function QuestionCreatePage() {
       });
   }, []);
 
+  const onSubmit = (question) => {
+    setLoading(true);
+    axios.post(QUESTION, question).then((response) => {
+      if (response.status === 201) {
+        setLoading(false);
+        history.goBack();
+      }
+    });
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -30,7 +41,11 @@ export default function QuestionCreatePage() {
   return (
     <div data-testid="question-create-page" className="ui container">
       <h1>Create Question</h1>
-      <QuestionForm question={newQuestion} subjects={subjects} />
+      <QuestionForm
+        question={newQuestion}
+        subjects={subjects}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 }
