@@ -110,7 +110,23 @@ describe('Question Page', () => {
     expect(history.push).toBeCalledWith('/question/create');
   });
 
-  it('should call delete question endpoint when click on delete button', async () => {
+  it('should display a confirm dialog when click on the delete button', async () => {
+    window.confirm = jest.fn();
+
+    const { getByTestId } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(getByTestId('question-delete-button-1'));
+
+    expect(window.confirm).toBeCalledTimes(1);
+    expect(window.confirm).toBeCalledWith(
+      'Are you sure you want to delete the question 1?'
+    );
+  });
+
+  it('should call delete question endpoint when click on the delete button', async () => {
+    window.confirm = jest.fn().mockImplementation(() => true);
     const { getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
@@ -122,6 +138,7 @@ describe('Question Page', () => {
   });
 
   it('should not show the question after delete it', async () => {
+    window.confirm = jest.fn().mockImplementation(() => true);
     const { getByTestId, queryByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));

@@ -28,11 +28,17 @@ export default function QuestionPage() {
   };
 
   const onDelete = (id) => {
-    setLoading(true);
-    axios.delete(DELETE_QUESTION.replace(':id', id)).then(() => {
-      setLoading(false);
-      setQuestions(questions.filter((q) => q.id !== id));
-    });
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the question ${id}?`
+    );
+
+    if (confirmed) {
+      setLoading(true);
+      axios.delete(DELETE_QUESTION.replace(':id', id)).then(() => {
+        setLoading(false);
+        setQuestions(questions.filter((q) => q.id !== id));
+      });
+    }
   };
 
   if (loading) {
