@@ -86,7 +86,7 @@ describe('Question Form', () => {
     const { getByTestId } = render(<QuestionForm />);
 
     fireEvent.change(getByTestId('question-form-type-input'), {
-      target: { value: 'TRUE_OR_FALSE' },
+      target: { value: 'True Or False' },
     });
 
     expect(getByTestId('question-form-alternative-True')).toHaveTextContent(
@@ -116,7 +116,7 @@ describe('Question Form', () => {
 
     const savedQuestion = {
       statement: 'Statement',
-      type: 'TRUE_OR_FALSE',
+      type: 'True Or False',
       solution: 'Solution',
       topic: 'Topic 1; Topic 2;',
       subject: {
@@ -135,7 +135,7 @@ describe('Question Form', () => {
     });
 
     fireEvent.change(getByTestId('question-form-type-input'), {
-      target: { value: 'TRUE_OR_FALSE' },
+      target: { value: 'True Or False' },
     });
 
     fireEvent.change(getByTestId('question-form-subject-input'), {

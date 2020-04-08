@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import axios from 'axios';
-import { QUESTION, SUBJECT } from "../../config/endpoint";
+import { QUESTION, SUBJECT } from '../../config/endpoint';
 import QuestionCreatePage from '../questionCreatePage';
 
 jest.mock('axios');

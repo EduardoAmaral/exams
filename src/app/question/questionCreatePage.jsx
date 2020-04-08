@@ -26,12 +26,18 @@ export default function QuestionCreatePage() {
 
   const onSubmit = (question) => {
     setLoading(true);
-    axios.post(QUESTION, question).then((response) => {
-      if (response.status === 201) {
+    axios
+      .post(QUESTION, question)
+      .then((response) => {
+        if (response.status === 201) {
+          setLoading(false);
+          history.goBack();
+        }
+      })
+      .catch((err) => {
         setLoading(false);
-        history.goBack();
-      }
-    });
+        console.log(err);
+      });
   };
 
   if (loading) {

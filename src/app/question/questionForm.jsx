@@ -8,17 +8,15 @@ export default function QuestionForm({
 }) {
   const [question, setQuestion] = useState(questionData);
 
-  const TRUE_OR_FALSE = 'TRUE_OR_FALSE';
-  const MULTIPLE_CHOICES = 'MULTIPLE_CHOICES';
+  const TRUE_OR_FALSE = 'True Or False';
+  const MULTIPLE_CHOICES = 'Multiple Choices';
 
   const types = [
     {
-      label: 'Multiple Choices',
-      value: MULTIPLE_CHOICES,
+      value: TRUE_OR_FALSE,
     },
     {
-      label: 'True Or False',
-      value: TRUE_OR_FALSE,
+      value: MULTIPLE_CHOICES,
     },
   ];
 
@@ -90,7 +88,7 @@ export default function QuestionForm({
                 <option
                   key={type.value}
                   value={type.value}
-                  label={type.label}
+                  label={type.value}
                   data-testid={type.value}
                 />
               ))}
