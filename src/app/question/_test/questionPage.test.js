@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import QuestionPage from '../questionPage';
-import { QUESTION } from '../../config/endpoint';
+import { DELETE_QUESTION, QUESTION } from '../../config/endpoint';
 import history from '../../config/history';
 
 jest.mock('axios');
@@ -38,6 +38,10 @@ describe('Question Page', () => {
     axios.get.mockResolvedValueOnce({
       data: questions,
     });
+
+    axios.delete.mockResolvedValueOnce({
+      status: 204,
+    });
   });
 
   afterEach(() => axios.get.mockRestore());
@@ -50,29 +54,30 @@ describe('Question Page', () => {
   });
 
   it('should render the question page', async () => {
-    const { getByText, getByTestId } = render(<QuestionPage />);
+    const { getByTestId } = render(<QuestionPage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(getByTestId('question-page')).toBeDefined();
   });
 
   it('should render the table question header', async () => {
-    const { getByText, getByTestId } = render(<QuestionPage />);
+    const { getByTestId } = render(<QuestionPage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(getByTestId('question-header-statement')).toHaveTextContent(
       'Statement'
     );
     expect(getByTestId('question-header-subject')).toHaveTextContent('Subject');
     expect(getByTestId('question-header-type')).toHaveTextContent('Type');
+    expect(getByTestId('question-header-actions')).toHaveTextContent('Actions');
   });
 
   it('should render questions when endpoint return them', async () => {
-    const { container, getByText } = render(<QuestionPage />);
+    const { container, getByTestId } = render(<QuestionPage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(
       container.querySelectorAll('[data-testid^="question-statement-"]')
@@ -80,14 +85,14 @@ describe('Question Page', () => {
   });
 
   it('should render a loading while calling endpoint', () => {
-    const { getByText } = render(<QuestionPage />);
-    expect(getByText('Loading')).toBeDefined();
+    const { getByTestId } = render(<QuestionPage />);
+    expect(getByTestId('loading')).toBeDefined();
   });
 
   it('should render a create question button', async () => {
-    const { getByText, getByTestId } = render(<QuestionPage />);
+    const { getByTestId } = render(<QuestionPage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     const button = getByTestId('question-create-button');
     expect(button).toBeDefined();
@@ -95,13 +100,38 @@ describe('Question Page', () => {
   });
 
   it('should redirect to create question page', async () => {
-    const { getByText } = render(<QuestionPage />);
+    const { getByTestId } = render(<QuestionPage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    fireEvent.click(getByText('Create Question'));
+    fireEvent.click(getByTestId('question-create-button'));
 
     expect(history.push).toBeCalledTimes(1);
     expect(history.push).toBeCalledWith('/question/create');
+  });
+
+  it('should call delete question endpoint when click on delete button', async () => {
+    const { getByTestId } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(getByTestId('question-delete-button-1'));
+
+    expect(axios.delete).toBeCalledTimes(1);
+    expect(axios.delete).toBeCalledWith(DELETE_QUESTION.replace(':id', 1));
+  });
+
+  it('should not show the question after delete it', async () => {
+    const { getByTestId, queryByTestId } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    expect(getByTestId('question-1')).toBeDefined();
+
+    fireEvent.click(getByTestId('question-delete-button-1'));
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    expect(queryByTestId('question-1')).toBeNull();
   });
 });

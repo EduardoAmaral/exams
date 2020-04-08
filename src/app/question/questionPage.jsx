@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { QUESTION } from '../config/endpoint';
+import { DELETE_QUESTION, QUESTION } from '../config/endpoint';
 import QuestionItem from './questionItem';
 import Loading from '../loading/loading';
 import history from '../config/history';
@@ -27,6 +27,14 @@ export default function QuestionPage() {
     history.push('/question/create');
   };
 
+  const onDelete = (id) => {
+    setLoading(true);
+    axios.delete(DELETE_QUESTION.replace(':id', id)).then(() => {
+      setLoading(false);
+      setQuestions(questions.filter((q) => q.id !== id));
+    });
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -40,12 +48,17 @@ export default function QuestionPage() {
             <th data-testid="question-header-statement">Statement</th>
             <th data-testid="question-header-subject">Subject</th>
             <th data-testid="question-header-type">Type</th>
+            <th data-testid="question-header-actions">Actions</th>
           </tr>
         </thead>
 
         <tbody>
           {questions.map((question) => (
-            <QuestionItem question={question} key={question.id} />
+            <QuestionItem
+              question={question}
+              key={question.id}
+              onDelete={onDelete}
+            />
           ))}
         </tbody>
       </table>

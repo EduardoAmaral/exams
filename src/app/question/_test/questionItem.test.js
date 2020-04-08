@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import QuestionItem from '../questionItem';
 
 describe('Question Item', () => {
@@ -14,26 +14,48 @@ describe('Question Item', () => {
   };
 
   it('should have a statement', () => {
-    render(<QuestionItem question={question} />);
+    const { getByTestId } = render(<QuestionItem question={question} />);
 
     const testId = `question-statement-${question.id}`;
 
-    expect(screen.getByTestId(testId)).toHaveTextContent('Question?');
+    expect(getByTestId(testId)).toHaveTextContent('Question?');
   });
 
   it('should have a subject', () => {
-    render(<QuestionItem question={question} />);
+    const { getByTestId } = render(<QuestionItem question={question} />);
 
     const testId = `question-subject-${question.id}`;
 
-    expect(screen.getByTestId(testId)).toHaveTextContent('English');
+    expect(getByTestId(testId)).toHaveTextContent('English');
   });
 
   it('should have a type', () => {
-    render(<QuestionItem question={question} />);
+    const { getByTestId } = render(<QuestionItem question={question} />);
 
     const testId = `question-type-${question.id}`;
 
-    expect(screen.getByTestId(testId)).toHaveTextContent('True Or False');
+    expect(getByTestId(testId)).toHaveTextContent('True Or False');
+  });
+
+  it('should render a delete button', () => {
+    const { getByTestId } = render(<QuestionItem question={question} />);
+
+    const testId = `question-delete-button-${question.id}`;
+
+    expect(getByTestId(testId)).toBeDefined();
+  });
+
+  it('should have called onDelete function when click on the delete button', () => {
+    const onDelete = jest.fn();
+    const { getByTestId } = render(
+      <QuestionItem question={question} onDelete={onDelete} />
+    );
+
+    const testId = `question-delete-button-${question.id}`;
+
+    fireEvent.click(getByTestId(testId));
+
+    expect(onDelete).toBeCalledTimes(1);
+    expect(onDelete).toBeCalledWith(question.id);
   });
 });
