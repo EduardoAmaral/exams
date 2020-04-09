@@ -1,32 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { QUESTION, SUBJECT } from '../config/endpoint';
+import { useParams } from 'react-router';
+import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
 import history from '../config/history';
 
-export default function QuestionCreatePage() {
-  const [subjects, setSubjects] = useState([]);
+export default function QuestionEditPage() {
   const [loading, setLoading] = useState(false);
+  const [question, setQuestion] = useState({});
+  const [subjects, setSubjects] = useState([]);
+
+  const { id } = useParams();
 
   useEffect(() => {
     setLoading(true);
+
     axios
-      .get(SUBJECT)
+      .get(QUESTION_BY_ID.replace(':id', id))
       .then((response) => {
         setLoading(false);
-        setSubjects(response.data);
+        setQuestion(response.data);
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
       });
-  }, []);
 
-  const onSubmit = (question) => {
+    axios
+      .get(SUBJECT)
+      .then((response) => {
+        setSubjects(response.data);
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
+
+  const onSubmit = (updatedQuestion) => {
     setLoading(true);
     axios
-      .post(QUESTION, question)
+      .put(QUESTION, updatedQuestion)
       .then((response) => {
         if (response.status === 201) {
           setLoading(false);
@@ -46,7 +61,11 @@ export default function QuestionCreatePage() {
   return (
     <div data-testid="question-create-page" className="ui container">
       <h1>Create Question</h1>
-      <QuestionForm subjects={subjects} onSubmit={onSubmit} />
+      <QuestionForm
+        questionData={question}
+        subjects={subjects}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 }

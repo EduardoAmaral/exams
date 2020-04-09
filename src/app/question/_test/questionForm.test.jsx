@@ -15,6 +15,22 @@ describe('Question Form', () => {
     },
   ];
 
+  const questionData = {
+    id: 2,
+    statement: 'Question 1?',
+    type: 'True Or False',
+    solution: 'Solution 1',
+    shared: false,
+    alternatives: [
+      { id: 1, description: 'True' },
+      { id: 2, description: 'False' },
+    ],
+    correctAnswer: 'True',
+    topic: 'Topic',
+    subject: { id: 1, description: 'English' },
+    author: '107859231324466082693',
+  };
+
   it('should render a form', () => {
     const { getByTestId } = render(<QuestionForm />);
 
@@ -166,5 +182,38 @@ describe('Question Form', () => {
     fireEvent.click(getByTestId('question-form-cancel-button'));
 
     expect(history.goBack).toBeCalledTimes(1);
+  });
+
+  it('should load the fields if question param is defined', async () => {
+    const { getByTestId } = render(
+      <QuestionForm questionData={questionData} subjects={subjects} />
+    );
+
+    expect(getByTestId('question-form-statement-input')).toHaveTextContent(
+      questionData.statement
+    );
+
+    expect(getByTestId('question-form-type-input')).toHaveProperty(
+      'value',
+      questionData.type
+    );
+
+    expect(getByTestId('question-form-subject-input')).toHaveProperty(
+      'value',
+      questionData.subject.id.toString()
+    );
+
+    expect(getByTestId('question-form-solution-input')).toHaveTextContent(
+      questionData.solution
+    );
+
+    expect(getByTestId('question-form-topic-input')).toHaveProperty(
+      'value',
+      questionData.topic
+    );
+
+    expect(getByTestId('question-form-alternative-True-input')).toHaveProperty(
+      'checked'
+    );
   });
 });

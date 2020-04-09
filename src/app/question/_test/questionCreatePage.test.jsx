@@ -36,9 +36,9 @@ describe('Question Create Page', () => {
   afterEach(() => axios.get.mockRestore());
 
   it('should render the question creation page', async () => {
-    const { getByText, getByTestId } = render(<QuestionCreatePage />);
+    const { getByTestId } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(getByTestId('question-create-page')).toBeDefined();
   });
@@ -51,22 +51,22 @@ describe('Question Create Page', () => {
   });
 
   it('should render a loading while calling an endpoint', () => {
-    const { getByText } = render(<QuestionCreatePage />);
-    expect(getByText('Loading')).toBeDefined();
+    const { getByTestId } = render(<QuestionCreatePage />);
+    expect(getByTestId('loading')).toBeDefined();
   });
 
   it('should render a form', async () => {
-    const { getByTestId, getByText } = render(<QuestionCreatePage />);
+    const { getByTestId } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(getByTestId('question-form')).toBeDefined();
   });
 
   it('should call the question save endpoint when save a form', async () => {
-    const { getByTestId, getByText } = render(<QuestionCreatePage />);
+    const { getByTestId } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByText('Loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     fireEvent.click(getByTestId('question-form-save-button'));
 

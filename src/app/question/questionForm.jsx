@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import history from '../config/history';
 
 export default function QuestionForm({
-  questionData = {},
+  questionData,
   subjects = [],
   onSubmit = () => {},
 }) {
-  const [question, setQuestion] = useState(questionData);
+  const [question, setQuestion] = useState({ subject: {} });
 
   const TRUE_OR_FALSE = 'True Or False';
   const MULTIPLE_CHOICES = 'Multiple Choices';
@@ -25,15 +25,16 @@ export default function QuestionForm({
     { description: 'False' },
   ];
 
+  useEffect(() => {
+    if (questionData !== undefined && questionData.subject !== undefined) {
+      setQuestion(questionData);
+    }
+  }, [questionData]);
+
   const onSubmitForm = (event) => {
     event.preventDefault();
 
-    onSubmit({
-      ...question,
-      subject: {
-        id: question.subject,
-      },
-    });
+    onSubmit(question);
   };
 
   const onCancelClick = () => {
@@ -101,11 +102,13 @@ export default function QuestionForm({
             <select
               className="ui fluid dropdown"
               data-testid="question-form-subject-input"
-              value={question.subject}
+              value={question.subject.id}
               onChange={(event) => {
                 setQuestion({
                   ...question,
-                  subject: event.target.value,
+                  subject: {
+                    id: event.target.value,
+                  },
                 });
               }}
             >
@@ -161,6 +164,7 @@ export default function QuestionForm({
                       type="radio"
                       name="alternative"
                       value={alternative.description}
+                      data-testid={`question-form-alternative-${alternative.description}-input`}
                       checked={
                         alternative.description === question.correctAnswer
                       }
