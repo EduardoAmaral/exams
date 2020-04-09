@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import QuestionItem from '../questionItem';
 
 describe('Question Item', () => {
@@ -57,5 +57,27 @@ describe('Question Item', () => {
 
     expect(onDelete).toBeCalledTimes(1);
     expect(onDelete).toBeCalledWith(question.id);
+  });
+
+  it('should render a edit button', () => {
+    const { getByTestId } = render(<QuestionItem question={question} />);
+
+    const testId = `question-edit-button-${question.id}`;
+
+    expect(getByTestId(testId)).toBeDefined();
+  });
+
+  it('should have called onEdit function when click on the edit button', () => {
+    const onEdit = jest.fn();
+    const { getByTestId } = render(
+      <QuestionItem question={question} onEdit={onEdit} />
+    );
+
+    const testId = `question-edit-button-${question.id}`;
+
+    fireEvent.click(getByTestId(testId));
+
+    expect(onEdit).toBeCalledTimes(1);
+    expect(onEdit).toBeCalledWith(question.id);
   });
 });

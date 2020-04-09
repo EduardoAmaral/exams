@@ -27,6 +27,10 @@ export default function QuestionPage() {
     history.push('/question/create');
   };
 
+  const redirectToEdit = (id) => {
+    history.push(`/question/edit/${id}`);
+  };
+
   const onDelete = (id) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the question ${id}?`
@@ -63,6 +67,7 @@ export default function QuestionPage() {
             <QuestionItem
               question={question}
               key={question.id}
+              onEdit={redirectToEdit}
               onDelete={onDelete}
             />
           ))}

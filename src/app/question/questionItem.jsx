@@ -1,6 +1,10 @@
 import React from 'react';
 
-export default function QuestionItem({ question, onDelete = () => {} }) {
+export default function QuestionItem({
+  question,
+  onEdit = () => {},
+  onDelete = () => {},
+}) {
   const { id } = question;
 
   return (
@@ -16,12 +20,20 @@ export default function QuestionItem({ question, onDelete = () => {} }) {
       </td>
       <td>
         <button
-          className="ui button"
+          className="ui icon button"
+          type="button"
+          data-testid={`question-edit-button-${id}`}
+          onClick={() => onEdit(id)}
+        >
+          <i className="edit icon" title="Edit" />
+        </button>
+        <button
+          className="ui icon button"
           type="button"
           data-testid={`question-delete-button-${id}`}
           onClick={() => onDelete(id)}
         >
-          <i className="trash icon" title="delete" />
+          <i className="trash icon" title="Delete" />
         </button>
       </td>
     </tr>

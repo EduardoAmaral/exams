@@ -44,7 +44,10 @@ describe('Question Page', () => {
     });
   });
 
-  afterEach(() => axios.get.mockRestore());
+  afterEach(() => {
+    axios.get.mockRestore();
+    history.push.mockRestore();
+  });
 
   it('should call the questions get endpoint', async () => {
     render(<QuestionPage />);
@@ -99,7 +102,7 @@ describe('Question Page', () => {
     expect(button).toHaveTextContent('Create Question');
   });
 
-  it('should redirect to create question page', async () => {
+  it('should redirect to create question page when click on create question button', async () => {
     const { getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
@@ -150,5 +153,16 @@ describe('Question Page', () => {
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     expect(queryByTestId('question-1')).toBeNull();
+  });
+
+  it('should redirect to edit question page when click on edit button', async () => {
+    const { getByTestId } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(getByTestId('question-edit-button-1'));
+
+    expect(history.push).toBeCalledTimes(1);
+    expect(history.push).toBeCalledWith('/question/edit/1');
   });
 });
