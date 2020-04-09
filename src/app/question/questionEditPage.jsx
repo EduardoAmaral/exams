@@ -43,7 +43,7 @@ export default function QuestionEditPage() {
     axios
       .put(QUESTION, updatedQuestion)
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           setLoading(false);
           history.goBack();
         }
