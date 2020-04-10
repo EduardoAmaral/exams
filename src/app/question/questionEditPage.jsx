@@ -32,7 +32,6 @@ export default function QuestionEditPage() {
       .then((response) => {
         setSubjects(response.data);
       })
-
       .catch((err) => {
         console.log(err);
       });
