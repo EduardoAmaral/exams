@@ -80,4 +80,26 @@ describe('Question Item', () => {
     expect(onEdit).toBeCalledTimes(1);
     expect(onEdit).toBeCalledWith(question.id);
   });
+
+  it('should render an info button', () => {
+    const { getByTestId } = render(<QuestionItem question={question} />);
+
+    const testId = `question-detail-button-${question.id}`;
+
+    expect(getByTestId(testId)).toBeDefined();
+  });
+
+  it('should have called onDetail function when click on the detail button', () => {
+    const onDetail = jest.fn();
+    const { getByTestId } = render(
+      <QuestionItem question={question} onDetail={onDetail} />
+    );
+
+    const testId = `question-detail-button-${question.id}`;
+
+    fireEvent.click(getByTestId(testId));
+
+    expect(onDetail).toBeCalledTimes(1);
+    expect(onDetail).toBeCalledWith(question.id);
+  });
 });

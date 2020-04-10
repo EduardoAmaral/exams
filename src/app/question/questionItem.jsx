@@ -4,6 +4,7 @@ export default function QuestionItem({
   question,
   onEdit = () => {},
   onDelete = () => {},
+  onDetail = () => {},
 }) {
   const { id } = question;
 
@@ -19,6 +20,14 @@ export default function QuestionItem({
         {question.type}
       </td>
       <td>
+        <button
+          className="ui icon button"
+          type="button"
+          data-testid={`question-detail-button-${id}`}
+          onClick={() => onDetail(id)}
+        >
+          <i className="info icon" title="Info" />
+        </button>
         <button
           className="ui icon button"
           type="button"

@@ -31,6 +31,10 @@ export default function QuestionPage() {
     history.push(`/question/edit/${id}`);
   };
 
+  const redirectToDetail = (id) => {
+    history.push(`/question/detail/${id}`);
+  };
+
   const onDelete = (id) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the question ${id}?`
@@ -69,6 +73,7 @@ export default function QuestionPage() {
               key={question.id}
               onEdit={redirectToEdit}
               onDelete={onDelete}
+              onDetail={redirectToDetail}
             />
           ))}
         </tbody>

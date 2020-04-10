@@ -155,7 +155,7 @@ describe('Question Page', () => {
     expect(queryByTestId('question-1')).toBeNull();
   });
 
-  it('should redirect to edit question page when click on edit button', async () => {
+  it('should redirect to edit question page when click on the edit button', async () => {
     const { getByTestId } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
@@ -164,5 +164,16 @@ describe('Question Page', () => {
 
     expect(history.push).toBeCalledTimes(1);
     expect(history.push).toBeCalledWith('/question/edit/1');
+  });
+
+  it('should redirect to detail question page when click on the detail button', async () => {
+    const { getByTestId } = render(<QuestionPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(getByTestId('question-detail-button-1'));
+
+    expect(history.push).toBeCalledTimes(1);
+    expect(history.push).toBeCalledWith('/question/detail/1');
   });
 });
