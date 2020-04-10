@@ -194,7 +194,7 @@ export default function QuestionForm({
         <button
           className="ui button"
           type="button"
-          data-testid="question-form-cancel-button"
+          data-testid="cancel-button"
           onClick={onCancelClick}
         >
           Cancel

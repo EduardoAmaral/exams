@@ -122,7 +122,7 @@ describe('Question Form', () => {
   it('should render a save button', () => {
     const { getByTestId } = render(<QuestionForm />);
 
-    expect(getByTestId('question-form-cancel-button')).toHaveTextContent(
+    expect(getByTestId('cancel-button')).toHaveTextContent(
       'Cancel'
     );
   });
@@ -179,7 +179,7 @@ describe('Question Form', () => {
     history.goBack = jest.fn();
     const { getByTestId } = render(<QuestionForm />);
 
-    fireEvent.click(getByTestId('question-form-cancel-button'));
+    fireEvent.click(getByTestId('cancel-button'));
 
     expect(history.goBack).toBeCalledTimes(1);
   });
