@@ -38,7 +38,7 @@ describe('Question Edit Page', () => {
     correctAnswer: 'True',
     topic: 'Topic',
     subject: { id: 1, description: 'English' },
-    author: '107859231324466082693',
+    author: '1',
   };
 
   beforeEach(() => {
@@ -54,12 +54,12 @@ describe('Question Edit Page', () => {
 
   afterEach(() => axios.get.mockRestore());
 
-  it('should render the question creation page', async () => {
+  it('should render the question edit page', async () => {
     const { getByTestId } = render(<QuestionEditPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-create-page')).toBeDefined();
+    expect(getByTestId('question-edit-page')).toBeDefined();
   });
 
   it('should call the questionById and subject endpoint', async () => {

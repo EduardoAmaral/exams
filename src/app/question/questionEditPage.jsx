@@ -59,8 +59,8 @@ export default function QuestionEditPage() {
   }
 
   return (
-    <div data-testid="question-create-page" className="ui container">
-      <h1>Create Question</h1>
+    <div data-testid="question-edit-page" className="ui container">
+      <h1>Edit Question</h1>
       <QuestionForm
         questionData={question}
         subjects={subjects}
