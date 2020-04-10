@@ -68,6 +68,7 @@ export default function QuestionForm({
               className="ui fluid dropdown"
               data-testid="question-form-type-input"
               value={question.type}
+              disabled={question.id !== undefined}
               onChange={(event) => {
                 if (event.target.value === TRUE_OR_FALSE) {
                   setQuestion({

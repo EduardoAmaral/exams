@@ -216,4 +216,24 @@ describe('Question Form', () => {
       'checked'
     );
   });
+
+  it('should not disable the type dropdown when question does not have an id', () => {
+    const { getByTestId } = render(<QuestionForm />);
+
+    expect(getByTestId('question-form-type-input')).toHaveProperty(
+      'disabled',
+      false
+    );
+  });
+
+  it('should disable the type dropdown when question data has an id - edit mode', () => {
+    const { getByTestId } = render(
+      <QuestionForm questionData={questionData} />
+    );
+
+    expect(getByTestId('question-form-type-input')).toHaveProperty(
+      'disabled',
+      true
+    );
+  });
 });
