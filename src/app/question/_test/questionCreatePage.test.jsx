@@ -11,7 +11,7 @@ import QuestionCreatePage from '../questionCreatePage';
 jest.mock('axios');
 jest.mock('../../config/history');
 
-describe('Question Create Page', () => {
+describe('<QuestionCreatePage />', () => {
   const subjects = [
     {
       id: 1,

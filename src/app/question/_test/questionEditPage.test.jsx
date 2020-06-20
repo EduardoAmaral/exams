@@ -13,7 +13,7 @@ jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: 2 });
 
-describe('Question Edit Page', () => {
+describe('<QuestionEditPage />', () => {
   const subjects = [
     {
       id: 1,

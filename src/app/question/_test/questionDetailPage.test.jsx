@@ -14,7 +14,7 @@ jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: 2 });
 
-describe('Question Detail Page', () => {
+describe('<QuestionDetailPage />', () => {
   const question = {
     id: 2,
     statement: 'Question 1?',

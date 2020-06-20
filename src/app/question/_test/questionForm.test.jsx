@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import QuestionForm from '../questionForm';
 import history from '../../config/history';
 
-describe('Question Form', () => {
+describe('<QuestionForm />', () => {
   const subjects = [
     {
       id: 1,

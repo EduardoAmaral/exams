@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import QuestionItem from '../questionItem';
 
-describe('Question Item', () => {
+describe('<QuestionItem />', () => {
   const question = {
     id: 1,
     statement: 'Question?',

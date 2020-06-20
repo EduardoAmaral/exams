@@ -12,7 +12,7 @@ import history from '../../config/history';
 jest.mock('axios');
 jest.mock('../../config/history');
 
-describe('Question Page', () => {
+describe('<QuestionPage />', () => {
   const questions = [
     {
       id: 1,
