@@ -35,7 +35,7 @@ export default function QuestionDetailPage() {
   }
 
   return (
-    <div data-testid="question-detail-page" className="ui container">
+    <div data-testid="question-detail-page">
       <h1>Question {id}</h1>
       <div className="field">
         <span data-testid="question-detail-statement-title">Statement:</span>{' '}

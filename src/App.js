@@ -8,6 +8,7 @@ import reducer from './app/store/modules/auth/reducer';
 import { AUTH_AUTHENTICATED } from './app/store/modules/auth/action';
 import Routes from './routes';
 import history from './app/config/history';
+import './App.scss';
 
 const getAuthentication = (dispatch) => {
   axios.get(AUTH).then((response) => {
@@ -24,7 +25,7 @@ function App() {
 
   return (
     <Provider store={store}>
-      <div data-testid="app">
+      <div data-testid="app" className="content">
         <Router history={history}>
           {state ? <Routes /> : getAuthentication(dispatch)}
         </Router>

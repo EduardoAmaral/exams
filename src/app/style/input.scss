@@ -1,0 +1,73 @@
+@import './constants.scss';
+
+$default-height: 24px;
+
+$button-height: 36px;
+
+label {
+  font-style: normal;
+  font-weight: $font-medium;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+input,
+textarea,
+button,
+select {
+  border: none;
+  border-radius: $default-radius;
+  background-color: $secundary-color;
+  font-size: $font-paragraph;
+}
+
+button {
+  height: $button-height;
+  padding: 0 12px;
+  margin: auto 4px;
+  font-weight: $font-medium;
+  color: #fff;
+
+  &:hover {
+    background-color: lighten($color: $secundary-color, $amount: 5);
+  }
+
+  &.primary {
+    background-color: $primary-color;
+
+    &:hover {
+      background-color: lighten($color: $primary-color, $amount: 5);
+    }
+  }
+
+  &.icon {
+    background-color: transparent;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: lighten($color: $secundary-color, $amount: 5);
+    }
+
+    & > i {
+      vertical-align: middle;
+    }
+  }
+}
+
+input,
+select {
+  height: $default-height;
+  margin: auto 4px;
+}
+
+input[type='radio'] {
+  height: 16px;
+  margin: 4px;
+}
+
+textarea {
+  resize: none !important;
+}

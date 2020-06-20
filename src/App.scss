@@ -1,0 +1,16 @@
+@import './app/style/constants.scss';
+
+.content {
+  background-color: $base-color;
+  border-radius: $default-radius;
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px 32px 16px;
+
+  h1 {
+    border-bottom: 1px solid #ffffffaa;
+    width: 70vw;
+  }
+}

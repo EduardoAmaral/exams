@@ -54,7 +54,7 @@ export default function QuestionPage() {
   }
 
   return (
-    <div data-testid="question-page" className="ui container">
+    <div data-testid="question-page">
       <h1>Questions</h1>
       <table className="ui celled table" data-testid="question-table">
         <thead>

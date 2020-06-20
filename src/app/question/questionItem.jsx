@@ -20,30 +20,32 @@ export default function QuestionItem({
         {question.type}
       </td>
       <td>
-        <button
-          className="ui icon button"
-          type="button"
-          data-testid={`question-detail-button-${id}`}
-          onClick={() => onDetail(id)}
-        >
-          <i className="info icon" title="Info" />
-        </button>
-        <button
-          className="ui icon button"
-          type="button"
-          data-testid={`question-edit-button-${id}`}
-          onClick={() => onEdit(id)}
-        >
-          <i className="edit icon" title="Edit" />
-        </button>
-        <button
-          className="ui icon button"
-          type="button"
-          data-testid={`question-delete-button-${id}`}
-          onClick={() => onDelete(id)}
-        >
-          <i className="trash icon" title="Delete" />
-        </button>
+        <div className="action-buttons">
+          <button
+            className="icon"
+            type="button"
+            data-testid={`question-detail-button-${id}`}
+            onClick={() => onDetail(id)}
+          >
+            <i className="ri-information-line" title="Info" />
+          </button>
+          <button
+            className="icon"
+            type="button"
+            data-testid={`question-edit-button-${id}`}
+            onClick={() => onEdit(id)}
+          >
+            <i className="ri-pencil-line" title="Edit" />
+          </button>
+          <button
+            className="icon"
+            type="button"
+            data-testid={`question-delete-button-${id}`}
+            onClick={() => onDelete(id)}
+          >
+            <i className="ri-delete-bin-line" title="Delete" />
+          </button>
+        </div>
       </td>
     </tr>
   );

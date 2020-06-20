@@ -122,9 +122,7 @@ describe('Question Form', () => {
   it('should render a save button', () => {
     const { getByTestId } = render(<QuestionForm />);
 
-    expect(getByTestId('cancel-button')).toHaveTextContent(
-      'Cancel'
-    );
+    expect(getByTestId('cancel-button')).toHaveTextContent('Cancel');
   });
 
   it('should save a question when click on save', () => {

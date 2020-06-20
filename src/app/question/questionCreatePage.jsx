@@ -4,6 +4,7 @@ import { QUESTION, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
 import history from '../config/history';
+import './scss/questionCreatePage.scss';
 
 export default function QuestionCreatePage() {
   const [subjects, setSubjects] = useState([]);
@@ -44,7 +45,7 @@ export default function QuestionCreatePage() {
   }
 
   return (
-    <div data-testid="question-create-page" className="ui container">
+    <div data-testid="question-create-page">
       <h1>Create Question</h1>
       <QuestionForm subjects={subjects} onSubmit={onSubmit} />
     </div>

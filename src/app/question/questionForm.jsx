@@ -161,7 +161,6 @@ export default function QuestionForm({
                     data-testid={`question-form-alternative-${alternative.description}`}
                   >
                     <input
-                      className="ui radio"
                       type="radio"
                       name="alternative"
                       value={alternative.description}
@@ -185,19 +184,18 @@ export default function QuestionForm({
       </div>
       <div className="ui buttons">
         <button
-          className="ui primary button"
-          type="submit"
-          data-testid="question-form-save-button"
-        >
-          Save
-        </button>
-        <button
-          className="ui button"
           type="button"
           data-testid="cancel-button"
           onClick={onCancelClick}
         >
           Cancel
+        </button>
+        <button
+          className="primary"
+          type="submit"
+          data-testid="question-form-save-button"
+        >
+          Save
         </button>
       </div>
     </form>
