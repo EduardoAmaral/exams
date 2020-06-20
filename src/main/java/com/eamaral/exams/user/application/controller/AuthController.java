@@ -1,15 +1,16 @@
 package com.eamaral.exams.user.application.controller;
 
-import com.eamaral.exams.user.domain.port.UserPort;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -18,24 +19,29 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = "api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
-    private final UserPort userPort;
-
-    private final String[] unauthenticatedUsers;
-
-    public AuthController(UserPort userPort, @Value("${unauthorized.users}") String[] unauthenticatedUsers) {
-        this.userPort = userPort;
-        this.unauthenticatedUsers = unauthenticatedUsers;
-    }
-
-
     @GetMapping
-    public ResponseEntity<Boolean> auth() {
-        String userId = userPort.getCurrentUserId();
-        log.info("Authenticating {}", userId);
-        
-        boolean authenticated = userId != null && !Arrays.asList(unauthenticatedUsers).contains(userId);
+    public ResponseEntity<?> auth() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("Authenticating {}", principal);
+        if (principal instanceof DefaultOidcUser) {
+            var user = (DefaultOidcUser) principal;
+            return ok(new User(
+                    user.getSubject(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    user.getPicture())
+            );
+        }
 
-        return ok(authenticated);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class User {
+        private final String id;
+        private final String name;
+        private final String email;
+        private final String profileSrc;
+    }
 }

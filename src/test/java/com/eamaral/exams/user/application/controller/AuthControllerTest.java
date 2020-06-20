@@ -12,38 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTest extends ControllerIntegrationTest {
 
     @Test
-    public void auth_shouldReturnAuthenticatedTrue_whenUserNameIsEqualToId() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn("12345");
-
+    public void auth_shouldReturnAuthenticatedFalse_whenUserIsNotLogged() throws Exception {
         mockMvc.perform(get("/api/auth"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(true)));
-    }
-
-    @Test
-    public void auth_shouldReturnAuthenticatedFalse_whenUserNameIsAnonymousUser() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn("anonymousUser");
-
-        mockMvc.perform(get("/api/auth"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(false)));
-    }
-
-    @Test
-    public void auth_shouldReturnAuthenticatedFalse_whenUserNameIsEmpty() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn("");
-
-        mockMvc.perform(get("/api/auth"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(false)));
-    }
-
-    @Test
-    public void auth_shouldReturnAuthenticatedFalse_whenUserNameIsNull() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(null);
-
-        mockMvc.perform(get("/api/auth"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(false)));
+                .andExpect(status().isForbidden());
     }
 }
