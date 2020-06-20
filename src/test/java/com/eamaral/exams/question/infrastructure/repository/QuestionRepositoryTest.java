@@ -31,7 +31,7 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
     private SubjectEntity english;
     private SubjectEntity portuguese;
 
-    private String currentUser = "1";
+    private final String currentUser = "1";
 
     @Before
     public void setUp() {
