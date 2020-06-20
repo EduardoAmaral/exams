@@ -1,0 +1,35 @@
+@import '../../style/constants.scss';
+
+div.header-bar {
+  width: 100vw;
+  background-color: $base-color;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #383a3b;
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  h1 {
+    margin-left: 16px;
+  }
+
+  div.profile {
+    margin-right: 16px;
+    font-weight: $font-medium;
+
+    div.photo {
+      border-radius: 50%;
+      background-color: $secundary-color;
+      height: 40px;
+      width: 40px;
+      margin: auto 8px;
+    }
+  }
+}

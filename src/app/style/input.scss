@@ -46,13 +46,14 @@ button {
   &.icon {
     background-color: transparent;
     border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
       background-color: lighten($color: $secundary-color, $amount: 5);
-    }
-
-    & > i {
-      vertical-align: middle;
     }
   }
 }

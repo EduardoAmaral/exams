@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import axios from 'axios';
 import App from './App';
 import { AUTH } from './app/config/endpoint';
@@ -20,9 +20,9 @@ describe('App test', () => {
   });
 
   it('should render the App component', () => {
-    render(<App />);
+    const { getByTestId } = render(<App />);
 
-    expect(screen.getByTestId('app')).toBeDefined();
+    expect(getByTestId('app')).toBeDefined();
   });
 
   it('should call auth endpoint onload', () => {
@@ -30,5 +30,11 @@ describe('App test', () => {
 
     expect(axios.get).toBeCalledTimes(1);
     expect(axios.get).toBeCalledWith(AUTH);
+  });
+
+  it('should render header bar', () => {
+    const { getByTestId } = render(<App />);
+
+    expect(getByTestId('header-bar')).toBeDefined();
   });
 });

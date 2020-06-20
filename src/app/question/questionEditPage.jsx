@@ -59,7 +59,7 @@ export default function QuestionEditPage() {
 
   return (
     <div data-testid="question-edit-page">
-      <h1>Edit Question</h1>
+      <h2>Edit Question</h2>
       <QuestionForm
         questionData={question}
         subjects={subjects}

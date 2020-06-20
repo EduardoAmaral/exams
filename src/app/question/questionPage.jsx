@@ -55,7 +55,7 @@ export default function QuestionPage() {
 
   return (
     <div data-testid="question-page">
-      <h1>Questions</h1>
+      <h2>Questions</h2>
       <table className="ui celled table" data-testid="question-table">
         <thead>
           <tr>

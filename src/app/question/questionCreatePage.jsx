@@ -46,7 +46,7 @@ export default function QuestionCreatePage() {
 
   return (
     <div data-testid="question-create-page">
-      <h1>Create Question</h1>
+      <h2>Create Question</h2>
       <QuestionForm subjects={subjects} onSubmit={onSubmit} />
     </div>
   );
