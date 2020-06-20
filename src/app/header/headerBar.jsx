@@ -4,7 +4,7 @@ import './scss/headerBar.scss';
 
 export default function HeaderBar() {
   return (
-    <div className="header-bar" data-testId="header-bar">
+    <div className="header-bar" data-testid="header-bar">
       <h1>Exams</h1>
       <Profile />
     </div>

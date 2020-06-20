@@ -1,11 +1,11 @@
 import { AUTH_AUTHENTICATED, AUTH_LOGOUT } from './action';
 
-export default function cart(state = false, action) {
+export default function userReducer(state = null, action) {
   switch (action.type) {
     case AUTH_AUTHENTICATED.type:
-      return true;
+      return action.payload;
     case AUTH_LOGOUT.type:
-      return false;
+      return null;
     default:
       return state;
   }

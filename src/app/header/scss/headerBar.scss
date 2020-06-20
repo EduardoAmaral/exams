@@ -33,7 +33,12 @@ div.header-bar {
       height: 40px;
       width: 40px;
       margin: auto 8px;
-      font-size: $icon-header-size;
+
+      img {
+        border-radius: 50%;
+        max-width: 100%;
+        height: auto;
+      }
     }
   }
 }

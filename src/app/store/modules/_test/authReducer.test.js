@@ -1,25 +1,28 @@
 import store from '../../store';
-import { AUTH_AUTHENTICATED, AUTH_LOGOUT } from '../auth/action';
+import { AUTH_LOGOUT, AUTH_AUTHENTICATED } from '../user/action';
 
 describe('Auth Reducer', () => {
   it('should return false has initial value', () => {
-    const { auth } = store.getState();
-    expect(auth).toBeFalsy();
+    const { user } = store.getState();
+    expect(user).toBeNull();
   });
 
   it('authenticated action should return true', () => {
-    store.dispatch(AUTH_AUTHENTICATED);
+    store.dispatch({
+      type: AUTH_AUTHENTICATED,
+      payload: {},
+    });
 
-    const { auth } = store.getState();
+    const { user } = store.getState();
 
-    expect(auth).toBeTruthy();
+    expect(user).toBeDefined();
   });
 
   it('logout action should return false', () => {
     store.dispatch(AUTH_LOGOUT);
 
-    const { auth } = store.getState();
+    const { user } = store.getState();
 
-    expect(auth).toBeFalsy();
+    expect(user).toBeNull();
   });
 });

@@ -1,40 +1,34 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import axios from 'axios';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import App from './App';
-import { AUTH } from './app/config/endpoint';
+import rootReducer from './app/store/modules/rootReducer';
 
-jest.mock('axios');
+describe('<App />', () => {
+  it('should render Login when not authenticated', () => {
+    const { getByTestId } = render(
+      <Provider store={createStore(rootReducer, applyMiddleware(thunk))}>
+        <App />
+      </Provider>
+    );
 
-describe('App test', () => {
-  beforeEach(() => {
-    axios.get
-      .mockResolvedValueOnce({
-        data: true,
-      })
-      .mockResolvedValueOnce({ data: [] });
+    expect(getByTestId('login')).toBeDefined();
   });
 
-  afterEach(() => {
-    axios.get.mockRestore();
-  });
+  it('should render App when Authenticated', () => {
+    const store = createStore(
+      () => ({ user: { id: '1' } }),
+      applyMiddleware(thunk)
+    );
 
-  it('should render the App component', () => {
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
 
     expect(getByTestId('app')).toBeDefined();
-  });
-
-  it('should call auth endpoint onload', () => {
-    render(<App />);
-
-    expect(axios.get).toBeCalledTimes(1);
-    expect(axios.get).toBeCalledWith(AUTH);
-  });
-
-  it('should render header bar', () => {
-    const { getByTestId } = render(<App />);
-
-    expect(getByTestId('header-bar')).toBeDefined();
   });
 });
