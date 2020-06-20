@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private SubjectRepository repository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     public void save_shouldSaveASubject() {
@@ -39,8 +43,8 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
                 .description("French")
                 .build();
 
-        repository.save(english);
-        repository.save(french);
+        entityManager.merge(english);
+        entityManager.merge(french);
 
         List<Subject> result = repository.findAll();
 
