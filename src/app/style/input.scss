@@ -1,4 +1,4 @@
-@import './constants.scss';
+@import './variables.scss';
 
 $default-height: 24px;
 
@@ -16,18 +16,23 @@ button {
 
 input,
 textarea,
-button,
 select {
   border: none;
   border-radius: $default-radius;
   background-color: $secundary-color;
   font-size: $font-paragraph;
+  color: $font-color;
+  padding: 4px 8px;
 }
 
 button {
   height: $button-height;
   padding: 0 12px;
   margin: auto 4px;
+  border: none;
+  border-radius: $default-radius;
+  background-color: $secundary-color;
+  font-size: $font-paragraph;
   font-weight: $font-medium;
   color: #fff;
 

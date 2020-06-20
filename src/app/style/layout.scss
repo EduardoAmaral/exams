@@ -1,0 +1,19 @@
+.form-control {
+  display: block;
+  margin: 4px auto 8px;
+  width: 100%;
+}
+
+.offset-col-2 {
+  margin-left: 16.666667%;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}

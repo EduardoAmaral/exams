@@ -1,6 +1,7 @@
 @import './fonts.scss';
 @import './input.scss';
-@import './constants.scss';
+@import './variables.scss';
+@import './layout.scss';
 
 body {
   background-color: $background-color;

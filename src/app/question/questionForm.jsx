@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import history from '../config/history';
+import './scss/questionForm.scss';
 
 export default function QuestionForm({
   questionData,
@@ -47,25 +48,30 @@ export default function QuestionForm({
       className="ui form"
       onSubmit={onSubmitForm}
     >
-      <div className="field">
-        <label data-testid="question-form-statement-label">
-          Statement
-          <textarea
-            rows="2"
-            data-testid="question-form-statement-input"
-            value={question.statement}
-            onChange={(event) => {
-              setQuestion({ ...question, statement: event.target.value });
-            }}
-          />
-        </label>
+      <div className="row">
+        <div className="col-md-12">
+          <div className="form-group">
+            <label data-testid="question-form-statement-label">
+              Statement
+              <textarea
+                rows="4"
+                className="form-control"
+                data-testid="question-form-statement-input"
+                value={question.statement}
+                onChange={(event) => {
+                  setQuestion({ ...question, statement: event.target.value });
+                }}
+              />
+            </label>
+          </div>
+        </div>
       </div>
-      <div className="two fields">
-        <div className="field">
+      <div className="row">
+        <div className="col-md-4">
           <label data-testid="question-form-type-label">
             Type
             <select
-              className="ui fluid dropdown"
+              className="form-control"
               data-testid="question-form-type-input"
               value={question.type}
               disabled={question.id !== undefined}
@@ -97,11 +103,11 @@ export default function QuestionForm({
             </select>
           </label>
         </div>
-        <div className="field">
+        <div className="col-md-4 offset-col-2">
           <label data-testid="question-form-subject-label">
             Subject
             <select
-              className="ui fluid dropdown"
+              className="form-control"
               data-testid="question-form-subject-input"
               value={question.subject.id}
               onChange={(event) => {
@@ -125,78 +131,86 @@ export default function QuestionForm({
           </label>
         </div>
       </div>
-      <div className="field">
-        <label data-testid="question-form-solution-label">
-          Solution
-          <textarea
-            rows="2"
-            data-testid="question-form-solution-input"
-            value={question.solution}
-            onChange={(event) => {
-              setQuestion({ ...question, solution: event.target.value });
-            }}
-          />
-        </label>
+      <div className="row">
+        <div className="col-md-12">
+          <label data-testid="question-form-solution-label">
+            Solution
+            <textarea
+              className="form-control"
+              rows="2"
+              data-testid="question-form-solution-input"
+              value={question.solution}
+              onChange={(event) => {
+                setQuestion({ ...question, solution: event.target.value });
+              }}
+            />
+          </label>
+        </div>
+        <div className="field">
+          <label data-testid="question-form-topic-label">
+            Topics
+            <input
+              className="form-control"
+              data-testid="question-form-topic-input"
+              type="text"
+              value={question.topic}
+              onChange={(event) => {
+                setQuestion({ ...question, topic: event.target.value });
+              }}
+            />
+          </label>
+        </div>
       </div>
-      <div className="field">
-        <label data-testid="question-form-topic-label">
-          Topics
-          <input
-            data-testid="question-form-topic-input"
-            type="text"
-            value={question.topic}
-            onChange={(event) => {
-              setQuestion({ ...question, topic: event.target.value });
-            }}
-          />
-        </label>
+      <div className="row">
+        <div className="col-md-12">
+          <label>
+            Alternatives:
+            {question.type === TRUE_OR_FALSE
+              ? question.alternatives.map((alternative) => (
+                  <div className="inline field" key={alternative.description}>
+                    <label
+                      data-testid={`question-form-alternative-${alternative.description}`}
+                    >
+                      <input
+                        type="radio"
+                        name="alternative"
+                        value={alternative.description}
+                        data-testid={`question-form-alternative-${alternative.description}-input`}
+                        checked={
+                          alternative.description === question.correctAnswer
+                        }
+                        onChange={(event) => {
+                          setQuestion({
+                            ...question,
+                            correctAnswer: event.target.value,
+                          });
+                        }}
+                      />
+                      {alternative.description}
+                    </label>
+                  </div>
+                ))
+              : null}
+          </label>
+        </div>
       </div>
-      <div className="grouped fields">
-        <label>
-          Alternatives:
-          {question.type === TRUE_OR_FALSE
-            ? question.alternatives.map((alternative) => (
-                <div className="inline field" key={alternative.description}>
-                  <label
-                    data-testid={`question-form-alternative-${alternative.description}`}
-                  >
-                    <input
-                      type="radio"
-                      name="alternative"
-                      value={alternative.description}
-                      data-testid={`question-form-alternative-${alternative.description}-input`}
-                      checked={
-                        alternative.description === question.correctAnswer
-                      }
-                      onChange={(event) => {
-                        setQuestion({
-                          ...question,
-                          correctAnswer: event.target.value,
-                        });
-                      }}
-                    />
-                    {alternative.description}
-                  </label>
-                </div>
-              ))
-            : null}
-        </label>
-      </div>
-      <div className="ui buttons">
-        <button
-          type="button"
-          data-testid="cancel-button"
-          onClick={onCancelClick}
-        >
-          Cancel
-        </button>
-        <button
-          className="primary"
-          type="submit"
-          data-testid="question-form-save-button"
-        >
-          Save
-        </button>
+      <div className="row">
+        <div className="col-md-12 right">
+          <button
+            type="button"
+            data-testid="cancel-button"
+            onClick={onCancelClick}
+          >
+            Cancel
+          </button>
+          <button
+            className="primary"
+            type="submit"
+            data-testid="question-form-save-button"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </form>
   );
