@@ -16,9 +16,11 @@ describe('<HeaderBar />', () => {
     expect(getByTestId('header-bar')).toHaveTextContent('Exams');
   });
 
-  it('should render user profile photo', () => {
+  it('should render user profile', () => {
     const { getByTestId } = render(<HeaderBar />);
 
     expect(getByTestId('header-profile')).toBeDefined();
+    expect(getByTestId('profile-photo')).toBeDefined();
+    expect(getByTestId('profile-name')).toBeDefined();
   });
 });

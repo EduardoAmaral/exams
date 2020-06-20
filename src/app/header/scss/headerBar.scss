@@ -1,5 +1,8 @@
 @import '../../style/constants.scss';
 
+$icon-header-size: 28px;
+$defaut-space-between-elements: 16px;
+
 div.header-bar {
   width: 100vw;
   background-color: $base-color;
@@ -17,11 +20,11 @@ div.header-bar {
   }
 
   h1 {
-    margin-left: 16px;
+    margin-left: $defaut-space-between-elements;
   }
 
   div.profile {
-    margin-right: 16px;
+    margin-right: $defaut-space-between-elements;
     font-weight: $font-medium;
 
     div.photo {
@@ -30,6 +33,7 @@ div.header-bar {
       height: 40px;
       width: 40px;
       margin: auto 8px;
+      font-size: $icon-header-size;
     }
   }
 }
