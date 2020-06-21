@@ -20,8 +20,8 @@ public class CommentService implements CommentPort {
     }
 
     @Override
-    public void create(Comment comment) {
-        repositoryPort.create(comment);
+    public Comment create(Comment comment) {
+        return repositoryPort.create(comment);
     }
 
     @Override

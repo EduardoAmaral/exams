@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,7 +38,16 @@ public class CommentControllerTest extends ControllerIntegrationTest {
     @Test
     public void create_shouldCallCommentServiceWithAComment() throws Exception {
         String userId = "123";
+        ZonedDateTime now = ZonedDateTime.now();
+
         when(userPort.getCurrentUserId()).thenReturn(userId);
+        when(commentPort.create(any())).thenReturn(CommentDTO.builder()
+                .id(1L)
+                .message("First Comment")
+                .questionId(1L)
+                .author("0987")
+                .creationDate(now)
+                .build());
 
         CommentDTO dto = CommentDTO.builder()
                 .message("My First Comment")
@@ -50,7 +60,12 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.message", is("First Comment")))
+                .andExpect(jsonPath("$.questionId", is(1)))
+                .andExpect(jsonPath("$.author", is("0987")))
+                .andExpect(jsonPath("$.creationDate", is(dateTimeFormatter.format(now))));
 
         verify(commentPort).create(commentArgumentCaptor.capture());
         Assertions.assertThat(commentArgumentCaptor.getValue())

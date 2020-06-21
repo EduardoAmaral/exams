@@ -5,7 +5,6 @@ import com.eamaral.exams.question.domain.port.CommentPort;
 import com.eamaral.exams.user.domain.port.UserPort;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,18 +29,19 @@ public class CommentController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Validated CommentDTO comment) {
+    public ResponseEntity<CommentDTO> create(@RequestBody @Validated CommentDTO comment) {
         String currentUserId = userPort.getCurrentUserId();
         log.info("Creating a comment on Question {} by user {}", comment.getQuestionId(), currentUserId);
 
-        commentPort.create(comment.toBuilder()
-                .author(currentUserId)
-                .build());
+        return ok(CommentDTO.from(
+                commentPort.create(comment.toBuilder()
+                        .author(currentUserId)
+                        .build()))
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentDTO>> getByQuestionId(Long questionId){
+    public ResponseEntity<List<CommentDTO>> getAllByQuestionId(Long questionId) {
         return ok(CommentDTO.from(commentPort.findAllBy(questionId)));
     }
 }
