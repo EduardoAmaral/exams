@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommentDTO implements Serializable, Comment {
 

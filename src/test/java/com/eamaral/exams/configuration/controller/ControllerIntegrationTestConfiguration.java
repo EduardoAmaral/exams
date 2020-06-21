@@ -16,6 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
         }
 )
 @ImportAutoConfiguration(ValidationConfiguration.class)
-public class ControllerTestConfiguration {
+public class ControllerIntegrationTestConfiguration {
 
 }

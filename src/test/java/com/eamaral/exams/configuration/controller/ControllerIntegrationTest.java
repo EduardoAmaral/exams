@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @WebMvcTest
-@ContextConfiguration(classes = {ControllerTestConfiguration.class})
+@ContextConfiguration(classes = {ControllerIntegrationTestConfiguration.class})
 @WithMockUser
 public abstract class ControllerIntegrationTest {
 
