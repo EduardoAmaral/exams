@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Getter
 @Setter
@@ -72,13 +72,9 @@ public class QuestionDTO implements Serializable, Question {
     }
 
     public static List<QuestionDTO> from(List<Question> questions) {
-        List<QuestionDTO> result = emptyList();
-        if (questions != null) {
-            result = questions.stream()
-                    .map(QuestionDTO::from)
-                    .collect(toList());
-        }
-        return result;
+        return emptyIfNull(questions).stream()
+                .map(QuestionDTO::from)
+                .collect(toList());
     }
 
     @Override

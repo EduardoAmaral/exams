@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Getter
 @Setter
@@ -42,7 +43,7 @@ public class ExamDTO extends Exam {
     private List<QuestionDTO> questions;
 
     public List<Question> getQuestions() {
-        return questions != null ? new ArrayList<>(questions) : emptyList();
+        return new ArrayList<>(emptyIfNull(questions));
     }
 
     public static ExamDTO from(Exam exam) {

@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Entity
 @Table(name = "TB_EXAM")
@@ -66,20 +66,19 @@ public class ExamEntity extends Exam {
                     .endDateTime(exam.getEndDateTime())
                     .mockTest(exam.isMockTest())
                     .title(exam.getTitle())
-                    .author(exam.getAuthor());
-
-            if (exam.getQuestions() != null) {
-                builder.questions(exam.getQuestions()
-                        .stream()
-                        .map(QuestionConverter::from)
-                        .collect(toList()));
-            }
+                    .author(exam.getAuthor())
+                    .questions(
+                            emptyIfNull(exam.getQuestions())
+                                    .stream()
+                                    .map(QuestionConverter::from)
+                                    .collect(toList())
+                    );
         }
 
         return builder.build();
     }
 
     public List<Question> getQuestions() {
-        return questions != null ? new ArrayList<>(questions) : emptyList();
+        return new ArrayList<>(emptyIfNull(questions));
     }
 }

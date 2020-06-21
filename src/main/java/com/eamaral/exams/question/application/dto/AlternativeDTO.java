@@ -7,8 +7,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Getter
 @Setter
@@ -23,13 +23,9 @@ public class AlternativeDTO implements Serializable, Alternative {
     private String description;
 
     public static List<AlternativeDTO> from(List<Alternative> alternatives) {
-        List<AlternativeDTO> result = emptyList();
-
-        if (alternatives != null) {
-            result = alternatives.stream().map(AlternativeDTO::from).collect(toList());
-        }
-
-        return result;
+        return emptyIfNull(alternatives).stream()
+                .map(AlternativeDTO::from)
+                .collect(toList());
     }
 
     private static AlternativeDTO from(Alternative alternative) {
