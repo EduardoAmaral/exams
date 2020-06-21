@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import router from 'react-router';
-import { QUESTION_BY_ID } from '../../config/endpoint';
+import { QUESTION_BY_ID, QUESTION_COMMENT } from '../../config/endpoint';
 import history from '../../config/history';
 import QuestionDetailPage from '../questionDetailPage';
 
@@ -32,20 +32,32 @@ describe('<QuestionDetailPage />', () => {
   };
 
   beforeEach(() => {
-    axios.get.mockResolvedValueOnce({
-      data: question,
+    axios.get
+      .mockResolvedValueOnce({
+        data: question,
+      })
+      .mockResolvedValueOnce({
+        data: [],
+      });
+
+    axios.post.mockResolvedValueOnce({
+      data: {
+        id: 1,
+        message: 'My Comment',
+        auhot: '1',
+      },
     });
   });
 
   afterEach(() => {
     axios.get.mockRestore();
+    axios.post.mockRestore();
     history.push.mockRestore();
   });
 
   it('should call the get question by id endpoint', async () => {
     render(<QuestionDetailPage />);
 
-    expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
       QUESTION_BY_ID.replace(':id', question.id)
     );
@@ -138,5 +150,58 @@ describe('<QuestionDetailPage />', () => {
     fireEvent.click(getByTestId('cancel-button'));
 
     expect(history.goBack).toBeCalledTimes(1);
+  });
+
+  describe('Comments Section', () => {
+    it('should render a comment section', async () => {
+      const { getByTestId } = render(<QuestionDetailPage />);
+
+      await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+      expect(getByTestId('comments-section')).toBeDefined();
+    });
+
+    it('should render a new comment once created one', async () => {
+      const { container, getByTestId } = render(<QuestionDetailPage />);
+
+      await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+      expect(container.querySelectorAll('.comment')).toHaveLength(0);
+
+      fireEvent.change(getByTestId('comment-input'), {
+        target: { value: 'My Comment' },
+      });
+
+      fireEvent.click(getByTestId('send-comment-button'));
+
+      await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+      expect(axios.post).toHaveBeenCalledWith(QUESTION_COMMENT, {
+        message: 'My Comment',
+        questionId: question.id,
+      });
+
+      expect(container.querySelectorAll('.comment')).toHaveLength(1);
+    });
+
+    it('should getting all comments from a question', async () => {
+      axios.get.mockResolvedValueOnce({
+        data: [
+          {
+            id: 1,
+            message: 'Comment',
+            author: '1',
+          },
+        ],
+      });
+
+      const { getByTestId } = render(<QuestionDetailPage />);
+
+      await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+      expect(axios.get).toHaveBeenLastCalledWith(
+        `${QUESTION_COMMENT}?questionId=${question.id}`
+      );
+    });
   });
 });

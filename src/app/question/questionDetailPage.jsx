@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router';
-import { QUESTION_BY_ID } from '../config/endpoint';
+import { QUESTION_BY_ID, QUESTION_COMMENT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import history from '../config/history';
+import Comments from '../comment/comments';
 
 export default function QuestionDetailPage() {
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState({ subject: {} });
+  const [comments, setComments] = useState([]);
 
   const { id } = useParams();
 
@@ -24,10 +26,24 @@ export default function QuestionDetailPage() {
         console.log(err);
         setLoading(false);
       });
+    axios.get(`${QUESTION_COMMENT}?questionId=${id}`).then((response) => {
+      setComments(response.data);
+    });
   }, [id]);
 
   const onCancelClick = () => {
     history.goBack();
+  };
+
+  const onSendComment = (comment) => {
+    setLoading(true);
+
+    axios
+      .post(QUESTION_COMMENT, { ...comment, questionId: question.id })
+      .then((response) => {
+        setComments((c) => [response.data, ...c]);
+        setLoading(false);
+      });
   };
 
   if (loading) {
@@ -63,6 +79,7 @@ export default function QuestionDetailPage() {
         <span data-testid="question-detail-topic-title">Topics:</span>{' '}
         <span data-testid="question-detail-topic-value">{question.topic}</span>
       </div>
+      <Comments comments={comments} onSend={onSendComment} />
       <div>
         <button
           className="ui button"

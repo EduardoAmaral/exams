@@ -1,7 +1,6 @@
 @import './variables.scss';
 
 $default-height: 24px;
-
 $button-height: 36px;
 
 label {
@@ -18,7 +17,7 @@ input,
 textarea,
 select {
   border: none;
-  border-radius: $default-radius;
+  border-radius: $default-border-radius;
   background-color: $secundary-color;
   font-size: $font-paragraph;
   color: $font-color;
@@ -30,7 +29,7 @@ button {
   padding: 0 12px;
   margin: auto 4px;
   border: none;
-  border-radius: $default-radius;
+  border-radius: $default-border-radius;
   background-color: $secundary-color;
   font-size: $font-paragraph;
   font-weight: $font-medium;
@@ -75,5 +74,5 @@ input[type='radio'] {
 }
 
 textarea {
-  resize: none !important;
+  resize: none;
 }

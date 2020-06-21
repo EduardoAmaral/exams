@@ -1,6 +1,6 @@
 import React from 'react';
 import Profile from './profile';
-import './scss/headerBar.scss';
+import './headerBar.scss';
 
 export default function HeaderBar() {
   return (

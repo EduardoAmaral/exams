@@ -1,5 +1,4 @@
 import React from 'react';
-import './scss/headerBar.scss';
 import { useSelector } from 'react-redux';
 
 export default function Profile() {
