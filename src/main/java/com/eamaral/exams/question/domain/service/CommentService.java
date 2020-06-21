@@ -29,7 +29,7 @@ public class CommentService implements CommentPort {
         List<Comment> comments = repositoryPort.findAllBy(questionId);
 
         return comments.stream()
-                .sorted(Comparator.comparing(Comment::getCreationDate))
+                .sorted(Comparator.comparing(Comment::getCreationDate).reversed())
                 .collect(toList());
     }
 }

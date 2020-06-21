@@ -36,7 +36,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void findAllBy_shouldRetrieveAllQuestionCommentsInAscendingOrderByCreationDate() {
+    public void findAllBy_shouldRetrieveAllQuestionCommentsOrderByTheNewest() {
         long questionId = 1L;
         when(repository.findAllBy(questionId)).thenReturn(List.of(
                 CommentDTO.builder()
@@ -55,6 +55,6 @@ public class CommentServiceTest {
 
         assertThat(comments)
                 .extracting("message")
-                .containsExactly("Yesterday Comment", "Today Comment");
+                .containsExactly("Today Comment", "Yesterday Comment");
     }
 }
