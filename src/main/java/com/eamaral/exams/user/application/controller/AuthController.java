@@ -20,7 +20,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AuthController {
 
     @GetMapping
-    public ResponseEntity<?> auth() {
+    public ResponseEntity<Object> auth() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("Authenticating {}", principal);
         if (principal instanceof DefaultOidcUser) {
