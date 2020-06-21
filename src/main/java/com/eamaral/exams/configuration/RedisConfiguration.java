@@ -1,6 +1,6 @@
 package com.eamaral.exams.configuration;
 
-import com.eamaral.exams.messages.application.redis.RedisMessageListener;
+import com.eamaral.exams.message.application.redis.RedisMessageListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

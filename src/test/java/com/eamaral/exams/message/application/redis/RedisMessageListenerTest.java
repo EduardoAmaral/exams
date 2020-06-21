@@ -1,10 +1,12 @@
-package com.eamaral.exams.messages.application.redis;
+package com.eamaral.exams.message.application.redis;
 
 import com.eamaral.exams.question.application.dto.CommentDTO;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
