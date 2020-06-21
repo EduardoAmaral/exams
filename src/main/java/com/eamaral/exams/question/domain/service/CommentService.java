@@ -5,6 +5,8 @@ import com.eamaral.exams.question.domain.port.CommentPort;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommentService implements CommentPort {
 
@@ -17,5 +19,10 @@ public class CommentService implements CommentPort {
     @Override
     public void create(Comment comment) {
         repositoryPort.create(comment);
+    }
+
+    @Override
+    public List<Comment> findAllBy(long questionId) {
+        return repositoryPort.findAllBy(questionId);
     }
 }

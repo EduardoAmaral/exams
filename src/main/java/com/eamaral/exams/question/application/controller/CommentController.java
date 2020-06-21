@@ -7,8 +7,13 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
@@ -33,5 +38,10 @@ public class CommentController {
         commentPort.create(comment.toBuilder()
                 .author(currentUserId)
                 .build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CommentDTO>> getByQuestionId(Long questionId){
+        return ok(CommentDTO.from(commentPort.findAllBy(questionId)));
     }
 }

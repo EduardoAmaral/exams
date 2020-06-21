@@ -1,16 +1,13 @@
 package com.eamaral.exams.question.infrastructure.repository;
 
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
-import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Comment;
-import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.MultipleChoiceEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,13 +18,12 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private CommentRepository repository;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Test
-    public void save_whenFieldsAreValid_shouldReturnAQuestionWithId() {
-        Comment comment = CommentEntity.builder()
-                .message("Comment")
-                .author("1234")
-                .questionId(1L)
-                .build();
+    public void create_whenFieldsAreValid_shouldReturnAQuestionWithId() {
+        Comment comment = getComment(1L);
 
         Comment result = repository.create(comment);
 
@@ -35,7 +31,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void save_whenRequiredFieldsAreNotFilled_shouldThrowException() {
+    public void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
         Comment comment = CommentEntity.builder().build();
 
         List<String> validationMessages = List.of("Comment's message is required",
@@ -50,7 +46,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void save_whenMessageIsGreaterThanExpected_shouldThrowException() {
+    public void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
         Comment comment = CommentEntity.builder()
                 .message(new String(new char[301]).replace('\0', 'A'))
                 .author("1234")
@@ -64,5 +60,25 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
                 .matches(e -> e.getConstraintViolations().size() == validationMessages.size())
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
+    }
+
+    @Test
+    public void findAllBy_shouldReturnAllQuestionComments() {
+        long questionId = 1L;
+        entityManager.merge(getComment(questionId));
+        entityManager.merge(getComment(questionId));
+        entityManager.merge(getComment(2L));
+
+        List<Comment> result = repository.findAllBy(questionId);
+
+        assertThat(result).hasSize(2);
+    }
+
+    private CommentEntity getComment(long questionId) {
+        return CommentEntity.builder()
+                .message("Comment")
+                .author("1234")
+                .questionId(questionId)
+                .build();
     }
 }

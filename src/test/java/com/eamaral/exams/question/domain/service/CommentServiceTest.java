@@ -21,7 +21,7 @@ public class CommentServiceTest {
     private CommentRepositoryPort repository;
 
     @Test
-    public void save_shouldSaveASubject() {
+    public void create_shouldCallRepositoryPortToSaveAComment() {
         Comment comment = CommentDTO.builder()
                 .build();
 
@@ -30,4 +30,12 @@ public class CommentServiceTest {
         verify(repository).create(comment);
     }
 
+    @Test
+    public void findAllBy_shouldCallRepositoryToRetrieveAllQuestionComments() {
+        long questionId = 1L;
+
+        service.findAllBy(questionId);
+
+        verify(repository).findAllBy(questionId);
+    }
 }

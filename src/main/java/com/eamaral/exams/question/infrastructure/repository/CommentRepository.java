@@ -6,6 +6,9 @@ import com.eamaral.exams.question.infrastructure.repository.jpa.CommentJpaReposi
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class CommentRepository implements CommentRepositoryPort {
 
@@ -18,5 +21,10 @@ public class CommentRepository implements CommentRepositoryPort {
     @Override
     public Comment create(Comment comment) {
         return repository.saveAndFlush(CommentEntity.from(comment));
+    }
+
+    @Override
+    public List<Comment> findAllBy(Long questionId) {
+        return new ArrayList<>(repository.findAllByQuestionId(questionId));
     }
 }
