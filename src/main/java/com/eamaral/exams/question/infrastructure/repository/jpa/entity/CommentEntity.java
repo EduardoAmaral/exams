@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -34,12 +35,16 @@ public class CommentEntity implements Comment {
     @NotNull(message = "{comment.author.required}")
     private String author;
 
+    @NotNull(message = "{comment.creationDate.required}")
+    private ZonedDateTime creationDate;
+
     public static CommentEntity from(Comment comment) {
         return builder()
                 .id(comment.getId())
                 .message(comment.getMessage())
                 .questionId(comment.getQuestionId())
                 .author(comment.getAuthor())
+                .creationDate(ZonedDateTime.now())
                 .build();
     }
 }

@@ -11,6 +11,8 @@ import org.mockito.Captor;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -29,6 +31,8 @@ public class CommentControllerTest extends ControllerIntegrationTest {
 
     @Captor
     private ArgumentCaptor<Comment> commentArgumentCaptor;
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Test
     public void create_shouldCallCommentServiceWithAComment() throws Exception {
@@ -90,6 +94,7 @@ public class CommentControllerTest extends ControllerIntegrationTest {
 
     @Test
     public void getAllByQuestion_shouldRetrieveAllQuestionComments() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
         when(commentPort.findAllBy(1L)).thenReturn(
                 List.of(
                         CommentDTO.builder()
@@ -97,12 +102,14 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                                 .message("First Comment")
                                 .questionId(1L)
                                 .author("0987")
+                                .creationDate(now)
                                 .build(),
                         CommentDTO.builder()
                                 .id(2L)
                                 .message("Second Comment")
                                 .questionId(1L)
                                 .author("1234")
+                                .creationDate(now)
                                 .build()
                 )
         );
@@ -114,10 +121,12 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].message", is("First Comment")))
                 .andExpect(jsonPath("$[0].questionId", is(1)))
                 .andExpect(jsonPath("$[0].author", is("0987")))
+                .andExpect(jsonPath("$[0].creationDate", is(dateTimeFormatter.format(now))))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].message", is("Second Comment")))
                 .andExpect(jsonPath("$[1].questionId", is(1)))
-                .andExpect(jsonPath("$[1].author", is("1234")));
+                .andExpect(jsonPath("$[1].author", is("1234")))
+                .andExpect(jsonPath("$[1].creationDate", is(dateTimeFormatter.format(now))));
 
         verify(commentPort).findAllBy(1L);
     }

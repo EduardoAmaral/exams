@@ -9,7 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommentServiceTest {
@@ -31,11 +36,25 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void findAllBy_shouldCallRepositoryToRetrieveAllQuestionComments() {
+    public void findAllBy_shouldRetrieveAllQuestionCommentsInAscendingOrderByCreationDate() {
         long questionId = 1L;
+        when(repository.findAllBy(questionId)).thenReturn(List.of(
+                CommentDTO.builder()
+                        .message("Today Comment")
+                        .creationDate(ZonedDateTime.now())
+                        .build(),
+                CommentDTO.builder()
+                        .message("Yesterday Comment")
+                        .creationDate(ZonedDateTime.now().minusDays(1L))
+                        .build()
+        ));
 
-        service.findAllBy(questionId);
+        List<Comment> comments = service.findAllBy(questionId);
 
         verify(repository).findAllBy(questionId);
+
+        assertThat(comments)
+                .extracting("message")
+                .containsExactly("Yesterday Comment", "Today Comment");
     }
 }

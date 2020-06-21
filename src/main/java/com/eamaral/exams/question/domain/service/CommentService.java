@@ -5,7 +5,10 @@ import com.eamaral.exams.question.domain.port.CommentPort;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class CommentService implements CommentPort {
@@ -23,6 +26,10 @@ public class CommentService implements CommentPort {
 
     @Override
     public List<Comment> findAllBy(long questionId) {
-        return repositoryPort.findAllBy(questionId);
+        List<Comment> comments = repositoryPort.findAllBy(questionId);
+
+        return comments.stream()
+                .sorted(Comparator.comparing(Comment::getCreationDate))
+                .collect(toList());
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +52,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
                 .message(new String(new char[301]).replace('\0', 'A'))
                 .author("1234")
                 .questionId(1L)
+                .creationDate(ZonedDateTime.now())
                 .build();
 
         List<String> validationMessages = List.of("Comments cannot have more than 300 characters");
@@ -79,6 +81,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
                 .message("Comment")
                 .author("1234")
                 .questionId(questionId)
+                .creationDate(ZonedDateTime.now())
                 .build();
     }
 }

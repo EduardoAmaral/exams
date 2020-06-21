@@ -1,5 +1,7 @@
 package com.eamaral.exams.question.domain;
 
+import java.time.ZonedDateTime;
+
 public interface Comment {
 
     Long getId();
@@ -9,4 +11,6 @@ public interface Comment {
     Long getQuestionId();
 
     String getAuthor();
+
+    ZonedDateTime getCreationDate();
 }
