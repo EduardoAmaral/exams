@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './comments.scss';
 
 export default function Comments({ comments = [], onSend = () => {} }) {
-  const [newComment, setComment] = useState({});
+  const [newComment, setNewComment] = useState({});
 
   const printComment = (comment) => {
     return (
@@ -23,7 +23,7 @@ export default function Comments({ comments = [], onSend = () => {} }) {
 
   const sendComment = () => {
     onSend(newComment);
-    setComment({});
+    setNewComment({ message: '' });
   };
 
   return (
@@ -42,7 +42,7 @@ export default function Comments({ comments = [], onSend = () => {} }) {
               placeholder="Write your comment..."
               row="1"
               onChange={(e) =>
-                setComment({ ...newComment, message: e.target.value })
+                setNewComment({ ...newComment, message: e.target.value })
               }
             />
             <button

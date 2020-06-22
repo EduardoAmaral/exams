@@ -9,10 +9,12 @@ import router from 'react-router';
 import { QUESTION_BY_ID, QUESTION_COMMENT } from '../../config/endpoint';
 import history from '../../config/history';
 import QuestionDetailPage from '../questionDetailPage';
+import { questionCommentsSubscription } from '../../config/socket';
 
 jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: 2 });
+jest.mock('../../config/socket');
 
 describe('<QuestionDetailPage />', () => {
   const question = {
@@ -53,6 +55,7 @@ describe('<QuestionDetailPage />', () => {
     axios.get.mockRestore();
     axios.post.mockRestore();
     history.push.mockRestore();
+    questionCommentsSubscription.mockRestore();
   });
 
   it('should call the get question by id endpoint', async () => {
@@ -161,7 +164,7 @@ describe('<QuestionDetailPage />', () => {
       expect(getByTestId('comments-section')).toBeDefined();
     });
 
-    it('should render a new comment once created one', async () => {
+    it('should call create comment endpoint when clicked on send button', async () => {
       const { container, getByTestId } = render(<QuestionDetailPage />);
 
       await waitForElementToBeRemoved(() => getByTestId('loading'));
@@ -174,33 +177,20 @@ describe('<QuestionDetailPage />', () => {
 
       fireEvent.click(getByTestId('send-comment-button'));
 
-      await waitForElementToBeRemoved(() => getByTestId('loading'));
-
       expect(axios.post).toHaveBeenCalledWith(QUESTION_COMMENT, {
         message: 'My Comment',
         questionId: question.id,
       });
-
-      expect(container.querySelectorAll('.comment')).toHaveLength(1);
     });
 
-    it('should getting all comments from a question', async () => {
-      axios.get.mockResolvedValueOnce({
-        data: [
-          {
-            id: 1,
-            message: 'Comment',
-            author: '1',
-          },
-        ],
-      });
-
+    it('should subsribe on comments channel', async () => {
       const { getByTestId } = render(<QuestionDetailPage />);
 
       await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-      expect(axios.get).toHaveBeenLastCalledWith(
-        `${QUESTION_COMMENT}?questionId=${question.id}`
+      expect(questionCommentsSubscription).toHaveBeenCalledWith(
+        question.id,
+        expect.anything()
       );
     });
   });

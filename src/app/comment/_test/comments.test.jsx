@@ -46,4 +46,16 @@ describe('<Comments />', () => {
     expect(getByTestId('comment-2-author')).toHaveTextContent('7777');
     expect(getByTestId('comment-2-message')).toHaveTextContent('Comment 2');
   });
+
+  it('should clean input once submit comment', () => {
+    const { getByTestId } = render(<Comments />);
+
+    fireEvent.change(getByTestId('comment-input'), {
+      target: { value: 'My Comment' },
+    });
+
+    fireEvent.click(getByTestId('send-comment-button'));
+
+    expect(getByTestId('comment-input')).toBeEmptyDOMElement();
+  });
 });

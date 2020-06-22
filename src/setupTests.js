@@ -4,5 +4,9 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 import MutationObserver from '@sheerun/mutationobserver-shim';
+import util from 'util';
 
 window.MutationObserver = MutationObserver;
+
+global.TextEncoder = util.TextEncoder;
+global.TextDecoder = util.TextDecoder;

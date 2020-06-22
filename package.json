@@ -17,7 +17,10 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "sockjs-client": "^1.4.0",
+    "@stomp/rx-stomp": "^0.3.5",
+    "rxjs": "^6.5.5"
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",

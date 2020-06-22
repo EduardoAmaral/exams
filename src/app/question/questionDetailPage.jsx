@@ -5,6 +5,7 @@ import { QUESTION_BY_ID, QUESTION_COMMENT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import history from '../config/history';
 import Comments from '../comment/comments';
+import { questionCommentsSubscription } from '../config/socket';
 
 export default function QuestionDetailPage() {
   const [loading, setLoading] = useState(false);
@@ -13,22 +14,50 @@ export default function QuestionDetailPage() {
 
   const { id } = useParams();
 
-  useEffect(() => {
-    setLoading(true);
+  let commentsSubscription;
 
+  const onCommentReceive = (message) => {
+    switch (message.type) {
+      case 'FETCH_ALL_COMMENTS':
+        setComments(message.data);
+        break;
+      case 'NEW_COMMENT':
+        console.log(comments);
+        setComments((c) => [message.data, ...c]);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const subscribeOnComments = (questionId) => {
+    commentsSubscription = questionCommentsSubscription(
+      questionId,
+      onCommentReceive
+    );
+  };
+
+  const loadQuestion = () => {
     axios
       .get(QUESTION_BY_ID.replace(':id', id))
       .then((response) => {
         setLoading(false);
         setQuestion(response.data);
+        subscribeOnComments(response.data.id);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         setLoading(false);
       });
-    axios.get(`${QUESTION_COMMENT}?questionId=${id}`).then((response) => {
-      setComments(response.data);
-    });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+
+    loadQuestion();
+
+    return () => {
+      if (commentsSubscription) commentsSubscription.unsubscribe();
+    };
   }, [id]);
 
   const onCancelClick = () => {
@@ -36,13 +65,10 @@ export default function QuestionDetailPage() {
   };
 
   const onSendComment = (comment) => {
-    setLoading(true);
-
     axios
       .post(QUESTION_COMMENT, { ...comment, questionId: question.id })
       .then((response) => {
         setComments((c) => [response.data, ...c]);
-        setLoading(false);
       });
   };
 
