@@ -52,10 +52,15 @@ public class RedisConfiguration {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory());
 
-        container.addMessageListener(
-                new MessageListenerAdapter(listener, "onQuestionCommentMessage"),
-                new PatternTopic("question.comments"));
+        container.addMessageListener(questionCommentsAdapter(),
+                new PatternTopic("question.comments")
+        );
 
         return container;
+    }
+
+    @Bean
+    public MessageListenerAdapter questionCommentsAdapter() {
+        return new MessageListenerAdapter(listener, "onQuestionCommentMessage");
     }
 }

@@ -1,4 +1,4 @@
-package com.eamaral.exams.message.application.redis;
+package com.eamaral.exams.message.infrastructure.redis;
 
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.google.gson.Gson;

@@ -1,5 +1,6 @@
 package com.eamaral.exams.message.application.redis;
 
+import com.eamaral.exams.message.application.redis.dto.MessageDTO;
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -8,6 +9,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
+
+import static com.eamaral.exams.message.application.redis.dto.MessageDTO.MessageType.NEW_COMMENT;
 
 @Slf4j
 @Component
@@ -31,6 +34,6 @@ public class RedisMessageListener {
 
         messagingTemplate.convertAndSend(
                 String.format(QUESTION_COMMENTS, comment.getQuestionId()),
-                comment);
+                new MessageDTO<>(NEW_COMMENT, comment));
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
@@ -21,7 +20,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -105,44 +103,5 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors", containsInAnyOrder(
                         "Comments cannot have more than 300 characters")));
-    }
-
-    @Test
-    public void getAllByQuestion_shouldRetrieveAllQuestionComments() throws Exception {
-        ZonedDateTime now = ZonedDateTime.now();
-        when(commentPort.findAllBy(1L)).thenReturn(
-                List.of(
-                        CommentDTO.builder()
-                                .id(1L)
-                                .message("First Comment")
-                                .questionId(1L)
-                                .author("0987")
-                                .creationDate(now)
-                                .build(),
-                        CommentDTO.builder()
-                                .id(2L)
-                                .message("Second Comment")
-                                .questionId(1L)
-                                .author("1234")
-                                .creationDate(now)
-                                .build()
-                )
-        );
-
-        mockMvc.perform(
-                get(ENDPOINT).param("questionId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].message", is("First Comment")))
-                .andExpect(jsonPath("$[0].questionId", is(1)))
-                .andExpect(jsonPath("$[0].author", is("0987")))
-                .andExpect(jsonPath("$[0].creationDate", is(dateTimeFormatter.format(now))))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].message", is("Second Comment")))
-                .andExpect(jsonPath("$[1].questionId", is(1)))
-                .andExpect(jsonPath("$[1].author", is("1234")))
-                .andExpect(jsonPath("$[1].creationDate", is(dateTimeFormatter.format(now))));
-
-        verify(commentPort).findAllBy(1L);
     }
 }

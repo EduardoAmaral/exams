@@ -1,5 +1,6 @@
-package com.eamaral.exams.message.application.redis;
+package com.eamaral.exams.message.infrastructure.redis;
 
+import com.eamaral.exams.message.infrastructure.redis.port.MessagePublisher;
 import com.eamaral.exams.question.domain.Comment;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class RedisMessagePublisher {
+public class RedisMessagePublisher implements MessagePublisher {
 
     private final StringRedisTemplate template;
 

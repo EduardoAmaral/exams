@@ -1,5 +1,6 @@
 package com.eamaral.exams.question.domain.service;
 
+import com.eamaral.exams.message.infrastructure.redis.port.MessagePublisher;
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.domain.Comment;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
@@ -25,14 +26,18 @@ public class CommentServiceTest {
     @Mock
     private CommentRepositoryPort repository;
 
+    @Mock
+    private MessagePublisher publisher;
+
     @Test
-    public void create_shouldCallRepositoryPortToSaveAComment() {
+    public void create_shouldCallRepositoryPortToSaveACommentAndPublishAMessage() {
         Comment comment = CommentDTO.builder()
                 .build();
 
         service.create(comment);
 
         verify(repository).create(comment);
+        verify(publisher).publish(comment);
     }
 
     @Test
