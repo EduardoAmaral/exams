@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router';
+import lodash from 'lodash';
 import { QUESTION_BY_ID, QUESTION_COMMENT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import history from '../config/history';
@@ -14,46 +15,36 @@ export default function QuestionDetailPage() {
 
   const { id } = useParams();
 
-  let commentsSubscription;
-
   const onCommentReceive = (message) => {
     switch (message.type) {
       case 'FETCH_ALL_COMMENTS':
         setComments(message.data);
         break;
       case 'NEW_COMMENT':
-        console.log(comments);
-        setComments((c) => [message.data, ...c]);
+        setComments((c) => lodash.uniqBy([message.data, ...c], 'id'));
         break;
       default:
         break;
     }
   };
 
-  const subscribeOnComments = (questionId) => {
-    commentsSubscription = questionCommentsSubscription(
-      questionId,
-      onCommentReceive
-    );
-  };
+  useEffect(() => {
+    setLoading(true);
 
-  const loadQuestion = () => {
     axios
       .get(QUESTION_BY_ID.replace(':id', id))
       .then((response) => {
         setLoading(false);
         setQuestion(response.data);
-        subscribeOnComments(response.data.id);
       })
       .catch(() => {
         setLoading(false);
       });
-  };
 
-  useEffect(() => {
-    setLoading(true);
-
-    loadQuestion();
+    const commentsSubscription = questionCommentsSubscription(
+      id,
+      onCommentReceive
+    );
 
     return () => {
       if (commentsSubscription) commentsSubscription.unsubscribe();

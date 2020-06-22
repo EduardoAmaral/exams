@@ -20,7 +20,8 @@
     "redux-thunk": "^2.3.0",
     "sockjs-client": "^1.4.0",
     "@stomp/rx-stomp": "^0.3.5",
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.5.5",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",
