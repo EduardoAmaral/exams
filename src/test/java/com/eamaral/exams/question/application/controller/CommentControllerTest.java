@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -82,9 +81,8 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors", containsInAnyOrder(
-                        "Comment's question is required",
-                        "Comment's message is required")));
+                .andExpect(jsonPath("$.errors['questionId']", is("Question is required")))
+                .andExpect(jsonPath("$.errors['message']", is("Message is required")));
     }
 
     @Test
@@ -101,7 +99,6 @@ public class CommentControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors", containsInAnyOrder(
-                        "Comments cannot have more than 300 characters")));
+                .andExpect(jsonPath("$.errors['message']", is("Comments cannot have more than 300 characters")));
     }
 }

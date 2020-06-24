@@ -35,9 +35,9 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     public void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
         Comment comment = CommentEntity.builder().build();
 
-        List<String> validationMessages = List.of("Comment's message is required",
-                "Comment's question is required",
-                "Comment's author is required");
+        List<String> validationMessages = List.of("Message is required",
+                "Question is required",
+                "Author is required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.create(comment))

@@ -342,11 +342,11 @@ public class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
 
-        List<String> validationMessages = List.of("Question's author id is required",
-                "Question's correct answer is required",
-                "Question's statement is required",
-                "Question's statement should have between 4 and 2000 characters",
-                "Question's alternatives are required");
+        List<String> validationMessages = List.of("Author id is required",
+                "Correct answer is required",
+                "Statement is required",
+                "Statement should have between 4 and 2000 characters",
+                "Alternatives are required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(question))

@@ -51,9 +51,9 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
 
     @Test
     public void save_whenAuthorIsNotInformed_shouldThrowConstraintViolationException() {
-        List<String> validationMessages = List.of("Exam's title is required",
-                "Exam's questions are required",
-                "Exam's author is required");
+        List<String> validationMessages = List.of("Title is required",
+                "Questions are required",
+                "Author is required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(ExamEntity.builder().build()))

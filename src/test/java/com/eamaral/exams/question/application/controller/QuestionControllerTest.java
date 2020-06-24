@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -124,12 +125,11 @@ public class QuestionControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors", containsInAnyOrder(
-                        "Question's alternatives are required",
-                        "Question's type is required",
-                        "Question's correct answer is required",
-                        "Question's statement is required",
-                        "Question's subject is required")));
+                .andExpect(jsonPath("$.errors['alternatives']", is( "Alternatives are required")))
+                .andExpect(jsonPath("$.errors['type']", is("Type is required")))
+                .andExpect(jsonPath("$.errors['correctAnswer']", is("Correct answer is required")))
+                .andExpect(jsonPath("$.errors['statement']", is("Statement is required")))
+                .andExpect(jsonPath("$.errors['subject']", is("Subject is required")));
     }
 
     @Test

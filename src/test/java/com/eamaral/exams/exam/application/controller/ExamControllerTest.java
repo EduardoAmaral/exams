@@ -17,7 +17,8 @@ import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -88,9 +89,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors", containsInAnyOrder(
-                        "Exam's title is required",
-                        "Exam's questions are required")));
+                .andExpect(jsonPath("$.errors['title']", is("Title is required")))
+                .andExpect(jsonPath("$.errors['questions']", is("Questions are required")));
 
         verify(examPort, never()).create(any(), anyString());
     }
