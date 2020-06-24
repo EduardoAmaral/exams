@@ -34,10 +34,13 @@ public class CommentServiceTest {
         Comment comment = CommentDTO.builder()
                 .build();
 
+        final Comment newComment = CommentDTO.builder().id(1L).build();
+        when(repository.create(comment)).thenReturn(newComment);
+
         service.create(comment);
 
         verify(repository).create(comment);
-        verify(publisher).publish(comment);
+        verify(publisher).publish(newComment);
     }
 
     @Test

@@ -25,11 +25,11 @@ public class CommentService implements CommentPort {
 
     @Override
     public Comment create(Comment comment) {
-        Comment savedComment = repositoryPort.create(comment);
+        Comment newComment = repositoryPort.create(comment);
 
-        publisher.publish(comment);
+        publisher.publish(newComment);
 
-        return savedComment;
+        return newComment;
     }
 
     @Override
