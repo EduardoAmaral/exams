@@ -44,4 +44,4 @@ jobs:
         run: ./gradlew :server:sonarqube
         
       - name: Docker Build
-        run: docker-compose --log-level INFO up -d --build
+        run: cd server && docker-compose --log-level INFO up -d --build
