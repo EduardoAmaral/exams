@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: jacocoTestReport
-          path: build/jacoco/test.exec
+          path: server/build/jacoco/test.exec
 
       - name: Static Analysis
         env:
