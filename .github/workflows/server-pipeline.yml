@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - "server/"
+      - 'server/**'
 
 jobs:
   build:
@@ -39,7 +39,6 @@ jobs:
         env:
           EXAMS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           EXAMS_SONAR_ORG:  ${{ secrets.SONAR_ORG }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: ./gradlew sonarqube
         
       - name: Docker Build
