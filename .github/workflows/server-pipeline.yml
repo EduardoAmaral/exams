@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: ./gradlew build jacocoTestReport
+        run: ./gradlew :server:build :server:jacocoTestReport
       
       - name: Upload jacocoTestReport
         uses: actions/upload-artifact@v1
@@ -39,7 +39,7 @@ jobs:
         env:
           EXAMS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           EXAMS_SONAR_ORG:  ${{ secrets.SONAR_ORG }}
-        run: ./gradlew sonarqube
+        run: ./gradlew :server:sonarqube
         
       - name: Docker Build
         run: docker-compose --log-level INFO up -d --build
