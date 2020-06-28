@@ -2,7 +2,7 @@
 @import './variables.scss';
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: $font-family;
     color: $font-color;
 }
 

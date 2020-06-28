@@ -4,11 +4,11 @@ import { QUESTION, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
 import history from '../config/history';
-import './scss/questionCreatePage.scss';
 
 export default function QuestionCreatePage() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setLoading(true);
@@ -24,19 +24,18 @@ export default function QuestionCreatePage() {
       });
   }, []);
 
-  const onSubmit = (question) => {
+  const handleSubmit = (question) => {
     setLoading(true);
     axios
       .post(QUESTION, question)
       .then((response) => {
         if (response.status === 201) {
-          setLoading(false);
           history.goBack();
         }
       })
-      .catch((err) => {
+      .catch(({ response }) => {
         setLoading(false);
-        console.log(err);
+        setErrors(response.data.errors);
       });
   };
 
@@ -47,7 +46,11 @@ export default function QuestionCreatePage() {
   return (
     <div data-testid="question-create-page">
       <h2>Create Question</h2>
-      <QuestionForm subjects={subjects} onSubmit={onSubmit} />
+      <QuestionForm
+        subjects={subjects}
+        onSubmit={handleSubmit}
+        errors={errors}
+      />
     </div>
   );
 }

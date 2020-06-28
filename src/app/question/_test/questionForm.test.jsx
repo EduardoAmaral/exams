@@ -234,4 +234,90 @@ describe('<QuestionForm />', () => {
       true
     );
   });
+
+  describe('Validation handling', () => {
+    it('should not should errors when do not have any', () => {
+      const { container } = render(<QuestionForm />);
+
+      expect(
+        container.querySelector('[data-testid="question-form-statement-error"]')
+      ).toBeNull();
+      expect(
+        container.querySelector('[data-testid="question-form-type-error"]')
+      ).toBeNull();
+      expect(
+        container.querySelector('[data-testid="question-form-subject-error"]')
+      ).toBeNull();
+      expect(
+        container.querySelector(
+          '[data-testid="question-form-alternatives-error"]'
+        )
+      ).toBeNull();
+      expect(
+        container.querySelector(
+          '[data-testid="question-form-correct-answer-error"]'
+        )
+      ).toBeNull();
+    });
+
+    it('should show statement validation message when have a statement error', () => {
+      const { getByTestId } = render(
+        <QuestionForm errors={{ statement: 'Statement is required' }} />
+      );
+
+      expect(getByTestId('question-form-statement-error')).toHaveTextContent(
+        'Statement is required'
+      );
+    });
+
+    it('should show type validation message when have a type error', () => {
+      const { getByTestId } = render(
+        <QuestionForm errors={{ type: 'Type is required' }} />
+      );
+
+      expect(getByTestId('question-form-type-error')).toHaveTextContent(
+        'Type is required'
+      );
+    });
+
+    it('should show subject validation message when have a subject error', () => {
+      const { getByTestId } = render(
+        <QuestionForm errors={{ subject: 'Subject is required' }} />
+      );
+
+      expect(getByTestId('question-form-subject-error')).toHaveTextContent(
+        'Subject is required'
+      );
+    });
+
+    it('should show alternatives validation message when have an alternatives errors', () => {
+      const { getByTestId } = render(
+        <QuestionForm errors={{ alternatives: 'Alternatives are required' }} />
+      );
+
+      fireEvent.change(getByTestId('question-form-type-input'), {
+        target: { value: 'True Or False' },
+      });
+
+      expect(getByTestId('question-form-alternatives-error')).toHaveTextContent(
+        'Alternatives are required'
+      );
+    });
+
+    it('should show correct answer validation message when have a correct answer error', () => {
+      const { getByTestId } = render(
+        <QuestionForm
+          errors={{ correctAnswer: 'Correct answer is required' }}
+        />
+      );
+
+      fireEvent.change(getByTestId('question-form-type-input'), {
+        target: { value: 'True Or False' },
+      });
+
+      expect(
+        getByTestId('question-form-correct-answer-error')
+      ).toHaveTextContent('Correct answer is required');
+    });
+  });
 });
