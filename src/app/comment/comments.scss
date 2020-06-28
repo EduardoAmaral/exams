@@ -1,0 +1,63 @@
+@import '../style/variables.scss';
+
+.comments-section {
+  margin-top: $default-space-between-sections;
+  margin-bottom: $default-space-between-sections;
+
+  label {
+    display: flex;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    padding: 8px;
+    justify-content: center;
+    align-content: center;
+
+    i {
+      margin-right: 8px;
+    }
+  }
+
+  .comment-input {
+    display: flex;
+    margin-top: 8px;
+    position: relative;
+
+    textarea {
+      flex: 1;
+      padding-right: 45px;
+    }
+
+    button {
+      position: absolute;
+      top: 4px;
+      right: 1px;
+    }
+  }
+
+  .comment {
+    border-radius: $default-border-radius;
+    background-color: $secundary-color;
+    padding: 8px 12px;
+    position: relative;
+
+    margin: 8px auto;
+
+    span.author {
+      display: block;
+      font-size: $font-disclaimer;
+      font-weight: $font-medium;
+
+      width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      margin-bottom: 4px;
+    }
+
+    div.message {
+      font-weight: $font-light;
+      font-size: $font-disclaimer;
+    }
+  }
+}

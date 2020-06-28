@@ -1,0 +1,101 @@
+@import './variables.scss';
+
+$input-height: 26px;
+$select-height: 36px;
+$button-height: 36px;
+$icon-height: 36px;
+
+label {
+  font-style: normal;
+  font-weight: $font-medium;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  margin: 8px auto;
+}
+
+.field {
+  margin: 4px auto 28px;
+}
+
+.validation-error {
+  font-size: $font-disclaimer;
+  color: $error-color;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  border: none;
+  border-radius: $default-border-radius;
+  background-color: $secundary-color;
+  font-family: $font-family;
+  font-size: $font-paragraph;
+  color: $font-color;
+  padding: 4px 8px;
+
+  &.error {
+    border: $error-color;
+  }
+}
+
+button {
+  height: $button-height;
+  padding: 0 12px;
+  margin: auto 4px;
+  border: none;
+  border-radius: $default-border-radius;
+  background-color: $secundary-color;
+  font-size: $font-paragraph;
+  font-weight: $font-medium;
+  color: #fff;
+
+  &:hover {
+    background-color: lighten($color: $secundary-color, $amount: 5);
+  }
+
+  &.primary {
+    background-color: $primary-color;
+
+    &:hover {
+      background-color: lighten($color: $primary-color, $amount: 5);
+    }
+  }
+
+  &.icon {
+    background-color: transparent;
+    border-radius: 50%;
+    width: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: lighten($color: $secundary-color, $amount: 5);
+    }
+  }
+}
+
+input {
+  height: $input-height;
+}
+
+select {
+  height: $select-height;
+}
+
+input[type='radio'] {
+  height: 16px;
+  margin: 4px;
+}
+
+textarea {
+  resize: none;
+}

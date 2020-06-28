@@ -1,0 +1,23 @@
+.offset-col-2 {
+  margin-left: 16.666667%;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+table {
+  width: 100%;
+}
+
+table .action-buttons {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
