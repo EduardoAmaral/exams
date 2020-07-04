@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ExamControllerTest extends ControllerIntegrationTest {
+class ExamControllerTest extends ControllerIntegrationTest {
 
     private static final String ENDPOINT = "/api/exam";
     private final String currentUserId = "100023";

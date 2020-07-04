@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class SubjectControllerTest extends ControllerIntegrationTest {
+class SubjectControllerTest extends ControllerIntegrationTest {
 
     public static final String ENDPOINT = "/api/question/subject";
 

@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class QuestionRepositoryTest extends JpaIntegrationTest {
+class QuestionRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "1";
 

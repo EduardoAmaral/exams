@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class CommentRepositoryTest extends JpaIntegrationTest {
+class CommentRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private CommentRepository repository;

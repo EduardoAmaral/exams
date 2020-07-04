@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-public class RedisMessagePublisherTest {
+class RedisMessagePublisherTest {
 
     @Mock
     private StringRedisTemplate template;

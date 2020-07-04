@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @WithMockUser
-public class UserServiceTest {
+class UserServiceTest {
 
     @InjectMocks
     private UserService service;

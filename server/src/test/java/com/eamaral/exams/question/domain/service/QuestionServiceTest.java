@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class QuestionServiceTest {
+class QuestionServiceTest {
 
     private final Long questionId = 1L;
     private final String currentUser = "1";

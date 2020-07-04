@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class ExamRepositoryTest extends JpaIntegrationTest {
+class ExamRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "10001";
 

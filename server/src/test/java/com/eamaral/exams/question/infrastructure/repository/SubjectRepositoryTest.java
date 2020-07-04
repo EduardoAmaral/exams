@@ -17,7 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SubjectRepositoryTest extends JpaIntegrationTest {
+class SubjectRepositoryTest extends JpaIntegrationTest {
 
     @Autowired
     private SubjectRepository repository;

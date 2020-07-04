@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AuthControllerTest extends ControllerIntegrationTest {
+class AuthControllerTest extends ControllerIntegrationTest {
 
     @Test
     @DisplayName("should return forbidden if user is not logged")

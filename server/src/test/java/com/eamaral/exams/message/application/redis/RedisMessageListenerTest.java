@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-public class RedisMessageListenerTest {
+class RedisMessageListenerTest {
 
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class QuestionControllerTest extends ControllerIntegrationTest {
+class QuestionControllerTest extends ControllerIntegrationTest {
 
     public static final String ENDPOINT = "/api/question";
     private final String currentUser = "1";
