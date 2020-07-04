@@ -18,7 +18,7 @@ import java.util.Collections;
 
 @Configuration
 @EnableSwagger2WebMvc
-@Import({ BeanValidatorPluginsConfiguration.class })
+@Import({BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfiguration {
 
     @Bean

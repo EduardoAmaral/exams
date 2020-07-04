@@ -28,7 +28,7 @@ public class SubjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SubjectDTO>> list(){
+    public ResponseEntity<List<SubjectDTO>> list() {
         log.info("Getting all subjects");
         return ok(subjectPort.findAll()
                 .stream()
@@ -38,7 +38,7 @@ public class SubjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void save(@RequestBody @Validated SubjectDTO subject){
+    public void save(@RequestBody @Validated SubjectDTO subject) {
         log.info("Saving subject {}", subject.getDescription());
         subjectPort.save(subject);
     }

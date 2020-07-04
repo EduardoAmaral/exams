@@ -45,7 +45,7 @@ public class CommentDTO implements Serializable, Comment {
                 .collect(toList());
     }
 
-    public static CommentDTO from(Comment comment){
+    public static CommentDTO from(Comment comment) {
         return builder()
                 .id(comment.getId())
                 .author(comment.getAuthor())

@@ -42,10 +42,6 @@ public class ExamDTO extends Exam {
     @NotEmpty(message = "{exam.questions.required}")
     private List<QuestionDTO> questions;
 
-    public List<Question> getQuestions() {
-        return new ArrayList<>(emptyIfNull(questions));
-    }
-
     public static ExamDTO from(Exam exam) {
         ExamDTOBuilder builder = builder();
 
@@ -69,5 +65,9 @@ public class ExamDTO extends Exam {
         return dto.toBuilder()
                 .questions(emptyList())
                 .build();
+    }
+
+    public List<Question> getQuestions() {
+        return new ArrayList<>(emptyIfNull(questions));
     }
 }

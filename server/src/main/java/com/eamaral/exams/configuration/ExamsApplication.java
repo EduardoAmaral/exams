@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {"com.eamaral.exams.**.jpa"})
 public class ExamsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ExamsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ExamsApplication.class, args);
+    }
 
 }

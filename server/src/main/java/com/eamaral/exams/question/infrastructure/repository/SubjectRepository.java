@@ -21,7 +21,7 @@ public class SubjectRepository implements SubjectRepositoryPort {
     }
 
     @Override
-    public Subject save(Subject subject){
+    public Subject save(Subject subject) {
         return repository.saveAndFlush(SubjectEntity.from(subject));
     }
 
