@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class SubjectControllerTest extends ControllerIntegrationTest {
 
-    public static final String ENDPOINT = "/api/question/subject";
+    private static final String ENDPOINT = "/api/question/subject";
 
     @Test
     @DisplayName("should retrieve all subjects")

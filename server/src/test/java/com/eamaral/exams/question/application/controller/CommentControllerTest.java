@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CommentControllerTest extends ControllerIntegrationTest {
 
-    public static final String ENDPOINT = "/api/question/comment";
+    private static final String ENDPOINT = "/api/question/comment";
 
     @Captor
     private ArgumentCaptor<Comment> commentArgumentCaptor;

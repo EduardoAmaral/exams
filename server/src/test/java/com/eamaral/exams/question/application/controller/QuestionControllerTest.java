@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class QuestionControllerTest extends ControllerIntegrationTest {
 
-    public static final String ENDPOINT = "/api/question";
+    private static final String ENDPOINT = "/api/question";
     private final String currentUser = "1";
     private final Long questionId = 1L;
 
