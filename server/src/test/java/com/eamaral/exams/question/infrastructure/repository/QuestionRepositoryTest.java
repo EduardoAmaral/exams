@@ -283,13 +283,14 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @ParameterizedTest
     @MethodSource("findByCriteriaScenarios")
     @DisplayName("should retrieve all questions by criteria")
-    void findByCriteriaWithStatement_shouldReturnOnlyQuestionsThatMatchWithTheStatementFiltered(SearchByCriteriaScenario scenario) {
+    void findByCriteria_shouldReturnOnlyQuestionsThatMatchesIt(SearchByCriteriaScenario scenario) {
         repository.saveAll(getQuestions());
 
         List<Question> result = repository.findByCriteria(scenario.criteria, currentUser);
 
         assertThat(result)
                 .extracting(scenario.assertField)
+                .isNotEmpty()
                 .allMatch(content -> scenario.matcher.test(content.toString()));
     }
 
