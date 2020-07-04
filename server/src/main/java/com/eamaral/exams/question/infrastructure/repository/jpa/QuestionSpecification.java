@@ -19,7 +19,7 @@ public class QuestionSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (shouldFilterByStatement(query)) {
-                predicates.add(cb.like(question.get("statement"), like(query.getStatement())));
+                predicates.add(cb.like(cb.upper(question.get("statement")), like(query.getStatement())));
             }
 
             if (shouldFilterByType(query)) {
@@ -27,7 +27,7 @@ public class QuestionSpecification {
             }
 
             if (shouldFilterByTopic(query)) {
-                predicates.add(cb.like(question.get("topic"), like(query.getTopic())));
+                predicates.add(cb.like(cb.upper(question.get("topic")), like(query.getTopic())));
             }
 
             if (shouldFilterBySubject(query)) {
@@ -76,6 +76,6 @@ public class QuestionSpecification {
     }
 
     private static String like(String field) {
-        return "%" + field + "%";
+        return "%" + field.toUpperCase() + "%";
     }
 }

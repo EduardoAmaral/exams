@@ -280,6 +280,24 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    @DisplayName("should return only questions that matches the subject filtered when search by criteria")
+    void findByCriteriaWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
+        repository.saveAll(getQuestions());
+
+        Question question = TrueOrFalseEntity.builder()
+                .subject(SubjectEntity.builder()
+                        .id(english.getId())
+                        .build())
+                .build();
+
+        List<Question> result = repository.findByCriteria(question, "20001");
+
+        assertThat(result).extracting(q -> q.getSubject().getId())
+                .isNotEmpty()
+                .allMatch(id -> id.equals(english.getId()), "The result should only contain questions where their subject matches the filter");
+    }
+
     @ParameterizedTest
     @MethodSource("findByCriteriaScenarios")
     @DisplayName("should retrieve all questions by criteria")
@@ -321,7 +339,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                                         .topic("language")
                                         .build()
                         )
-                        .matcher(topic -> topic.contains("language"))
+                        .matcher(topic -> topic.toLowerCase().contains("language"))
                         .build(),
                 SearchByCriteriaScenario.builder()
                         .assertField("author")
@@ -331,17 +349,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                                         .build()
                         )
                         .matcher(author -> author.equals("20001"))
-                        .build(),
-                SearchByCriteriaScenario.builder()
-                        .assertField("subject.id")
-                        .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .subject(SubjectEntity.builder()
-                                                .id(1L)
-                                                .build())
-                                        .build()
-                        )
-                        .matcher(subject -> subject.equals("1"))
                         .build()
         );
     }
@@ -382,6 +389,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         .correctAnswer("True")
                         .topic("Language; Latin Language")
                         .subject(portuguese)
+                        .shared(true)
                         .author("20001")
                         .build());
     }
