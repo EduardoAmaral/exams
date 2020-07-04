@@ -7,11 +7,12 @@ import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.exam.domain.port.ExamRepositoryPort;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,14 +22,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExamServiceTest {
-
-    @Mock
-    private ExamRepositoryPort examRepositoryPort;
-
-    @InjectMocks
-    private ExamService service;
 
     private final LocalDateTime startDateTime = LocalDateTime.now()
             .plusDays(2);
@@ -41,8 +36,15 @@ public class ExamServiceTest {
 
     private final Long examId = 1L;
 
+    @Mock
+    private ExamRepositoryPort examRepositoryPort;
+
+    @InjectMocks
+    private ExamService service;
+
     @Test
-    public void create_whenExamIsValid_shouldSaveANewExam_withoutSchedule() {
+    @DisplayName("should create a new exam")
+    void create_whenExamIsValid_shouldSaveANewExam() {
         Exam exam = getExamBuilderWithDefault().build();
 
         service.create(exam, currentUser);
@@ -51,7 +53,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenNotMockTestAndWithoutDates_shouldThrowDatesAreRequiredWhenNotAMockTest() {
+    @DisplayName("should validate that dates are required when creating an exam")
+    void create_whenNotMockTestAndWithoutDates_shouldThrowDatesAreRequiredWhenNotAMockTest() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(null)
                 .endDateTime(null)
@@ -66,7 +69,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenNotMockTestAndEndDateTimeIsNull_shouldThrowDatesAreRequiredWhenNotAMockTest() {
+    @DisplayName("should validate that the end date is required when creating an exam")
+    void create_whenNotMockTestAndEndDateTimeIsNull_shouldThrowDatesAreRequiredWhenNotAMockTest() {
         Exam exam = getExamBuilderWithDefault()
                 .endDateTime(null)
                 .mockTest(false)
@@ -80,7 +84,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenStartDateBeforeEndDate_shouldThrowTheStartTimeMustBeBeforeTheEndTime() {
+    @DisplayName("should validate that the end date is before start date when creating an exam")
+    void create_whenStartDateBeforeEndDate_shouldThrowTheStartTimeMustBeBeforeTheEndTime() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(endDateTime)
                 .endDateTime(startDateTime)
@@ -95,7 +100,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenTimeIntervalBelowTo30Minutes_shouldThrowTheExamDurationMustBeAtLeast30Minutes() {
+    @DisplayName("should validate that an exam has more than 30 minutes of interval when creating it")
+    void create_whenTimeIntervalBelowTo30Minutes_shouldThrowTheExamDurationMustBeAtLeast30Minutes() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(startDateTime)
                 .endDateTime(startDateTime.plusMinutes(1))
@@ -110,7 +116,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenMockTest_shouldNotValidateDates() {
+    @DisplayName("should validate that mock tests don't require dates (interval)")
+    void create_whenMockTest_shouldNotValidateDates() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(null)
                 .endDateTime(null)
@@ -123,7 +130,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void create_whenDatesAreInThePast_shouldThrowCouldNotCreateExamInThePast() {
+    @DisplayName("should validate that exams can't be create with dates in the past")
+    void create_whenDatesAreInThePast_shouldThrowCouldNotCreateExamInThePast() {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(LocalDateTime.now().minusHours(1))
                 .endDateTime(LocalDateTime.now().plusHours(3))
@@ -137,21 +145,24 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void findByUser_shouldRetrieveAllExamsByUser() {
+    @DisplayName("findByUser should retrieve all exams by user")
+    void findByUser_shouldRetrieveAllExamsByUser() {
         service.findByUser(currentUser);
 
         verify(examRepositoryPort).findByUser(currentUser);
     }
 
     @Test
-    public void findAvailable_shouldRetrieveAllAvailableExams() {
+    @DisplayName("findAvailable should retrieve all available exams")
+    void findAvailable_shouldRetrieveAllAvailableExams() {
         service.findAvailable();
 
         verify(examRepositoryPort).findAvailable();
     }
 
     @Test
-    public void findById_shouldReturnTheExam_whenItExists() {
+    @DisplayName("findById should return an exam if it exists")
+    void findById_shouldReturnTheExam_whenItExists() {
         when(examRepositoryPort.findById(examId, currentUser)).thenReturn(Optional.of(getExamBuilderWithDefault().build()));
 
         Exam exam = service.findById(examId, currentUser);
@@ -162,7 +173,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void findById_whenNothingIsFound_shouldThrowNotFoundException() {
+    @DisplayName("findById should throw not found exception when exam does not exist")
+    void findById_whenNothingIsFound_shouldThrowNotFoundException() {
         when(examRepositoryPort.findById(examId, currentUser)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.findById(examId, currentUser))
@@ -173,7 +185,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void findById_whenIdIsNull_shouldThrowInvalidDataException() {
+    @DisplayName("findById should validate that id used is not null")
+    void findById_whenIdIsNull_shouldThrowInvalidDataException() {
         assertThatThrownBy(() -> service.findById(null, currentUser))
                 .isInstanceOf(InvalidDataException.class)
                 .hasMessage("Exam's id is required");
@@ -182,7 +195,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void delete_whenExamBelongsToCurrentUser_shouldCallRepository() {
+    @DisplayName("delete should remove an exam when current user is its author")
+    void delete_whenExamBelongsToCurrentUser_shouldCallRepository() {
         when(examRepositoryPort.findById(examId, currentUser)).thenReturn(Optional.of(getExamBuilderWithDefault().build()));
 
         service.delete(examId, currentUser);
@@ -191,7 +205,8 @@ public class ExamServiceTest {
     }
 
     @Test
-    public void delete_whenExamDoesNotBelongToCurrentUser_shouldThrownException() {
+    @DisplayName("delete should validate that current user is its author")
+    void delete_whenExamDoesNotBelongToCurrentUser_shouldThrownException() {
         when(examRepositoryPort.findById(examId, currentUser)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(NotFoundException.class)

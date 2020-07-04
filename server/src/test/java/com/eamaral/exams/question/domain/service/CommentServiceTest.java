@@ -4,11 +4,12 @@ import com.eamaral.exams.message.infrastructure.redis.port.MessagePublisher;
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.domain.Comment;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
 
     @InjectMocks
@@ -30,7 +31,8 @@ public class CommentServiceTest {
     private MessagePublisher publisher;
 
     @Test
-    public void create_shouldCallRepositoryPortToSaveACommentAndPublishAMessage() {
+    @DisplayName("should create a comment")
+    void create_shouldCallRepositoryPortToSaveAComment() {
         Comment comment = CommentDTO.builder()
                 .build();
 
@@ -40,11 +42,25 @@ public class CommentServiceTest {
         service.create(comment);
 
         verify(repository).create(comment);
+    }
+
+    @Test
+    @DisplayName("should publish a message after create a comment")
+    void create_shouldPublishAMessage() {
+        Comment comment = CommentDTO.builder()
+                .build();
+
+        final Comment newComment = CommentDTO.builder().id(1L).build();
+        when(repository.create(comment)).thenReturn(newComment);
+
+        service.create(comment);
+
         verify(publisher).publish(newComment);
     }
 
     @Test
-    public void findAllBy_shouldRetrieveAllQuestionCommentsOrderByTheNewest() {
+    @DisplayName("should retrieve all comments from a question ordered by the newest")
+    void findAllBy_shouldRetrieveAllQuestionCommentsOrderByTheNewest() {
         long questionId = 1L;
         when(repository.findAllBy(questionId)).thenReturn(List.of(
                 CommentDTO.builder()

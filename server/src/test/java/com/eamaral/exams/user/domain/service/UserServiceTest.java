@@ -1,14 +1,15 @@
 package com.eamaral.exams.user.domain.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WithMockUser
 public class UserServiceTest {
 
@@ -16,7 +17,7 @@ public class UserServiceTest {
     private UserService service;
 
     @Test
-    public void getCurrentUserId_shouldReturnTheUserIdOfLoggedUser() {
+    void getCurrentUserId_shouldReturnTheUserIdOfLoggedUser() {
         assertThat(service.getCurrentUserId()).isNotBlank();
     }
 }

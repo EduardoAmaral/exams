@@ -2,18 +2,19 @@ package com.eamaral.exams.message.infrastructure.redis;
 
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.google.gson.Gson;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZonedDateTime;
 
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class RedisMessagePublisherTest {
 
     @Mock
@@ -23,7 +24,8 @@ public class RedisMessagePublisherTest {
     private RedisMessagePublisher publisher;
 
     @Test
-    public void publish_shouldSendAMessageToRedisChannel() {
+    @DisplayName("should publish a message on Redis")
+    void publish_shouldSendAMessageToRedisChannel() {
         CommentDTO comment = CommentDTO.builder()
                 .id(1L)
                 .questionId(256L)

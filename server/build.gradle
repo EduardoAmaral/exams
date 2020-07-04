@@ -44,7 +44,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
 
 dependencies {
@@ -82,21 +82,25 @@ dependencies {
 
     testImplementation 'com.h2database:h2'
     testImplementation 'org.assertj:assertj-core'
-    testImplementation 'io.rest-assured:rest-assured', { exclude group: 'com.sun.xml.bind', module: 'jaxb-osgi' }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'io.rest-assured:spring-mock-mvc'
     testImplementation 'com.tngtech.archunit:archunit-junit4:0.13.1'
-    testImplementation 'org.springframework.security:spring-security-test', { exclude group: 'org.junit.vintage', module: 'junit-vintage-engine' }
-    testImplementation 'org.springframework.boot:spring-boot-starter-test', { exclude group: 'org.junit.vintage', module: 'junit-vintage-engine' }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 configurations {
     all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     all*.exclude group: "log4j", module: "log4j"
-    all*.exclude group: "org.junit.jupiter", module: "junit-jupiter-api"
     all*.exclude group: "org.apache.logging.log4j", module: "log4j-slf4j-impl"
 }
 
 test {
+
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter', 'junit-vintage'
+    }
 
     testLogging {
         events "passed", "skipped", "failed"

@@ -9,11 +9,12 @@ import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.Question;
 import com.eamaral.exams.question.domain.port.QuestionRepositoryPort;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +24,11 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QuestionServiceTest {
+
+    private final Long questionId = 1L;
+    private final String currentUser = "1";
 
     @InjectMocks
     private QuestionService service;
@@ -32,12 +36,9 @@ public class QuestionServiceTest {
     @Mock
     private QuestionRepositoryPort repositoryPort;
 
-    private String currentUser = "1";
-
-    private final Long questionId = 1L;
-
     @Test
-    public void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
+    @DisplayName("should return all questions by their author")
+    void findByUser_shouldReturnAllQuestionsCreatedByTheUser() {
         String statement1 = "AAA";
         String statement2 = "EEE";
         List<Question> questions = List.of(
@@ -62,7 +63,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void findById_shouldReturnAQuestion() {
+    @DisplayName("should return a question by id")
+    void findById_shouldReturnAQuestion() {
         Question question = getQuestionBuilder("A", "Statement", "True").build();
 
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
@@ -81,7 +83,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void findById_whenQuestionDoesntExist_shouldThrowNotFoundException() {
+    @DisplayName("should validate that the question exist when getting it")
+    void findById_shouldThrowNotFoundException() {
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
@@ -91,7 +94,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void findById_whenIdIsNull_shouldThrowException() {
+    @DisplayName("should validate the user id when getting a question by id")
+    void findById_whenIdIsNull_shouldThrowException() {
         assertThatThrownBy(
                 () -> service.find(null, currentUser))
                 .isInstanceOf(InvalidDataException.class)
@@ -99,7 +103,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void save_shouldReturnAQuestion() {
+    @DisplayName("should save a question")
+    void save() {
         Question question = QuestionDTO.builder()
                 .statement("AAA")
                 .correctAnswer("True")
@@ -114,7 +119,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void saveAll_shouldReturnAllQuestionsWithId() {
+    @DisplayName("should save a list of questions")
+    void saveAll() {
         List<Question> request = List.of(
                 QuestionDTO.builder()
                         .statement("AAA")
@@ -144,7 +150,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenTypeDoesNotChange_shouldReturnAUpdatedQuestion() {
+    @DisplayName("should update a question if its type did not change")
+    void update_whenTypeDoesNotChange_shouldReturnAUpdatedQuestion() {
         Question question = getQuestionBuilder("Solution", "Statement", "False")
                 .build();
 
@@ -168,7 +175,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenTypeChanges_shouldReturnAInvalidException() {
+    @DisplayName("should validate that the question's type didn't change when updating a question")
+    void update_whenTypeChanges_shouldReturnAInvalidException() {
         QuestionDTO.QuestionDTOBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
@@ -182,7 +190,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenQuestionDoesntExist_shouldThrowNotFoundException() {
+    @DisplayName("should validate that the question exist when updating it")
+    void update_whenQuestionDoesNotExist_shouldThrowNotFoundException() {
         Question question = QuestionDTO.builder().id(questionId).build();
 
         when(repositoryPort.find(questionId, currentUser))
@@ -194,7 +203,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
+    @DisplayName("should validate that the current user is the author when updating a question")
+    void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
         QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -214,7 +224,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void update_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_shouldThrowInvalidDataException() {
+    @DisplayName("should validate that the correct answer is part of the alternatives when updating a question")
+    void update_whenCorrectAnswerDoesNotMatchAnyOfTheAlternatives_shouldThrowInvalidDataException() {
         Question question = QuestionDTO.builder()
                 .id(questionId)
                 .statement("A")
@@ -232,7 +243,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void delete_shouldCallDeleteMethodFromRepository() {
+    @DisplayName("should delete a question")
+    void delete_shouldCallDeleteMethodFromRepository() {
         Question question = getQuestionBuilder("A", "B", "C").build();
 
         when(repositoryPort.find(questionId, currentUser)).thenReturn(Optional.of(question));
@@ -244,7 +256,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void delete_whenQuestionDoesntExist_shouldReturnNotFoundException() {
+    @DisplayName("should validate that the question exist when deleting it")
+    void delete_whenQuestionDoesNotExist_shouldReturnNotFoundException() {
         when(repositoryPort.find(anyLong(), eq(currentUser)))
                 .thenReturn(Optional.empty());
 
@@ -254,7 +267,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void search_shouldCallSearchByCriteria() {
+    @DisplayName("should search by a criteria")
+    void search_shouldCallSearchByCriteria() {
         when(repositoryPort.findByCriteria(any(), eq(currentUser))).thenReturn(emptyList());
 
         service.search(QuestionDTO.builder().build(), currentUser);
@@ -263,7 +277,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void save_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_toTrueOrFalseQuestion_shouldThrowInvalidDataException() {
+    @DisplayName("should validate that the correct answer is part of the alternatives in TRUE OR FALSE questions")
+    void save_whenCorrectAnswerDoesNotMatchAnyOfTheTrueOrFalseAlternatives() {
         Question question = QuestionDTO.builder()
                 .correctAnswer("Wrong")
                 .type(QuestionType.TRUE_OR_FALSE)
@@ -274,7 +289,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void save_whenCorrectAnswerDoesntMatchAnyOfTheAlternatives_toMultipleChoicesQuestion_shouldThrowInvalidDataException() {
+    @DisplayName("should validate that the correct answer is part of the alternatives in MULTIPLE CHOICES questions")
+    void save_whenCorrectAnswerDoesNotMatchAnyOfTheMultipleChoicesAlternatives() {
         Question question = QuestionDTO.builder()
                 .correctAnswer("Wrong")
                 .type(QuestionType.MULTIPLE_CHOICES)

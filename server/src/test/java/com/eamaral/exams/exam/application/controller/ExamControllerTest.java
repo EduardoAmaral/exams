@@ -5,7 +5,8 @@ import com.eamaral.exams.exam.application.dto.ExamDTO;
 import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.http.MediaType;
@@ -29,24 +30,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ExamControllerTest extends ControllerIntegrationTest {
 
     private static final String ENDPOINT = "/api/exam";
+    private final String currentUserId = "100023";
+    private final Long examId = 1L;
+    private final LocalDateTime startDateTime = LocalDateTime.now();
+    private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private final String title = "Title 1";
 
     @Captor
     private ArgumentCaptor<Exam> examCaptor;
 
-    private final String currentUserId = "100023";
-
-    private final Long examId = 1L;
-
-    private final LocalDateTime startDateTime = LocalDateTime.now();
-
-    private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
-
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-    private final String title = "Title 1";
-
     @Test
-    public void create_whenFieldsAreValid_AndReturnCreatedStatus() throws Exception {
+    @DisplayName("should return created when creating an exam")
+    void create_whenFieldsAreValid_AndReturnCreatedStatus() throws Exception {
         ExamDTO dto = getExamDTO();
 
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
@@ -79,7 +75,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
+    @DisplayName("should return bad request when creating an exam without required fields")
+    void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
         ExamDTO dto = ExamDTO.builder().build();
 
         mockMvc.perform(
@@ -96,7 +93,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
+    @DisplayName("should retrieve all exams by their author")
+    void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
 
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findByUser(currentUserId)).thenReturn(singletonList(getExamDTO()));
@@ -116,7 +114,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
+    @DisplayName("should retrieve all available exams at current time")
+    void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findAvailable()).thenReturn(singletonList(getExamDTO()));
 
@@ -135,7 +134,8 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void getById_shouldReturnAnExistentExamTemplate() throws Exception {
+    @DisplayName("should retrieve an exam by id")
+    void getById_shouldReturnAnExistentExam() throws Exception {
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
         when(examPort.findById(examId, currentUserId)).thenReturn(getExamDTO());
 
@@ -151,7 +151,7 @@ public class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void delete_shouldReturnNoContentStatus() throws Exception {
+    void delete_shouldReturnNoContentStatus() throws Exception {
         when(userPort.getCurrentUserId()).thenReturn(currentUserId);
 
         mockMvc.perform(

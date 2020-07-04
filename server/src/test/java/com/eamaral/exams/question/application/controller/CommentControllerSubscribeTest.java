@@ -5,18 +5,19 @@ import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.domain.Comment;
 import com.eamaral.exams.question.domain.port.CommentPort;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommentControllerSubscribeTest {
 
 
@@ -27,7 +28,8 @@ public class CommentControllerSubscribeTest {
     private CommentController controller;
 
     @Test
-    public void subscribe_shouldRetrieveAllQuestionComments() {
+    @DisplayName("should retrieve all comments from a question once subscribe")
+    void subscribe_shouldRetrieveAllQuestionComments() {
         final ZonedDateTime now = ZonedDateTime.now();
         final List<Comment> comments = List.of(
                 CommentDTO.builder()

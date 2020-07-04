@@ -3,11 +3,12 @@ package com.eamaral.exams.question.domain.service;
 import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.domain.port.SubjectRepositoryPort;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SubjectServiceTest {
 
     @InjectMocks
@@ -25,7 +26,8 @@ public class SubjectServiceTest {
     private SubjectRepositoryPort repository;
 
     @Test
-    public void save_shouldSaveASubject() {
+    @DisplayName("should save a subject")
+    void save_shouldSaveASubject() {
         Subject subject = SubjectEntity.builder()
                 .description("English")
                 .build();
@@ -38,7 +40,8 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void findAll_shouldReturnAllSubjects() {
+    @DisplayName("should retrieve all subjects")
+    void findAll_shouldReturnAllSubjects() {
         List<Subject> subjects = new ArrayList<>(List.of(SubjectEntity.builder()
                         .description("English")
                         .build(),

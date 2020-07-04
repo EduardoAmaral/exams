@@ -5,7 +5,8 @@ import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.Comment;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.http.MediaType;
@@ -26,14 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CommentControllerTest extends ControllerIntegrationTest {
 
     public static final String ENDPOINT = "/api/question/comment";
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Captor
     private ArgumentCaptor<Comment> commentArgumentCaptor;
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
     @Test
-    public void create_shouldCallCommentServiceWithAComment() throws Exception {
+    @DisplayName("should integrate with commentService when creating a comment")
+    void create_shouldCallCommentServiceWithAComment() throws Exception {
         String userId = "123";
         ZonedDateTime now = ZonedDateTime.now();
 
@@ -71,7 +72,8 @@ public class CommentControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
+    @DisplayName("should validate required fields when creating a comment")
+    void create_whenRequiredFieldsAreNotFilled_shouldReturnBadRequest() throws Exception {
         QuestionDTO dto = QuestionDTO.builder().build();
 
         mockMvc.perform(
@@ -86,7 +88,8 @@ public class CommentControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void create_whenMessageIsGreaterThanExpected_shouldReturnBadRequest() throws Exception {
+    @DisplayName("should validate message length when creating a comment")
+    void create_whenMessageIsGreaterThanExpected_shouldReturnBadRequest() throws Exception {
         CommentDTO dto = CommentDTO.builder()
                 .message(new String(new char[301]).replace('\0', 'A'))
                 .questionId(1L)

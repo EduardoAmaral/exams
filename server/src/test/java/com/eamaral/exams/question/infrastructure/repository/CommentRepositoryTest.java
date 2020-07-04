@@ -3,7 +3,8 @@ package com.eamaral.exams.question.infrastructure.repository;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.domain.Comment;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     private EntityManager entityManager;
 
     @Test
+    @DisplayName("should create a comment")
     public void create_whenFieldsAreValid_shouldReturnAQuestionWithId() {
         Comment comment = getComment(1L);
 
@@ -32,6 +34,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
+    @DisplayName("should validate required fields when creating a comment")
     public void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
         Comment comment = CommentEntity.builder().build();
 
@@ -47,6 +50,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
+    @DisplayName("should validate the message length when creating a comment")
     public void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
         Comment comment = CommentEntity.builder()
                 .message(new String(new char[301]).replace('\0', 'A'))
@@ -65,6 +69,7 @@ public class CommentRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
+    @DisplayName("should retrieve all comments from a given question id")
     public void findAllBy_shouldReturnAllQuestionComments() {
         long questionId = 1L;
         entityManager.merge(getComment(questionId));

@@ -9,8 +9,9 @@ import com.eamaral.exams.question.infrastructure.repository.QuestionRepository;
 import com.eamaral.exams.question.infrastructure.repository.SubjectRepository;
 import com.eamaral.exams.question.infrastructure.repository.converter.QuestionConverter;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolationException;
@@ -24,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ExamRepositoryTest extends JpaIntegrationTest {
 
+    private final String currentUser = "10001";
+
     @Autowired
     private ExamRepository repository;
 
@@ -33,24 +36,24 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    private final String currentUser = "10001";
-
     private List<QuestionEntity> questions;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         persistQuestions();
     }
 
     @Test
-    public void save_shouldSaveAnExam() {
+    @DisplayName("save should save an exam when required fields are filled")
+    void save_shouldSaveAnExam() {
         Exam exam = getExam().build();
         exam = repository.save(exam);
         assertThat(exam.getId()).isNotZero();
     }
 
     @Test
-    public void save_whenAuthorIsNotInformed_shouldThrowConstraintViolationException() {
+    @DisplayName("save should throw constraint validation exception when save without required fields")
+    void save_shouldThrowConstraintViolationException() {
         List<String> validationMessages = List.of("Title is required",
                 "Questions are required",
                 "Author is required");
@@ -63,7 +66,8 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findByUser_shouldReturnAllExamsCreatedByTheUser() {
+    @DisplayName("findByUser should retrieve all exams created by a given user")
+    void findByUser_shouldReturnAllExamsCreatedByTheUser() {
         repository.save(getExam().build());
         List<Exam> exams = repository.findByUser(currentUser);
 
@@ -71,7 +75,8 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findByUser_shouldReturnEmpty_whenCurrentUserDoesntHaveAnyExam() {
+    @DisplayName("findByUser should return empty if a given user doesn't have exams registred")
+    void findByUser_shouldReturnEmpty() {
         repository.save(getExam().build());
         List<Exam> exams = repository.findByUser("000009");
 
@@ -79,13 +84,8 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findAvailable_shouldReturnAllExamsWhereTheCurrentDateIsBetweenTheirInterval_orIsAMockTest() {
-        repository.save(getExam()
-                .startDateTime(LocalDateTime.MIN)
-                .endDateTime(LocalDateTime.MIN)
-                .mockTest(true)
-                .build());
-
+    @DisplayName("findAvailable should retrieve all exams where current time is between exams start and end date/time")
+    void findAvailable_shouldReturnAllExamsWhereTheCurrentDateIsBetweenTheirInterval() {
         LocalDateTime today = LocalDateTime.now();
         repository.save(getExam()
                 .startDateTime(today.minusMinutes(30))
@@ -102,11 +102,33 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
 
         List<Exam> exams = repository.findAvailable();
 
-        assertThat(exams).hasSize(2);
+        assertThat(exams).hasSize(1);
     }
 
     @Test
-    public void findById_whenExamExistsAndCurrentUserIsItsAuthor_shouldReturnIt() {
+    @DisplayName("findAvailable should retrieve all mock tests where current time is between the start and end date/time")
+    void findAvailable_shouldRetrieveAllMockTests() {
+        repository.save(getExam()
+                .startDateTime(LocalDateTime.MIN)
+                .endDateTime(LocalDateTime.MIN)
+                .mockTest(true)
+                .build());
+
+        LocalDateTime nextDay = LocalDateTime.now().plusDays(1);
+        repository.save(getExam()
+                .startDateTime(nextDay)
+                .endDateTime(nextDay.plusHours(2))
+                .mockTest(false)
+                .build());
+
+        List<Exam> exams = repository.findAvailable();
+
+        assertThat(exams).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("findById should return the exam when it exists and the current user is its author")
+    void findById_whenExamExistsAndCurrentUserIsItsAuthor_shouldReturnIt() {
         Exam exam = repository.save(getExam().build());
 
         Optional<Exam> result = repository.findById(exam.getId(), currentUser);
@@ -119,7 +141,8 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findById_whenExamExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
+    @DisplayName("findById should return empty if current user is not the exam's author")
+    void findById_whenExamExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
         Exam exam = repository.save(getExam().build());
 
         Optional<Exam> result = repository.findById(exam.getId(), "user");
@@ -128,14 +151,16 @@ public class ExamRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findById_whenExamDoesNotExist_shouldReturnEmpty() {
+    @DisplayName("findById should return empty if exam id doesn't exist")
+    void findById_whenExamDoesNotExist_shouldReturnEmpty() {
         Optional<Exam> result = repository.findById(1L, "user");
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void delete_shouldRemoveAnExamTemplate() {
+    @DisplayName("delete should remove an exam")
+    void delete_shouldRemoveAnExam() {
         Exam exam = repository.save(getExam().build());
 
         assertThat(repository.findByUser(currentUser)).hasSize(1);

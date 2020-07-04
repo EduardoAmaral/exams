@@ -3,7 +3,10 @@ package com.eamaral.exams.question.infrastructure.repository;
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -23,7 +26,8 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
     private EntityManager entityManager;
 
     @Test
-    public void save_shouldSaveASubject() {
+    @DisplayName("should save a subject")
+    void save_shouldSaveASubject() {
         SubjectEntity entity = SubjectEntity.builder()
                 .description("English")
                 .build();
@@ -34,7 +38,8 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    public void findAll_shouldReturnAllSubjects() {
+    @DisplayName("should retrieve all the subjects registered")
+    void findAll_shouldReturnAllSubjects() {
         SubjectEntity english = SubjectEntity.builder()
                 .description("English")
                 .build();
@@ -51,14 +56,19 @@ public class SubjectRepositoryTest extends JpaIntegrationTest {
         assertThat(result).hasSize(2);
     }
 
-    @Test
-    public void save_whenDescriptionIsBlank_shouldThrowsException() {
-        assertThatThrownBy(() -> repository.save(SubjectEntity.builder().build()))
+    @ParameterizedTest
+    @ValueSource(strings = {"", "    "})
+    @DisplayName("should validate that a subject can't be saved without description")
+    void save_whenDescriptionIsBlank_shouldThrowsException(String description) {
+        assertThatThrownBy(() -> repository.save(SubjectEntity.builder()
+                .description(description)
+                .build()))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
-    public void save_whenDescriptionAlreadyExists_shouldThrowsException() {
+    @DisplayName("should validate ")
+    void save_whenDescriptionAlreadyExists_shouldThrowsException() {
         SubjectEntity english = SubjectEntity.builder()
                 .description("English")
                 .build();

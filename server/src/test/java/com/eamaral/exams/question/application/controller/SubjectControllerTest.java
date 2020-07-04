@@ -2,7 +2,8 @@ package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.configuration.controller.ControllerIntegrationTest;
 import com.eamaral.exams.question.application.dto.SubjectDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
@@ -21,7 +22,8 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
     public static final String ENDPOINT = "/api/question/subject";
 
     @Test
-    public void list_shouldReturnAllSubjects() throws Exception {
+    @DisplayName("should retrieve all subjects")
+    void list_shouldReturnAllSubjects() throws Exception {
         when(subjectPort.findAll()).thenReturn(new ArrayList<>(List.of(
                 SubjectDTO.builder()
                         .id(1L)
@@ -41,7 +43,8 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void save_shouldReturnCreated() throws Exception {
+    @DisplayName("should return created when creating a subject")
+    void save_shouldReturnCreated() throws Exception {
         SubjectDTO dto = SubjectDTO.builder()
                 .description("English")
                 .build();
@@ -56,7 +59,8 @@ public class SubjectControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    public void save_whenDescriptionIsBlank_shouldReturnCreated() throws Exception {
+    @DisplayName("should return bad request when creating a subject without description")
+    void save_whenDescriptionIsBlank_shouldReturnCreated() throws Exception {
         SubjectDTO dto = SubjectDTO.builder()
                 .description("      ")
                 .build();

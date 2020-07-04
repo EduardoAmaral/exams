@@ -2,14 +2,15 @@ package com.eamaral.exams.message.application.redis;
 
 import com.eamaral.exams.message.application.redis.dto.MessageDTO;
 import com.eamaral.exams.question.application.dto.CommentDTO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZonedDateTime;
 
@@ -17,7 +18,7 @@ import static com.eamaral.exams.message.application.redis.dto.MessageDTO.Message
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class RedisMessageListenerTest {
 
     @Mock
@@ -33,7 +34,8 @@ public class RedisMessageListenerTest {
     private ArgumentCaptor<MessageDTO<CommentDTO>> commentArgumentCaptor;
 
     @Test
-    public void onQuestionCommentMessage_shouldSendACommentToTheTopic() {
+    @DisplayName("should send a question's comment to its topic when receiving a message")
+    void onQuestionCommentMessage_shouldSendACommentToTheTopic() {
         listener.onQuestionCommentMessage("{ " +
                 "\"id\": 1, " +
                 "\"questionId\": 12256, " +
