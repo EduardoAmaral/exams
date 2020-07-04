@@ -81,7 +81,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
         repository.save(getExam().build());
         List<Exam> exams = repository.findByUser("000009");
 
-        assertThat(exams).hasSize(0);
+        assertThat(exams).isEmpty();
     }
 
     @Test
@@ -164,11 +164,11 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     void delete_shouldRemoveAnExam() {
         Exam exam = repository.save(getExam().build());
 
-        assertThat(repository.findByUser(currentUser)).hasSize(1);
+        assertThat(repository.findByUser(currentUser)).isNotEmpty();
 
         repository.delete(exam);
 
-        assertThat(repository.findByUser(currentUser)).hasSize(0);
+        assertThat(repository.findByUser(currentUser)).isEmpty();
     }
 
     private ExamEntity.ExamEntityBuilder getExam() {

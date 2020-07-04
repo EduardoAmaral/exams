@@ -254,7 +254,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
 
         questions = repository.findByUser(author);
 
-        assertThat(questions).hasSize(0);
+        assertThat(questions).isEmpty();
     }
 
     @Test
