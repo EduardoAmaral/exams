@@ -60,9 +60,11 @@ class SubjectRepositoryTest extends JpaIntegrationTest {
     @ValueSource(strings = {"", "    "})
     @DisplayName("should validate that a subject can't be saved without description")
     void save_whenDescriptionIsBlank_shouldThrowsException(String description) {
-        assertThatThrownBy(() -> repository.save(SubjectEntity.builder()
+        final SubjectEntity subject = SubjectEntity.builder()
                 .description(description)
-                .build()))
+                .build();
+
+        assertThatThrownBy(() -> repository.save(subject))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 

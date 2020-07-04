@@ -58,8 +58,9 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                 "Questions are required",
                 "Author is required");
 
+        final ExamEntity emptyExam = ExamEntity.builder().build();
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> repository.save(ExamEntity.builder().build()))
+                .isThrownBy(() -> repository.save(emptyExam))
                 .matches(e -> e.getConstraintViolations().size() == 3)
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
