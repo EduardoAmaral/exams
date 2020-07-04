@@ -1,8 +1,9 @@
 package com.eamaral.exams.question.application.dto;
 
 import com.eamaral.exams.question.domain.Comment;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -35,7 +36,7 @@ public class CommentDTO implements Serializable, Comment {
 
     private String author;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime creationDate;
 
     public static List<CommentDTO> from(List<Comment> comments) {

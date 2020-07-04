@@ -13,8 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CommentControllerTest extends ControllerIntegrationTest {
 
     public static final String ENDPOINT = "/api/question/comment";
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Captor
     private ArgumentCaptor<Comment> commentArgumentCaptor;
@@ -36,7 +35,7 @@ class CommentControllerTest extends ControllerIntegrationTest {
     @DisplayName("should integrate with commentService when creating a comment")
     void create_shouldCallCommentServiceWithAComment() throws Exception {
         String userId = "123";
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now().withFixedOffsetZone();
 
         when(userPort.getCurrentUserId()).thenReturn(userId);
         when(commentPort.create(any())).thenReturn(CommentDTO.builder()
@@ -63,7 +62,7 @@ class CommentControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.message", is("First Comment")))
                 .andExpect(jsonPath("$.questionId", is(1)))
                 .andExpect(jsonPath("$.author", is("0987")))
-                .andExpect(jsonPath("$.creationDate", is(dateTimeFormatter.format(now))));
+                .andExpect(jsonPath("$.creationDate", containsString(now.toLocalDate().toString())));
 
         verify(commentPort).create(commentArgumentCaptor.capture());
         Assertions.assertThat(commentArgumentCaptor.getValue())

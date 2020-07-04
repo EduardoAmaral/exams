@@ -18,8 +18,7 @@ import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -34,7 +33,12 @@ class ExamControllerTest extends ControllerIntegrationTest {
     private final Long examId = 1L;
     private final LocalDateTime startDateTime = LocalDateTime.now();
     private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private final String startDateTimeFormatted = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .format(startDateTime);
+    private final String endDateTimeFormatted = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .format(endDateTime);
     private final String title = "Title 1";
 
     @Captor
@@ -102,8 +106,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
-                .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
+                .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
+                .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].title", is(title)))
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
@@ -122,8 +126,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
         mockMvc.perform(get(ENDPOINT + "/available"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].startDateTime", is(dateTimeFormatter.format(startDateTime))))
-                .andExpect(jsonPath("$[0].endDateTime", is(dateTimeFormatter.format(endDateTime))))
+                .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
+                .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].title", is(title)))
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
@@ -144,8 +148,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is(title)))
                 .andExpect(jsonPath("$.author", is(currentUserId)))
-                .andExpect(jsonPath("$.startDateTime", is(dateTimeFormatter.format(startDateTime))))
-                .andExpect(jsonPath("$.endDateTime", is(dateTimeFormatter.format(endDateTime))))
+                .andExpect(jsonPath("$.startDateTime", containsString(startDateTimeFormatted)))
+                .andExpect(jsonPath("$.endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$.mockTest", is(false)))
                 .andExpect(jsonPath("$.questions", hasSize(2)));
     }

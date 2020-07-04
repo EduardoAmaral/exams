@@ -67,7 +67,6 @@ dependencies {
     implementation group: 'org.springframework.data', name: 'spring-data-redis'
     implementation 'redis.clients:jedis'
 
-    implementation group: 'com.google.code.gson', name: 'gson'
     implementation 'org.apache.commons:commons-collections4:4.4'
 
     implementation 'org.projectlombok:lombok'
