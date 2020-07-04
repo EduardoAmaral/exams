@@ -22,7 +22,6 @@ public class AuthController {
     @GetMapping
     public ResponseEntity<Object> auth() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Authenticating {}", principal);
         if (principal instanceof DefaultOidcUser) {
             var user = (DefaultOidcUser) principal;
             return ok(new User(
