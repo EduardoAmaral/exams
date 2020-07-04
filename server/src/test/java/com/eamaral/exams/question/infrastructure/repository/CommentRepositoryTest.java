@@ -25,7 +25,7 @@ class CommentRepositoryTest extends JpaIntegrationTest {
 
     @Test
     @DisplayName("should create a comment")
-    public void create_whenFieldsAreValid_shouldReturnAQuestionWithId() {
+    void create_whenFieldsAreValid_shouldReturnAQuestionWithId() {
         Comment comment = getComment(1L);
 
         Comment result = repository.create(comment);
@@ -35,7 +35,7 @@ class CommentRepositoryTest extends JpaIntegrationTest {
 
     @Test
     @DisplayName("should validate required fields when creating a comment")
-    public void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
+    void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
         Comment comment = CommentEntity.builder().build();
 
         List<String> validationMessages = List.of("Message is required",
@@ -51,7 +51,7 @@ class CommentRepositoryTest extends JpaIntegrationTest {
 
     @Test
     @DisplayName("should validate the message length when creating a comment")
-    public void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
+    void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
         Comment comment = CommentEntity.builder()
                 .message(new String(new char[301]).replace('\0', 'A'))
                 .author("1234")
@@ -70,7 +70,7 @@ class CommentRepositoryTest extends JpaIntegrationTest {
 
     @Test
     @DisplayName("should retrieve all comments from a given question id")
-    public void findAllBy_shouldReturnAllQuestionComments() {
+    void findAllBy_shouldReturnAllQuestionComments() {
         long questionId = 1L;
         entityManager.merge(getComment(questionId));
         entityManager.merge(getComment(questionId));

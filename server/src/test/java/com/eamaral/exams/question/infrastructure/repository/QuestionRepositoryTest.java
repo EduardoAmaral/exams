@@ -125,7 +125,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
 
     @Test
     @DisplayName("should find a TRUE OR FALSE question when search an existent question by id")
-    public void findById_whenIdExistsAndQuestionIsTrueOrFalse_shouldReturnATrueOrFalseQuestion() {
+    void findById_whenIdExistsAndQuestionIsTrueOrFalse_shouldReturnATrueOrFalseQuestion() {
         Question question = getTrueOrFalseQuestion();
 
         question = repository.save(question);
