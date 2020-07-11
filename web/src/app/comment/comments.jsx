@@ -1,25 +1,9 @@
 import React, { useState } from 'react';
+import Comment from './comment';
 import './comments.scss';
 
 export default function Comments({ comments = [], onSend = () => {} }) {
   const [newComment, setNewComment] = useState({});
-
-  const printComment = (comment) => {
-    return (
-      <div
-        key={comment.id}
-        className="comment"
-        data-testid={`comment-${comment.id}`}
-      >
-        <span className="author" data-testid={`comment-${comment.id}-author`}>
-          {comment.author}
-        </span>
-        <div className="message" data-testid={`comment-${comment.id}-message`}>
-          {comment.message}
-        </div>
-      </div>
-    );
-  };
 
   const sendComment = () => {
     onSend(newComment);
@@ -57,7 +41,9 @@ export default function Comments({ comments = [], onSend = () => {} }) {
         </div>
       </div>
       <div className="comments-container">
-        {comments.map((comment) => printComment(comment))}
+        {comments.map((comment) => (
+          <Comment comment={comment} />
+        ))}
       </div>
     </div>
   );

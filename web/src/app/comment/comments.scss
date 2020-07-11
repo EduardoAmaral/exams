@@ -34,13 +34,18 @@
     }
   }
 
+  .comments-container {
+    max-height: 40vh;
+    overflow-x: scroll;
+  }
+
   .comment {
     border-radius: $default-border-radius;
     background-color: $secundary-color;
     padding: 8px 12px;
     position: relative;
 
-    margin: 8px auto;
+    margin: 14px auto 32px;
 
     span.author {
       display: block;
@@ -58,6 +63,14 @@
     div.message {
       font-weight: $font-light;
       font-size: $font-disclaimer;
+    }
+
+
+    span.date {
+      position: absolute;
+      font-size: 12px;
+      font-weight: $font-light;
+      bottom: -18px;
     }
   }
 }
