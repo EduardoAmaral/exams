@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 export default function Profile() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: any) => state.user);
 
   return (
     <div className="profile" data-testid="header-profile">
