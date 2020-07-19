@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import history from '../config/history';
+import './questionForm.scss';
 
 export default function QuestionForm({
   questionData,
@@ -23,13 +24,29 @@ export default function QuestionForm({
   ];
 
   const trueOrFalseAlternatives = [
-    { description: 'True' },
-    { description: 'False' },
+    { position: 1, description: 'True' },
+    { position: 2, description: 'False' },
+  ];
+
+  const multipleChoicesAlternatives = [
+    { position: 1, description: '' },
+    { position: 2, description: '' },
+    { position: 3, description: '' },
+    { position: 4, description: '' },
+    { position: 5, description: '' },
   ];
 
   useEffect(() => {
     if (questionData !== undefined && questionData.subject !== undefined) {
-      setQuestion(questionData);
+      let alternativePosition = 0;
+      setQuestion({
+        ...questionData,
+        alternatives: questionData.alternatives.map((q) => ({
+          ...q,
+          // eslint-disable-next-line no-plusplus
+          position: ++alternativePosition,
+        })),
+      });
       setSelectedSubject(questionData.subject.id);
     }
   }, [questionData]);
@@ -82,18 +99,28 @@ export default function QuestionForm({
             value={question.type}
             disabled={question.id !== undefined}
             onChange={(event) => {
-              if (event.target.value === TRUE_OR_FALSE) {
-                setQuestion({
-                  ...question,
-                  type: event.target.value,
-                  alternatives: trueOrFalseAlternatives,
-                });
-              } else {
-                setQuestion({
-                  ...question,
-                  type: event.target.value,
-                  alternatives: [],
-                });
+              switch (event.target.value) {
+                case TRUE_OR_FALSE:
+                  setQuestion({
+                    ...question,
+                    type: event.target.value,
+                    alternatives: trueOrFalseAlternatives,
+                  });
+                  break;
+                case MULTIPLE_CHOICES:
+                  setQuestion({
+                    ...question,
+                    type: event.target.value,
+                    alternatives: multipleChoicesAlternatives,
+                  });
+                  break;
+                default:
+                  setQuestion({
+                    ...question,
+                    type: event.target.value,
+                    alternatives: [],
+                  });
+                  break;
               }
             }}
           >
@@ -199,7 +226,7 @@ export default function QuestionForm({
   const renderAlternatives = () => {
     if (question.alternatives) {
       return (
-        <label>
+        <div className="alternatives">
           Alternatives:
           {errors.alternatives ? (
             <div
@@ -217,35 +244,57 @@ export default function QuestionForm({
               {errors.correctAnswer}
             </div>
           ) : null}
-          {question.type === TRUE_OR_FALSE
-            ? question.alternatives.map((alternative) => (
-                <div key={alternative.description}>
-                  <label
-                    data-testid={`question-form-alternative-${alternative.description}`}
-                  >
-                    <input
-                      type="radio"
-                      name="alternative"
-                      value={alternative.description}
-                      data-testid={`question-form-alternative-${alternative.description}-input`}
-                      checked={
-                        alternative.description === question.correctAnswer
-                      }
-                      onChange={(event) => {
-                        setQuestion({
-                          ...question,
-                          correctAnswer: event.target.value,
-                        });
-                      }}
-                    />
-                    {alternative.description}
-                  </label>
-                </div>
-              ))
-            : null}
-        </label>
+          {question.alternatives.map((alternative) => (
+            <div key={alternative.position}>
+              <label
+                data-testid={`question-form-alternative-${alternative.position}`}
+              >
+                <input
+                  type="radio"
+                  name="correctAnswer"
+                  value={alternative.description}
+                  data-testid={`question-form-alternative-${alternative.position}-radio`}
+                  checked={alternative.description === question.correctAnswer}
+                  onChange={(event) => {
+                    setQuestion({
+                      ...question,
+                      correctAnswer: event.target.value,
+                    });
+                  }}
+                />
+                {question.type === TRUE_OR_FALSE ? (
+                  alternative.description
+                ) : (
+                  <input
+                    type="input"
+                    name={`alternative-${alternative.position}`}
+                    data-testid={`question-form-alternative-${alternative.position}-input`}
+                    className="form-control"
+                    value={alternative.description}
+                    onChange={(event) => {
+                      console.log(event.target.value);
+                      const newAlternatives = question.alternatives.map((a) => {
+                        return a.position === alternative.position
+                          ? {
+                              ...alternative,
+                              description: event.target.value,
+                            }
+                          : a;
+                      });
+                      setQuestion({
+                        ...question,
+                        alternatives: newAlternatives,
+                      });
+                    }}
+                  />
+                )}
+              </label>
+            </div>
+          ))}
+        </div>
       );
     }
+    return null;
   };
 
   return (
@@ -270,7 +319,7 @@ export default function QuestionForm({
         <div className="col-md-12">{renderTopicsInput()}</div>
       </div>
       <div className="row field">
-        <div className="col-md-12">{renderAlternatives()}</div>
+        <div className="col-md-6">{renderAlternatives()}</div>
       </div>
       <div className="row">
         <div className="col-md-12 right">

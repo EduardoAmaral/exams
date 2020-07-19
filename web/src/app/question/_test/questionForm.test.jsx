@@ -105,12 +105,26 @@ describe('<QuestionForm />', () => {
       target: { value: 'True Or False' },
     });
 
-    expect(getByTestId('question-form-alternative-True')).toHaveTextContent(
+    expect(getByTestId('question-form-alternative-1')).toHaveTextContent(
       'True'
     );
-    expect(getByTestId('question-form-alternative-False')).toHaveTextContent(
+    expect(getByTestId('question-form-alternative-2')).toHaveTextContent(
       'False'
     );
+  });
+
+  it('should render alternatives true and false when Multiple Choices type is selected', () => {
+    const { getByTestId } = render(<QuestionForm />);
+
+    fireEvent.change(getByTestId('question-form-type-input'), {
+      target: { value: 'Multiple Choices' },
+    });
+
+    expect(getByTestId('question-form-alternative-1-input')).toBeDefined();
+    expect(getByTestId('question-form-alternative-2-input')).toBeDefined();
+    expect(getByTestId('question-form-alternative-3-input')).toBeDefined();
+    expect(getByTestId('question-form-alternative-4-input')).toBeDefined();
+    expect(getByTestId('question-form-alternative-5-input')).toBeDefined();
   });
 
   it('should render a save button', () => {
@@ -125,7 +139,7 @@ describe('<QuestionForm />', () => {
     expect(getByTestId('cancel-button')).toHaveTextContent('Cancel');
   });
 
-  it('should save a question when click on save', () => {
+  it('should save a true or false question when click on save', () => {
     const onSubmit = jest.fn();
 
     const savedQuestion = {
@@ -137,7 +151,10 @@ describe('<QuestionForm />', () => {
         id: '1',
       },
       correctAnswer: 'True',
-      alternatives: [{ description: 'True' }, { description: 'False' }],
+      alternatives: [
+        { position: 1, description: 'True' },
+        { position: 2, description: 'False' },
+      ],
     };
 
     const { getByTestId } = render(
@@ -164,13 +181,47 @@ describe('<QuestionForm />', () => {
       target: { value: 'Topic 1; Topic 2;' },
     });
 
-    fireEvent.click(getByTestId('question-form-alternative-True'));
+    fireEvent.click(getByTestId('question-form-alternative-1-radio'));
 
     fireEvent.click(getByTestId('question-form-save-button'));
 
-    expect(onSubmit).toBeCalledTimes(1);
-
     expect(onSubmit).toBeCalledWith(savedQuestion);
+  });
+
+  it('should save a multiple choices question when click on save', () => {
+    const onSubmit = jest.fn();
+
+    const savedQuestion = {
+      statement: 'Statement',
+      type: 'Multiple Choices',
+      solution: 'Solution',
+      topic: 'Topic 1; Topic 2;',
+      subject: {
+        id: '1',
+      },
+      correctAnswer: 'D',
+      alternatives: [
+        { position: 1, description: 'A' },
+        { position: 2, description: 'B' },
+        { position: 3, description: 'C' },
+        { position: 4, description: 'D' },
+        { position: 5, description: 'E' },
+      ],
+    };
+
+    const { getByTestId } = render(
+      <QuestionForm
+        subjects={subjects}
+        onSubmit={onSubmit}
+        questionData={savedQuestion}
+      />
+    );
+
+    fireEvent.click(getByTestId('question-form-alternative-2'));
+
+    fireEvent.click(getByTestId('question-form-save-button'));
+
+    expect(onSubmit).toBeCalledWith({ ...savedQuestion, correctAnswer: 'B' });
   });
 
   it('should return to the previous page when click on cancel', () => {
@@ -182,7 +233,7 @@ describe('<QuestionForm />', () => {
     expect(history.goBack).toBeCalledTimes(1);
   });
 
-  it('should load the fields if question param is defined', async () => {
+  it('should load the fields if question data is defined', async () => {
     const { getByTestId } = render(
       <QuestionForm questionData={questionData} subjects={subjects} />
     );
@@ -210,7 +261,7 @@ describe('<QuestionForm />', () => {
       questionData.topic
     );
 
-    expect(getByTestId('question-form-alternative-True-input')).toHaveProperty(
+    expect(getByTestId('question-form-alternative-1-radio')).toHaveProperty(
       'checked'
     );
   });

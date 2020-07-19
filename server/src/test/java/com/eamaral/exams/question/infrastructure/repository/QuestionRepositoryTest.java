@@ -55,6 +55,17 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
+    @DisplayName("Save multiple choices question should return success")
+    void save_multipleChoices() {
+        Question question = getMultipleChoice();
+
+        Question result = repository.save(question);
+
+        assertThat(result.getId()).isNotZero();
+        assertThat(result.getAlternatives()).isNotEmpty();
+    }
+
+    @Test
     @DisplayName("should validate required fields when saving a question")
     void save_whenFieldsAreInvalid_shouldThrowsException() {
         Question question = MultipleChoiceEntity.builder()
