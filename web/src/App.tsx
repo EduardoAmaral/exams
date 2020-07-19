@@ -31,7 +31,7 @@ const Login = () => {
 };
 
 export default function App() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: any) => state.user);
 
   return user ? <Authenticated /> : <Login />;
 }
