@@ -7,7 +7,7 @@ interface Props {
   onSend: (comment: any) => void;
 }
 
-export default function Comments({ comments = [], onSend} : Props) {
+export default function Comments({ comments = [], onSend }: Props) {
   const [newComment, setNewComment] = useState<Partial<CommentModel>>({});
 
   const sendComment = () => {
@@ -47,7 +47,7 @@ export default function Comments({ comments = [], onSend} : Props) {
       </div>
       <div className="comments-container">
         {comments.map((comment) => (
-          <Comment comment={comment} />
+          <Comment key={comment.id} comment={comment} />
         ))}
       </div>
     </div>
@@ -76,11 +76,7 @@ export function Comment({ comment }: CommentProps) {
   };
 
   return (
-    <div
-      key={comment.id}
-      className="comment"
-      data-testid={`comment-${comment.id}`}
-    >
+    <div className="comment" data-testid={`comment-${comment.id}`}>
       <span className="author" data-testid={`comment-${comment.id}-author`}>
         {comment.author}
       </span>

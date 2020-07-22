@@ -18,7 +18,7 @@ export default function QuestionPage() {
         setLoading(false);
         setQuestions(response.data);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
       });
   }, []);
