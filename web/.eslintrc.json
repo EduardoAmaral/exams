@@ -6,41 +6,33 @@
   },
   "extends": [
     "plugin:react/recommended",
-    "airbnb",
-    "prettier",
-    "prettier/react"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
   ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "prettier"
-  ],
+  "plugins": ["react", "prettier"],
   "rules": {
     "prettier/prettier": "error",
     "react/jsx-filename-extension": [
       "warn",
       {
-        "extensions": [
-          ".jsx",
-          ".js"
-        ]
+        "extensions": [".jsx", ".js", ".ts", ".tsx"]
       }
     ],
-    "import/prefer-default-export": "off",
-    "react/state-in-constructor": "off",
-    "react/prop-types": "off",
-    "jsx-a11y/label-has-associated-control": "off",
-    "no-alert": "off"
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-empty-function": "warn",
+    "react/prop-types": "warn"
   }
 }
