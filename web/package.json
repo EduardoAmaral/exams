@@ -70,15 +70,15 @@
     }
   },
   "lint-staged": {
-    "./src/*.{js,jsx}": [
+    "./src/*.{js,jsx,ts,tsx}": [
       "npx prettier --write",
-      "eslint src --ext .js,.jsx --fix"
+      "eslint src --ext .js,.jsx,.ts,.tsx --fix"
     ]
   },
   "proxy": "http://localhost:8081/",
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
+      "src/**/*.{js,jsx,ts,tsx}",
       "!<rootDir>/node_modules/",
       "!<rootDir>/path/to/dir/"
     ],
