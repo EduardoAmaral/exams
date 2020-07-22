@@ -7,15 +7,22 @@ import Loading from '../loading/loading';
 import history from '../config/history';
 import Comments from '../comment/comments';
 import { questionCommentsSubscription } from '../config/socket';
+import Question from '../types/Question';
+import Comment from '../types/Comment';
+
+interface CommentMessage {
+  readonly type: string;
+  readonly data: any;
+}
 
 export default function QuestionDetailPage() {
   const [loading, setLoading] = useState(false);
-  const [question, setQuestion] = useState({ subject: {} });
-  const [comments, setComments] = useState([]);
+  const [question, setQuestion] = useState<Partial<Question>>({ subject: {} });
+  const [comments, setComments] = useState<Array<Comment>>([]);
 
   const { id } = useParams();
 
-  const onCommentReceive = (message) => {
+  const onCommentReceive = (message: CommentMessage) => {
     switch (message.type) {
       case 'FETCH_ALL_COMMENTS':
         setComments(message.data);
@@ -55,7 +62,7 @@ export default function QuestionDetailPage() {
     history.goBack();
   };
 
-  const onSendComment = (comment) => {
+  const onSendComment = (comment: Comment) => {
     axios
       .post(QUESTION_COMMENT, { ...comment, questionId: question.id })
       .then((response) => {

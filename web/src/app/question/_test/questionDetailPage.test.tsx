@@ -13,7 +13,7 @@ import { questionCommentsSubscription } from '../../config/socket';
 
 jest.mock('axios');
 jest.mock('../../config/history');
-jest.spyOn(router, 'useParams').mockReturnValue({ id: 2 });
+jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 jest.mock('../../config/socket');
 
 describe('<QuestionDetailPage />', () => {
@@ -34,7 +34,7 @@ describe('<QuestionDetailPage />', () => {
   };
 
   beforeEach(() => {
-    axios.get
+    (axios.get as any)
       .mockResolvedValueOnce({
         data: question,
       })
@@ -42,7 +42,7 @@ describe('<QuestionDetailPage />', () => {
         data: [],
       });
 
-    axios.post.mockResolvedValueOnce({
+    (axios.post as any).mockResolvedValueOnce({
       data: {
         id: 1,
         message: 'My Comment',
@@ -52,17 +52,17 @@ describe('<QuestionDetailPage />', () => {
   });
 
   afterEach(() => {
-    axios.get.mockRestore();
-    axios.post.mockRestore();
-    history.push.mockRestore();
-    questionCommentsSubscription.mockRestore();
+    (axios.get as any).mockRestore();
+    (axios.post as any).mockRestore();
+    (history.push as any).mockRestore();
+    (questionCommentsSubscription as any).mockRestore();
   });
 
   it('should call the get question by id endpoint', async () => {
     render(<QuestionDetailPage />);
 
     expect(axios.get).toHaveBeenCalledWith(
-      QUESTION_BY_ID.replace(':id', question.id)
+      QUESTION_BY_ID.replace(':id', question.id.toString())
     );
   });
 
@@ -189,7 +189,7 @@ describe('<QuestionDetailPage />', () => {
       await waitForElementToBeRemoved(() => getByTestId('loading'));
 
       expect(questionCommentsSubscription).toHaveBeenCalledWith(
-        question.id,
+        question.id.toString(),
         expect.anything()
       );
     });
