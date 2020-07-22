@@ -1,11 +1,19 @@
 import React from 'react';
+import Question from '../types/Question';
+
+interface Props {
+  question: Question;
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+  onDetail: (id: number) => void;
+}
 
 export default function QuestionItem({
   question,
-  onEdit = () => {},
-  onDelete = () => {},
-  onDetail = () => {},
-}) {
+  onEdit,
+  onDelete,
+  onDetail,
+}: Props) {
   const { id } = question;
 
   return (

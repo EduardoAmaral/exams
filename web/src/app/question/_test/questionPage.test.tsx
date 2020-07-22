@@ -35,18 +35,18 @@ describe('<QuestionPage />', () => {
   ];
 
   beforeEach(() => {
-    axios.get.mockResolvedValueOnce({
+    (axios.get as any).mockResolvedValueOnce({
       data: questions,
     });
 
-    axios.delete.mockResolvedValueOnce({
+    (axios.delete as any).mockResolvedValueOnce({
       status: 204,
     });
   });
 
   afterEach(() => {
-    axios.get.mockRestore();
-    history.push.mockRestore();
+    (axios.get as any).mockRestore();
+    (history.push as any).mockRestore();
   });
 
   it('should call the questions get endpoint', async () => {
@@ -137,7 +137,7 @@ describe('<QuestionPage />', () => {
     fireEvent.click(getByTestId('question-delete-button-1'));
 
     expect(axios.delete).toBeCalledTimes(1);
-    expect(axios.delete).toBeCalledWith(DELETE_QUESTION.replace(':id', 1));
+    expect(axios.delete).toBeCalledWith(DELETE_QUESTION.replace(':id', '1'));
   });
 
   it('should not show the question after delete it', async () => {

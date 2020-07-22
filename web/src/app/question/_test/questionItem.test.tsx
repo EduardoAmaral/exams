@@ -1,9 +1,10 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import QuestionItem from '../questionItem';
+import Question from '../../types/Question';
 
 describe('<QuestionItem />', () => {
-  const question = {
+  const question: Question = {
     id: 1,
     statement: 'Question?',
     type: 'True Or False',
@@ -14,7 +15,14 @@ describe('<QuestionItem />', () => {
   };
 
   it('should have a statement', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-statement-${question.id}`;
 
@@ -22,7 +30,14 @@ describe('<QuestionItem />', () => {
   });
 
   it('should have a subject', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-subject-${question.id}`;
 
@@ -30,7 +45,14 @@ describe('<QuestionItem />', () => {
   });
 
   it('should have a type', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-type-${question.id}`;
 
@@ -38,7 +60,14 @@ describe('<QuestionItem />', () => {
   });
 
   it('should render a delete button', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-delete-button-${question.id}`;
 
@@ -48,7 +77,12 @@ describe('<QuestionItem />', () => {
   it('should have called onDelete function when click on the delete button', () => {
     const onDelete = jest.fn();
     const { getByTestId } = render(
-      <QuestionItem question={question} onDelete={onDelete} />
+      <QuestionItem
+        question={question}
+        onDetail={() => {}}
+        onEdit={() => {}}
+        onDelete={onDelete}
+      />
     );
 
     const testId = `question-delete-button-${question.id}`;
@@ -60,7 +94,14 @@ describe('<QuestionItem />', () => {
   });
 
   it('should render a edit button', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-edit-button-${question.id}`;
 
@@ -70,7 +111,12 @@ describe('<QuestionItem />', () => {
   it('should have called onEdit function when click on the edit button', () => {
     const onEdit = jest.fn();
     const { getByTestId } = render(
-      <QuestionItem question={question} onEdit={onEdit} />
+      <QuestionItem
+        question={question}
+        onEdit={onEdit}
+        onDelete={() => {}}
+        onDetail={() => {}}
+      />
     );
 
     const testId = `question-edit-button-${question.id}`;
@@ -82,7 +128,14 @@ describe('<QuestionItem />', () => {
   });
 
   it('should render an info button', () => {
-    const { getByTestId } = render(<QuestionItem question={question} />);
+    const { getByTestId } = render(
+      <QuestionItem
+        question={question}
+        onDelete={() => {}}
+        onDetail={() => {}}
+        onEdit={() => {}}
+      />
+    );
 
     const testId = `question-detail-button-${question.id}`;
 
@@ -92,7 +145,12 @@ describe('<QuestionItem />', () => {
   it('should have called onDetail function when click on the detail button', () => {
     const onDetail = jest.fn();
     const { getByTestId } = render(
-      <QuestionItem question={question} onDetail={onDetail} />
+      <QuestionItem
+        question={question}
+        onDetail={onDetail}
+        onDelete={() => {}}
+        onEdit={() => {}}
+      />
     );
 
     const testId = `question-detail-button-${question.id}`;

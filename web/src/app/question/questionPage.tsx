@@ -4,10 +4,11 @@ import { DELETE_QUESTION, QUESTION } from '../config/endpoint';
 import QuestionItem from './questionItem';
 import Loading from '../loading/loading';
 import history from '../config/history';
+import Question from '../types/Question';
 
 export default function QuestionPage() {
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Array<Question>>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -18,7 +19,6 @@ export default function QuestionPage() {
         setQuestions(response.data);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
       });
   }, []);
@@ -27,22 +27,22 @@ export default function QuestionPage() {
     history.push('/question/create');
   };
 
-  const redirectToEdit = (id) => {
+  const redirectToEdit = (id: number) => {
     history.push(`/question/edit/${id}`);
   };
 
-  const redirectToDetail = (id) => {
+  const redirectToDetail = (id: number) => {
     history.push(`/question/detail/${id}`);
   };
 
-  const onDelete = (id) => {
+  const handleDelete = (id: number) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the question ${id}?`
     );
 
     if (confirmed) {
       setLoading(true);
-      axios.delete(DELETE_QUESTION.replace(':id', id)).then(() => {
+      axios.delete(DELETE_QUESTION.replace(':id', id.toString())).then(() => {
         setLoading(false);
         setQuestions(questions.filter((q) => q.id !== id));
       });
@@ -72,7 +72,7 @@ export default function QuestionPage() {
               question={question}
               key={question.id}
               onEdit={redirectToEdit}
-              onDelete={onDelete}
+              onDelete={handleDelete}
               onDetail={redirectToDetail}
             />
           ))}
