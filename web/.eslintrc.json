@@ -31,8 +31,6 @@
         "extensions": [".jsx", ".js", ".ts", ".tsx"]
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-empty-function": "warn",
-    "react/prop-types": "warn"
+    "@typescript-eslint/explicit-function-return-type": "off"
   }
 }
