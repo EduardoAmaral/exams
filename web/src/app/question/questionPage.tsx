@@ -7,8 +7,8 @@ import history from '../config/history';
 import Question from '../types/Question';
 
 export default function QuestionPage() {
-  const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<Array<Question>>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     setLoading(true);

@@ -3,7 +3,7 @@ import CommentModel from '../types/Comment';
 import './comments.scss';
 
 interface Props {
-  comments?: Array<CommentModel>;
+  comments?: CommentModel[];
   onSend: (comment: any) => void;
 }
 

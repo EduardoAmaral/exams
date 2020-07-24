@@ -18,9 +18,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -33,9 +33,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -48,9 +48,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -63,9 +63,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -79,8 +79,8 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
         onDelete={onDelete}
       />
     );
@@ -97,9 +97,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -114,8 +114,8 @@ describe('<QuestionItem />', () => {
       <QuestionItem
         question={question}
         onEdit={onEdit}
-        onDelete={() => {}}
-        onDetail={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
       />
     );
 
@@ -131,9 +131,9 @@ describe('<QuestionItem />', () => {
     const { getByTestId } = render(
       <QuestionItem
         question={question}
-        onDelete={() => {}}
-        onDetail={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onDetail={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 
@@ -148,8 +148,8 @@ describe('<QuestionItem />', () => {
       <QuestionItem
         question={question}
         onDetail={onDetail}
-        onDelete={() => {}}
-        onEdit={() => {}}
+        onDelete={jest.fn()}
+        onEdit={jest.fn()}
       />
     );
 

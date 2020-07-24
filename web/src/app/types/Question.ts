@@ -1,11 +1,14 @@
+import Subject from './Subject';
+import Alternative from './Alternative';
+
 export default interface Question {
-  id: number;
+  id?: number;
   statement: string;
   type: string;
-  subject: any;
+  subject: Subject;
   solution?: string;
   topic?: string;
   sharable?: boolean;
-  alternatives?: any;
+  alternatives?: Alternative[];
   correctAnswer?: string;
 }

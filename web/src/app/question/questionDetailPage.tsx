@@ -17,8 +17,8 @@ interface CommentMessage {
 
 export default function QuestionDetailPage() {
   const [loading, setLoading] = useState(false);
-  const [question, setQuestion] = useState<Partial<Question>>({ subject: {} });
-  const [comments, setComments] = useState<Array<Comment>>([]);
+  const [question, setQuestion] = useState<Partial<Question>>({});
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const { id } = useParams();
 
@@ -85,12 +85,12 @@ export default function QuestionDetailPage() {
       </div>
       <div className="field">
         <span data-testid="question-detail-type-title">Type:</span>{' '}
-        <span data-testid="question-detail-type-value">{question.type}</span>
+        <span data-testid="question-detail-type-value">{question?.type}</span>
       </div>
       <div className="field">
         <span data-testid="question-detail-subject-title">Subject:</span>{' '}
         <span data-testid="question-detail-subject-value">
-          {question.subject.description}
+          {question.subject?.description}
         </span>
       </div>
       <div className="field">

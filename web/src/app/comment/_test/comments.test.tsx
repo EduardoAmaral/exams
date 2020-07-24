@@ -4,7 +4,7 @@ import Comments, { Comment } from '../comments';
 
 describe('<Comments />', () => {
   it('should render a input to write comments', () => {
-    const { getByTestId } = render(<Comments onSend={() => {}} />);
+    const { getByTestId } = render(<Comments onSend={jest.fn()} />);
 
     expect(getByTestId('comment-input')).toBeDefined();
     expect(getByTestId('send-comment-button')).toBeDefined();
@@ -41,7 +41,7 @@ describe('<Comments />', () => {
     ];
 
     const { container, getByTestId } = render(
-      <Comments onSend={() => {}} comments={comments} />
+      <Comments onSend={jest.fn()} comments={comments} />
     );
 
     expect(container.querySelectorAll('.comment')).toHaveLength(2);
@@ -52,7 +52,7 @@ describe('<Comments />', () => {
   });
 
   it('should clean input once submit comment', () => {
-    const { getByTestId } = render(<Comments onSend={() => {}} />);
+    const { getByTestId } = render(<Comments onSend={jest.fn()} />);
 
     fireEvent.change(getByTestId('comment-input'), {
       target: { value: 'My Comment' },
