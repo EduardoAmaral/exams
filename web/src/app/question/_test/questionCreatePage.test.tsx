@@ -24,16 +24,16 @@ describe('<QuestionCreatePage />', () => {
   ];
 
   beforeEach(() => {
-    axios.get.mockResolvedValueOnce({
+    (axios.get as any).mockResolvedValueOnce({
       data: subjects,
     });
 
-    axios.post.mockResolvedValueOnce({
+    (axios.post as any).mockResolvedValueOnce({
       status: 201,
     });
   });
 
-  afterEach(() => axios.get.mockRestore());
+  afterEach(() => (axios.get as any).mockRestore());
 
   it('should render the question creation page', async () => {
     const { getByTestId } = render(<QuestionCreatePage />);

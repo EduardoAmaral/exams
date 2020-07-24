@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import history from '../config/history';
 import './questionForm.scss';
+import Question from '../types/Question';
+import Subject from '../types/Subject';
+
+interface Props {
+  questionData?: Question;
+  subjects?: Subject[];
+  errors?: any;
+  onSubmit: (question: Partial<Question>) => void;
+}
 
 export default function QuestionForm({
   questionData,
   subjects = [],
   errors = {},
   onSubmit,
-}) {
-  const [question, setQuestion] = useState({});
-  const [selectedSubject, setSelectedSubject] = useState();
+}: Props) {
+  const [question, setQuestion] = useState<Partial<Question>>({
+    topic: '',
+    solution: '',
+  });
+  const [selectedSubject, setSelectedSubject] = useState<number>();
 
   const TRUE_OR_FALSE = 'True Or False';
   const MULTIPLE_CHOICES = 'Multiple Choices';
@@ -37,21 +49,21 @@ export default function QuestionForm({
   ];
 
   useEffect(() => {
-    if (questionData !== undefined && questionData.subject !== undefined) {
+    if (questionData !== undefined) {
       let alternativePosition = 0;
       setQuestion({
         ...questionData,
-        alternatives: questionData.alternatives.map((q) => ({
+        alternatives: questionData?.alternatives?.map((q) => ({
           ...q,
           // eslint-disable-next-line no-plusplus
           position: ++alternativePosition,
         })),
       });
-      setSelectedSubject(questionData.subject.id);
+      setSelectedSubject(questionData?.subject?.id);
     }
   }, [questionData]);
 
-  const onSubmitForm = (event) => {
+  const onSubmitForm = (event: FormEvent) => {
     event.preventDefault();
 
     onSubmit(question);
@@ -67,7 +79,7 @@ export default function QuestionForm({
         <label data-testid="question-form-statement-label">
           Statement
           <textarea
-            rows="4"
+            rows={4}
             className="form-control"
             data-testid="question-form-statement-input"
             value={question.statement}
@@ -160,10 +172,10 @@ export default function QuestionForm({
               setQuestion({
                 ...question,
                 subject: {
-                  id: event.target.value,
+                  id: Number.parseInt(event.target.value),
                 },
               });
-              setSelectedSubject(event.target.value);
+              setSelectedSubject(Number.parseInt(event.target.value));
             }}
           >
             <option value="" label="Select an option" />
@@ -194,7 +206,7 @@ export default function QuestionForm({
         Solution
         <textarea
           className="form-control"
-          rows="3"
+          rows={3}
           data-testid="question-form-solution-input"
           placeholder="Tell your students why the answer is that"
           value={question.solution}
@@ -273,14 +285,16 @@ export default function QuestionForm({
                     value={alternative.description}
                     onChange={(event) => {
                       console.log(event.target.value);
-                      const newAlternatives = question.alternatives.map((a) => {
-                        return a.position === alternative.position
-                          ? {
-                              ...alternative,
-                              description: event.target.value,
-                            }
-                          : a;
-                      });
+                      const newAlternatives = question.alternatives?.map(
+                        (a) => {
+                          return a.position === alternative.position
+                            ? {
+                                ...alternative,
+                                description: event.target.value,
+                              }
+                            : a;
+                        }
+                      );
                       setQuestion({
                         ...question,
                         alternatives: newAlternatives,

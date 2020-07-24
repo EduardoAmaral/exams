@@ -4,9 +4,11 @@ import { QUESTION, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
 import history from '../config/history';
+import Question from '../types/Question';
+import Subject from '../types/Subject';
 
 export default function QuestionCreatePage() {
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -24,7 +26,7 @@ export default function QuestionCreatePage() {
       });
   }, []);
 
-  const handleSubmit = (question) => {
+  const handleSubmit = (question: Partial<Question>) => {
     setLoading(true);
     axios
       .post(QUESTION, question)
