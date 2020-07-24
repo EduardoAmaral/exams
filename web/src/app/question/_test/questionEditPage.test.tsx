@@ -11,7 +11,7 @@ import QuestionEditPage from '../questionEditPage';
 
 jest.mock('axios');
 jest.mock('../../config/history');
-jest.spyOn(router, 'useParams').mockReturnValue({ id: 2 });
+jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 
 describe('<QuestionEditPage />', () => {
   const subjects = [
@@ -47,12 +47,12 @@ describe('<QuestionEditPage />', () => {
       .mockResolvedValueOnce({ data: question })
       .mockResolvedValueOnce({ data: subjects });
 
-    axios.put.mockResolvedValueOnce({
+    (axios.put as any).mockResolvedValueOnce({
       status: 200,
     });
   });
 
-  afterEach(() => axios.get.mockRestore());
+  afterEach(() => (axios.get as any).mockRestore());
 
   it('should render the question edit page', async () => {
     const { getByTestId } = render(<QuestionEditPage />);

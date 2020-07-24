@@ -5,11 +5,13 @@ import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
 import QuestionForm from './questionForm';
 import history from '../config/history';
+import Question from '../types/Question';
+import Subject from '../types/Subject';
 
 export default function QuestionEditPage() {
-  const [loading, setLoading] = useState(false);
-  const [question, setQuestion] = useState({});
-  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [question, setQuestion] = useState<Question>();
+  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   const { id } = useParams();
 
@@ -37,7 +39,7 @@ export default function QuestionEditPage() {
       });
   }, [id]);
 
-  const onSubmit = (updatedQuestion) => {
+  const onSubmit = (updatedQuestion: Partial<Question>) => {
     setLoading(true);
     axios
       .put(QUESTION, updatedQuestion)
