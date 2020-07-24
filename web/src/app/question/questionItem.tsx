@@ -14,7 +14,7 @@ export default function QuestionItem({
   onDelete,
   onDetail,
 }: Props) {
-  const { id } = question;
+  const id = question.id || 0;
 
   return (
     <tr data-testid={`question-${id}`}>
