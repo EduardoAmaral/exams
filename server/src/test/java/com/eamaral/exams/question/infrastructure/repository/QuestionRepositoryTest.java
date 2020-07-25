@@ -79,12 +79,36 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
         List<String> validationMessages = List.of("Author id is required",
                 "Correct answer is required",
                 "Statement is required",
-                "Statement should have between 4 and 2000 characters",
                 "Alternatives are required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(question))
-                .matches(e -> e.getConstraintViolations().size() == 5)
+                .matches(e -> e.getConstraintViolations().size() == validationMessages.size())
+                .matches(e -> e.getConstraintViolations().stream().allMatch(
+                        v -> validationMessages.contains(v.getMessage())));
+    }
+
+    @Test
+    @DisplayName("should validate maximum value of fields")
+    void save_whenStatementIsGreaterThanMaximum() {
+        Question question = MultipleChoiceEntity.builder()
+                .subject(english)
+                .correctAnswer("A")
+                .author("1")
+                .topic(new String(new char[256]).replace('\0', 'A'))
+                .statement(new String(new char[2001]).replace('\0', 'A'))
+                .type(QuestionType.TRUE_OR_FALSE)
+                .solution(new String(new char[3001]).replace('\0', 'A'))
+                .build();
+
+        List<String> validationMessages = List.of(
+                "Statement should have a maximum of 2000 characters",
+                "Solution should have a maximum of 3000 characters",
+                "Topic should have a maximum of 255 characters");
+
+        assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> repository.save(question))
+                .matches(e -> e.getConstraintViolations().size() == validationMessages.size())
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
     }

@@ -12,3 +12,13 @@ export default interface Question {
   alternatives?: Alternative[];
   correctAnswer?: string;
 }
+
+export interface QuestionErrors {
+  statement?: string;
+  type?: string;
+  subject?: string;
+  solution?: string;
+  topic?: string;
+  alternatives?: string;
+  correctAnswer?: string;
+}

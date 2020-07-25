@@ -101,6 +101,6 @@ class CommentControllerTest extends ControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors['message']", is("Comments cannot have more than 300 characters")));
+                .andExpect(jsonPath("$.errors['message']", is("Comments should have a maximum of 600 characters")));
     }
 }

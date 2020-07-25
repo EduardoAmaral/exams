@@ -99,9 +99,7 @@ describe('<QuestionForm />', () => {
   it('should render a text input and label to question topic', () => {
     const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
 
-    expect(getByTestId('question-form-topic-label')).toHaveTextContent(
-      'Topics'
-    );
+    expect(getByTestId('question-form-topic-label')).toHaveTextContent('Topic');
     expect(getByTestId('question-form-topic-input')).toBeDefined();
   });
 
@@ -393,6 +391,36 @@ describe('<QuestionForm />', () => {
       expect(
         getByTestId('question-form-correct-answer-error')
       ).toHaveTextContent('Correct answer is required');
+    });
+
+    it('should show solution validation message when have a solution error', () => {
+      const { getByTestId } = render(
+        <QuestionForm
+          onSubmit={jest.fn()}
+          errors={{
+            solution: 'Solution should have a maximum of 3000 characters',
+          }}
+        />
+      );
+
+      expect(getByTestId('question-form-solution-error')).toHaveTextContent(
+        'Solution should have a maximum of 3000 characters'
+      );
+    });
+
+    it('should show topics validation message when have a topic error', () => {
+      const { getByTestId } = render(
+        <QuestionForm
+          onSubmit={jest.fn()}
+          errors={{
+            topic: 'Topic should have a maximum of 255 characters',
+          }}
+        />
+      );
+
+      expect(getByTestId('question-form-topic-error')).toHaveTextContent(
+        'Topic should have a maximum of 255 characters'
+      );
     });
   });
 });

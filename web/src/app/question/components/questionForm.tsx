@@ -1,13 +1,13 @@
 import React, { useEffect, useState, FormEvent } from 'react';
 import history from '../../config/history';
 import './questionForm.scss';
-import Question from '../../types/Question';
+import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
 
 interface Props {
   questionData?: Question;
   subjects?: Subject[];
-  errors?: any;
+  errors?: QuestionErrors;
   onSubmit: (question: Partial<Question>) => void;
 }
 
@@ -202,36 +202,56 @@ export default function QuestionForm({
 
   const renderSolutionInput = () => {
     return (
-      <label data-testid="question-form-solution-label">
-        Solution
-        <textarea
-          className="form-control"
-          rows={3}
-          data-testid="question-form-solution-input"
-          placeholder="Tell your students why the answer is that"
-          value={question.solution}
-          onChange={(event) => {
-            setQuestion({ ...question, solution: event.target.value });
-          }}
-        />
-      </label>
+      <>
+        <label data-testid="question-form-solution-label">
+          Solution
+          <textarea
+            className="form-control"
+            rows={3}
+            data-testid="question-form-solution-input"
+            placeholder="Tell your students why the answer is that"
+            value={question.solution}
+            onChange={(event) => {
+              setQuestion({ ...question, solution: event.target.value });
+            }}
+          />
+        </label>
+        {errors.solution ? (
+          <div
+            className="validation-error"
+            data-testid="question-form-solution-error"
+          >
+            {errors.solution}
+          </div>
+        ) : null}
+      </>
     );
   };
 
   const renderTopicsInput = () => {
     return (
-      <label data-testid="question-form-topic-label">
-        Topics
-        <input
-          className="form-control"
-          data-testid="question-form-topic-input"
-          type="text"
-          value={question.topic}
-          onChange={(event) => {
-            setQuestion({ ...question, topic: event.target.value });
-          }}
-        />
-      </label>
+      <>
+        <label data-testid="question-form-topic-label">
+          Topic
+          <input
+            className="form-control"
+            data-testid="question-form-topic-input"
+            type="text"
+            value={question.topic}
+            onChange={(event) => {
+              setQuestion({ ...question, topic: event.target.value });
+            }}
+          />
+        </label>
+        {errors.topic ? (
+          <div
+            className="validation-error"
+            data-testid="question-form-topic-error"
+          >
+            {errors.topic}
+          </div>
+        ) : null}
+      </>
     );
   };
 

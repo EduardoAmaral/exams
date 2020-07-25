@@ -28,7 +28,7 @@ public class QuestionDTO implements Serializable, Question {
     private Long id;
 
     @NotBlank(message = "{question.statement.required}")
-    @Size(min = 4, max = 2000, message = "{question.statement.size}")
+    @Size(max = 2000, message = "{question.statement.size}")
     private String statement;
 
     @NotNull(message = "{question.type.required}")
@@ -46,6 +46,7 @@ public class QuestionDTO implements Serializable, Question {
     @NotBlank(message = "{question.answer.required}")
     private String correctAnswer;
 
+    @Size(max = 255, message = "{question.topic.size}")
     private String topic;
 
     @NotNull(message = "{question.subject.required}")

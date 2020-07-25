@@ -29,7 +29,7 @@ public abstract class QuestionEntity implements Question {
 
     @Column(columnDefinition = "varchar(2000)")
     @NotBlank(message = "{question.statement.required}")
-    @Size(min = 4, max = 2000, message = "{question.statement.size}")
+    @Size(max = 2000, message = "{question.statement.size}")
     private String statement;
 
     @Column
@@ -53,6 +53,7 @@ public abstract class QuestionEntity implements Question {
     private String correctAnswer;
 
     @Column
+    @Size(max = 255, message = "{question.topic.size}")
     private String topic;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
