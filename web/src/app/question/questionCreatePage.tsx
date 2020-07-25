@@ -9,7 +9,7 @@ import Subject from '../types/Subject';
 
 export default function QuestionCreatePage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -41,18 +41,17 @@ export default function QuestionCreatePage() {
       });
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div data-testid="question-create-page">
-      <h2>Create Question</h2>
-      <QuestionForm
-        subjects={subjects}
-        onSubmit={handleSubmit}
-        errors={errors}
-      />
-    </div>
+    <>
+      <Loading isLoading={isLoading} />
+      <div data-testid="question-create-page">
+        <h2>Create Question</h2>
+        <QuestionForm
+          subjects={subjects}
+          onSubmit={handleSubmit}
+          errors={errors}
+        />
+      </div>
+    </>
   );
 }

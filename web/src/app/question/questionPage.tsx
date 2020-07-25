@@ -7,7 +7,7 @@ import history from '../config/history';
 import Question from '../types/Question';
 
 export default function QuestionPage() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
@@ -49,45 +49,44 @@ export default function QuestionPage() {
     }
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div data-testid="question-page">
-      <h2>Questions</h2>
-      <table className="ui celled table" data-testid="question-table">
-        <thead>
-          <tr>
-            <th data-testid="question-header-statement">Statement</th>
-            <th data-testid="question-header-subject">Subject</th>
-            <th data-testid="question-header-type">Type</th>
-            <th data-testid="question-header-actions">Actions</th>
-          </tr>
-        </thead>
+    <>
+      <Loading isLoading={isLoading} />
+      <div data-testid="question-page">
+        <h2>Questions</h2>
+        <table className="ui celled table" data-testid="question-table">
+          <thead>
+            <tr>
+              <th data-testid="question-header-statement">Statement</th>
+              <th data-testid="question-header-subject">Subject</th>
+              <th data-testid="question-header-type">Type</th>
+              <th data-testid="question-header-actions">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {questions.map((question) => (
-            <QuestionItem
-              question={question}
-              key={question.id}
-              onEdit={redirectToEdit}
-              onDelete={handleDelete}
-              onDetail={redirectToDetail}
-            />
-          ))}
-        </tbody>
-      </table>
-      <div className="right">
-        <button
-          className="positive ui button"
-          type="button"
-          data-testid="question-create-button"
-          onClick={redirectToCreate}
-        >
-          Create Question
-        </button>
+          <tbody>
+            {questions.map((question) => (
+              <QuestionItem
+                question={question}
+                key={question.id}
+                onEdit={redirectToEdit}
+                onDelete={handleDelete}
+                onDetail={redirectToDetail}
+              />
+            ))}
+          </tbody>
+        </table>
+        <div className="right">
+          <button
+            className="positive ui button"
+            type="button"
+            data-testid="question-create-button"
+            onClick={redirectToCreate}
+          >
+            Create Question
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

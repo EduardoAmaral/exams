@@ -16,7 +16,7 @@ interface CommentMessage {
 }
 
 export default function QuestionDetailPage() {
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [question, setQuestion] = useState<Partial<Question>>({});
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -70,50 +70,51 @@ export default function QuestionDetailPage() {
       });
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div data-testid="question-detail-page">
-      <h2>Question {id}</h2>
-      <div className="field">
-        <span data-testid="question-detail-statement-title">Statement:</span>{' '}
-        <span data-testid="question-detail-statement-value">
-          {question.statement}
-        </span>
+    <>
+      <Loading isLoading={isLoading} />
+      <div data-testid="question-detail-page">
+        <h2>Question {id}</h2>
+        <div className="field">
+          <span data-testid="question-detail-statement-title">Statement:</span>{' '}
+          <span data-testid="question-detail-statement-value">
+            {question.statement}
+          </span>
+        </div>
+        <div className="field">
+          <span data-testid="question-detail-type-title">Type:</span>{' '}
+          <span data-testid="question-detail-type-value">{question?.type}</span>
+        </div>
+        <div className="field">
+          <span data-testid="question-detail-subject-title">Subject:</span>{' '}
+          <span data-testid="question-detail-subject-value">
+            {question.subject?.description}
+          </span>
+        </div>
+        <div className="field">
+          <span data-testid="question-detail-solution-title">Solution:</span>{' '}
+          <span data-testid="question-detail-solution-value">
+            {question.solution}
+          </span>
+        </div>
+        <div className="field">
+          <span data-testid="question-detail-topic-title">Topics:</span>{' '}
+          <span data-testid="question-detail-topic-value">
+            {question.topic}
+          </span>
+        </div>
+        <Comments comments={comments} onSend={onSendComment} />
+        <div>
+          <button
+            className="ui button"
+            type="button"
+            data-testid="cancel-button"
+            onClick={onCancelClick}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
-      <div className="field">
-        <span data-testid="question-detail-type-title">Type:</span>{' '}
-        <span data-testid="question-detail-type-value">{question?.type}</span>
-      </div>
-      <div className="field">
-        <span data-testid="question-detail-subject-title">Subject:</span>{' '}
-        <span data-testid="question-detail-subject-value">
-          {question.subject?.description}
-        </span>
-      </div>
-      <div className="field">
-        <span data-testid="question-detail-solution-title">Solution:</span>{' '}
-        <span data-testid="question-detail-solution-value">
-          {question.solution}
-        </span>
-      </div>
-      <div className="field">
-        <span data-testid="question-detail-topic-title">Topics:</span>{' '}
-        <span data-testid="question-detail-topic-value">{question.topic}</span>
-      </div>
-      <Comments comments={comments} onSend={onSendComment} />
-      <div>
-        <button
-          className="ui button"
-          type="button"
-          data-testid="cancel-button"
-          onClick={onCancelClick}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

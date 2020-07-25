@@ -9,7 +9,7 @@ import Question from '../types/Question';
 import Subject from '../types/Subject';
 
 export default function QuestionEditPage() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question>();
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
@@ -55,18 +55,17 @@ export default function QuestionEditPage() {
       });
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div data-testid="question-edit-page">
-      <h2>Edit Question</h2>
-      <QuestionForm
-        questionData={question}
-        subjects={subjects}
-        onSubmit={onSubmit}
-      />
-    </div>
+    <>
+      <Loading isLoading={isLoading} />
+      <div data-testid="question-edit-page">
+        <h2>Edit Question</h2>
+        <QuestionForm
+          questionData={question}
+          subjects={subjects}
+          onSubmit={onSubmit}
+        />
+      </div>
+    </>
   );
 }
