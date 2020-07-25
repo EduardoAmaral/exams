@@ -304,7 +304,6 @@ export default function QuestionForm({
                     className="form-control"
                     value={alternative.description}
                     onChange={(event) => {
-                      console.log(event.target.value);
                       const newAlternatives = question.alternatives?.map(
                         (a) => {
                           return a.position === alternative.position

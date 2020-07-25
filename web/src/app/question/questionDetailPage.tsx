@@ -30,8 +30,6 @@ export default function QuestionDetailPage() {
       case 'NEW_COMMENT':
         setComments((c) => lodash.uniqBy([message.data, ...c], 'id'));
         break;
-      default:
-        break;
     }
   };
 

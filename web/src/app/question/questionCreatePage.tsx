@@ -20,8 +20,7 @@ export default function QuestionCreatePage() {
         setLoading(false);
         setSubjects(response.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         setLoading(false);
       });
   }, []);

@@ -24,19 +24,13 @@ export default function QuestionEditPage() {
         setLoading(false);
         setQuestion(response.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         setLoading(false);
       });
 
-    axios
-      .get(SUBJECT)
-      .then((response) => {
-        setSubjects(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    axios.get(SUBJECT).then((response) => {
+      setSubjects(response.data);
+    });
   }, [id]);
 
   const onSubmit = (updatedQuestion: Partial<Question>) => {
@@ -49,9 +43,8 @@ export default function QuestionEditPage() {
           history.goBack();
         }
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
-        console.log(err);
       });
   };
 
