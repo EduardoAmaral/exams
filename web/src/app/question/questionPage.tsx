@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DELETE_QUESTION, QUESTION } from '../config/endpoint';
-import QuestionItem from './questionItem';
+import QuestionItem from './components/questionItem';
 import Loading from '../loading/loading';
 import history from '../config/history';
 import Question from '../types/Question';

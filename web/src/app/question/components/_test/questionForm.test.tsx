@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import QuestionForm from '../questionForm';
-import history from '../../config/history';
-import Question from '../../types/Question';
+import history from '../../../config/history';
+import Question from '../../../types/Question';
 
 describe('<QuestionForm />', () => {
   const subjects = [

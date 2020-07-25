@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../config/endpoint';
 import Loading from '../loading/loading';
-import QuestionForm from './questionForm';
+import QuestionForm from './components/questionForm';
 import history from '../config/history';
 import Question from '../types/Question';
 import Subject from '../types/Subject';

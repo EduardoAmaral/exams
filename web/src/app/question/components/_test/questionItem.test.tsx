@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import QuestionItem from '../questionItem';
-import Question from '../../types/Question';
+import Question from '../../../types/Question';
 
 describe('<QuestionItem />', () => {
   const question: Question = {

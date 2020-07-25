@@ -1,8 +1,8 @@
 import React, { useEffect, useState, FormEvent } from 'react';
-import history from '../config/history';
+import history from '../../config/history';
 import './questionForm.scss';
-import Question from '../types/Question';
-import Subject from '../types/Subject';
+import Question from '../../types/Question';
+import Subject from '../../types/Subject';
 
 interface Props {
   questionData?: Question;
