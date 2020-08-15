@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AUTH } from '../../../config/endpoint';
+import { Dispatch } from 'redux';
 
 export const AUTH_AUTHENTICATED = {
   type: '@auth/authenticated',
@@ -9,7 +10,7 @@ export const AUTH_LOGOUT = {
   type: '@auth/logout',
 };
 
-export const login = () => async (dispatch) => {
+export const login = () => async (dispatch: Dispatch) => {
   try {
     const response = await axios.get(AUTH);
     dispatch({
@@ -17,10 +18,10 @@ export const login = () => async (dispatch) => {
       payload: response.data,
     });
   } catch (err) {
-    window.location = 'http://localhost:8081/oauth2/authorization/google';
+    window.location.href = 'http://localhost:8081/oauth2/authorization/google';
   }
 };
 
-export const authenticate = () => async (dispatch) => {
+export const authenticate = () => async (dispatch: any) => {
   await dispatch(login());
 };
