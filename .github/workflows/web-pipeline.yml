@@ -9,6 +9,7 @@ on:
       - master
     paths:
       - 'web/**'
+      - '!README.md'
       - '.github/workflows/web-pipeline.yml'
 
 jobs:
@@ -27,6 +28,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: cd web && npm ci
-    - run: cd web && npm run build --if-present
-    - run: cd web && npm test
-    - run: cd web && npm test -- --coverage --watchAll=false
+
+    - name: Build
+      run: cd web && npm run build --if-present
+
+    - name: Test
+      run: cd web && npm test -- --coverage --watchAll=false
