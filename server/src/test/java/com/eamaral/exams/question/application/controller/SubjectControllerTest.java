@@ -43,11 +43,16 @@ class SubjectControllerTest extends ControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("should return created when creating a subject")
+    @DisplayName("should retrieve the subject saved when creating a subject")
     void save_shouldReturnCreated() throws Exception {
         SubjectDTO dto = SubjectDTO.builder()
                 .description("English")
                 .build();
+
+        when(subjectPort.save(dto)).thenReturn(SubjectDTO.builder()
+                .id(1L)
+                .description("English")
+                .build());
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -55,7 +60,9 @@ class SubjectControllerTest extends ControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(dto))
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.description", is("English")));
     }
 
     @Test

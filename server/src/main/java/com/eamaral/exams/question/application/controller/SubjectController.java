@@ -3,7 +3,6 @@ package com.eamaral.exams.question.application.controller;
 import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.port.SubjectPort;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -35,9 +34,8 @@ public class SubjectController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void save(@RequestBody @Validated SubjectDTO subject) {
+    public ResponseEntity<SubjectDTO> save(@RequestBody @Validated SubjectDTO subject) {
         log.info("Saving subject {}", subject.getDescription());
-        subjectPort.save(subject);
+        return ok(SubjectDTO.from(subjectPort.save(subject)));
     }
 }
