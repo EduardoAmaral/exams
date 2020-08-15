@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'server/**'
+      - '!README.md'
       - '.github/workflows/server-pipeline.yml'
 
 jobs:
@@ -43,5 +44,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SONAR_GITHUB_TOKEN }}
         run: ./gradlew :server:sonarqube
         
-      - name: Docker Build
-        run: cd server && docker-compose --log-level INFO up -d --build
+      - name: Docker Build Image
+        run: cd server && docker build .
