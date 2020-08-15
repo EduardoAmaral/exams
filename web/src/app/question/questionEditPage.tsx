@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../config/endpoint';
-import Loading from '../loading/loading';
-import QuestionForm from './components/questionForm';
+import { QUESTION, QUESTION_BY_ID } from '../config/endpoint';
 import history from '../config/history';
+import Loading from '../loading/loading';
 import Question from '../types/Question';
-import Subject from '../types/Subject';
+import QuestionForm from './components/questionForm';
 
 export default function QuestionEditPage() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question>();
-  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   const { id } = useParams();
 
@@ -27,10 +25,6 @@ export default function QuestionEditPage() {
       .catch(() => {
         setLoading(false);
       });
-
-    axios.get(SUBJECT).then((response) => {
-      setSubjects(response.data);
-    });
   }, [id]);
 
   const onSubmit = (updatedQuestion: Partial<Question>) => {
@@ -53,11 +47,7 @@ export default function QuestionEditPage() {
       <Loading isLoading={isLoading} />
       <div data-testid="question-edit-page">
         <h2>Edit Question</h2>
-        <QuestionForm
-          questionData={question}
-          subjects={subjects}
-          onSubmit={onSubmit}
-        />
+        <QuestionForm questionData={question} onSubmit={onSubmit} />
       </div>
     </>
   );

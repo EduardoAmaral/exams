@@ -1,8 +1,13 @@
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import Axios from 'axios';
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
-import QuestionForm from '../questionForm';
 import history from '../../../config/history';
 import Question from '../../../types/Question';
+import QuestionForm from '../questionForm';
+
+jest.mock('axios');
+
+const mockedAxios = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionForm />', () => {
   const subjects = [
@@ -31,6 +36,12 @@ describe('<QuestionForm />', () => {
     subject: { id: 1, description: 'English' },
     author: '107859231324466082693',
   };
+
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: subjects,
+    });
+  });
 
   it('should render a form', () => {
     const { getByRole } = render(<QuestionForm onSubmit={jest.fn()} />);
@@ -67,7 +78,7 @@ describe('<QuestionForm />', () => {
     expect(getAllByRole('radio')).toHaveLength(5);
   });
 
-  it('should save a question when click on save', () => {
+  it('should save a question when click on save', async () => {
     const onSubmit = jest.fn();
 
     const savedQuestion = {
@@ -86,8 +97,10 @@ describe('<QuestionForm />', () => {
     };
 
     const { getByTestId, getByLabelText, getByText } = render(
-      <QuestionForm subjects={subjects} onSubmit={onSubmit} />
+      <QuestionForm onSubmit={onSubmit} />
     );
+
+    await waitFor(() => getByLabelText('Subject'));
 
     fireEvent.change(getByLabelText('Statement', { selector: 'textarea' }), {
       target: { value: 'Statement' },
@@ -138,11 +151,7 @@ describe('<QuestionForm />', () => {
     };
 
     const { getByTestId, getByText } = render(
-      <QuestionForm
-        subjects={subjects}
-        onSubmit={onSubmit}
-        questionData={savedQuestion}
-      />
+      <QuestionForm onSubmit={onSubmit} questionData={savedQuestion} />
     );
 
     fireEvent.click(getByTestId('question-form-alternative-2'));
@@ -163,12 +172,10 @@ describe('<QuestionForm />', () => {
 
   it('should load the fields if question data is defined', async () => {
     const { getByTestId, getByLabelText } = render(
-      <QuestionForm
-        onSubmit={jest.fn()}
-        questionData={questionData}
-        subjects={subjects}
-      />
+      <QuestionForm onSubmit={jest.fn()} questionData={questionData} />
     );
+
+    await waitFor(() => getByLabelText('Subject'));
 
     expect(
       getByLabelText('Statement', { selector: 'textarea' })
@@ -246,13 +253,15 @@ describe('<QuestionForm />', () => {
       expect(getByText('Type is required')).toBeVisible();
     });
 
-    it('should show subject validation message when have a subject error', () => {
-      const { getByText } = render(
+    it('should show subject validation message when have a subject error', async () => {
+      const { getByText, getByLabelText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ subject: 'Subject is required' }}
         />
       );
+
+      await waitFor(() => getByLabelText('Subject'));
 
       expect(getByText('Subject is required')).toBeVisible();
     });

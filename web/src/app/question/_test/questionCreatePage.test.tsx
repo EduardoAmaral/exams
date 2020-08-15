@@ -1,15 +1,13 @@
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import Axios from 'axios';
 import React from 'react';
-import {
-  fireEvent,
-  render,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
-import axios from 'axios';
 import { QUESTION, SUBJECT } from '../../config/endpoint';
 import QuestionCreatePage from '../questionCreatePage';
 
 jest.mock('axios');
 jest.mock('../../config/history');
+
+const axiosMocked = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionCreatePage />', () => {
   const subjects = [
@@ -24,21 +22,21 @@ describe('<QuestionCreatePage />', () => {
   ];
 
   beforeEach(() => {
-    (axios.get as any).mockResolvedValueOnce({
+    axiosMocked.get.mockResolvedValueOnce({
       data: subjects,
     });
 
-    (axios.post as any).mockResolvedValueOnce({
+    axiosMocked.post.mockResolvedValueOnce({
       status: 201,
     });
   });
 
-  afterEach(() => (axios.get as any).mockRestore());
+  afterEach(() => axiosMocked.get.mockRestore());
 
   it('should render the question creation page', async () => {
-    const { getByTestId } = render(<QuestionCreatePage />);
+    const { getByTestId, getByLabelText } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitFor(() => getByLabelText('Subject'));
 
     expect(getByTestId('question-create-page')).toBeDefined();
   });
@@ -46,31 +44,26 @@ describe('<QuestionCreatePage />', () => {
   it('should call the subject get endpoint', async () => {
     render(<QuestionCreatePage />);
 
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(SUBJECT);
-  });
-
-  it('should render a loading while calling an endpoint', () => {
-    const { getByTestId } = render(<QuestionCreatePage />);
-    expect(getByTestId('loading')).toBeDefined();
+    expect(Axios.get).toHaveBeenCalledTimes(1);
+    expect(Axios.get).toHaveBeenCalledWith(SUBJECT);
   });
 
   it('should render a form', async () => {
-    const { getByTestId, getByRole } = render(<QuestionCreatePage />);
+    const { getByLabelText, getByRole } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitFor(() => getByLabelText('Subject'));
 
     expect(getByRole('form')).toBeDefined();
   });
 
   it('should call the question save endpoint when save a form', async () => {
-    const { getByTestId, getByText } = render(<QuestionCreatePage />);
+    const { getByLabelText, getByText } = render(<QuestionCreatePage />);
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitFor(() => getByLabelText('Subject'));
 
     fireEvent.click(getByText('Save'));
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));
+    expect(Axios.post).toHaveBeenCalledTimes(1);
+    expect(Axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));
   });
 });

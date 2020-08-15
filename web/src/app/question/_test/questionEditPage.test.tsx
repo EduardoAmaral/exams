@@ -1,10 +1,11 @@
-import React from 'react';
 import {
   fireEvent,
   render,
+  waitFor,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
-import axios from 'axios';
+import Axios from 'axios';
+import React from 'react';
 import router from 'react-router';
 import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../../config/endpoint';
 import QuestionEditPage from '../questionEditPage';
@@ -12,6 +13,8 @@ import QuestionEditPage from '../questionEditPage';
 jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
+
+const axiosMocked = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionEditPage />', () => {
   const subjects = [
@@ -42,22 +45,21 @@ describe('<QuestionEditPage />', () => {
   };
 
   beforeEach(() => {
-    axios.get = jest
-      .fn()
-      .mockResolvedValueOnce({ data: question })
-      .mockResolvedValueOnce({ data: subjects });
+    axiosMocked.get
+      .mockResolvedValueOnce({ data: subjects })
+      .mockResolvedValueOnce({ data: question });
 
-    (axios.put as any).mockResolvedValueOnce({
+    axiosMocked.put.mockResolvedValueOnce({
       status: 200,
     });
   });
 
-  afterEach(() => (axios.get as any).mockRestore());
+  afterEach(() => axiosMocked.get.mockRestore());
 
   it('should render the question edit page', async () => {
-    const { getByTestId } = render(<QuestionEditPage />);
+    const { getByTestId, getByLabelText } = render(<QuestionEditPage />);
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitFor(() => getByLabelText('Subject'));
 
     expect(getByTestId('question-edit-page')).toBeDefined();
   });
@@ -65,12 +67,12 @@ describe('<QuestionEditPage />', () => {
   it('should call the questionById and subject endpoint', async () => {
     render(<QuestionEditPage />);
 
-    expect(axios.get).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenNthCalledWith(
-      1,
+    expect(Axios.get).toHaveBeenCalledTimes(2);
+    expect(Axios.get).toHaveBeenNthCalledWith(1, SUBJECT);
+    expect(Axios.get).toHaveBeenNthCalledWith(
+      2,
       QUESTION_BY_ID.replace(':id', '2')
     );
-    expect(axios.get).toHaveBeenNthCalledWith(2, SUBJECT);
   });
 
   it('should render a loading while calling an endpoint', () => {
@@ -79,21 +81,29 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should render a form', async () => {
-    const { getByTestId, getByRole } = render(<QuestionEditPage />);
+    const { getByLabelText, getByRole, getByTestId } = render(
+      <QuestionEditPage />
+    );
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitForElementToBeRemoved(getByTestId('loading'));
+
+    await waitFor(() => getByLabelText('Subject'));
 
     expect(getByRole('form')).toBeDefined();
   });
 
   it('should call the question update endpoint when save a form', async () => {
-    const { getByTestId, getByText } = render(<QuestionEditPage />);
+    const { getByText, getByLabelText, getByTestId } = render(
+      <QuestionEditPage />
+    );
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitForElementToBeRemoved(getByTestId('loading'));
+
+    await waitFor(() => getByLabelText('Subject'));
 
     fireEvent.click(getByText('Save'));
 
-    expect(axios.put).toHaveBeenCalledTimes(1);
-    expect(axios.put).toHaveBeenCalledWith(QUESTION, expect.any(Object));
+    expect(Axios.put).toHaveBeenCalledTimes(1);
+    expect(Axios.put).toHaveBeenCalledWith(QUESTION, expect.any(Object));
   });
 });

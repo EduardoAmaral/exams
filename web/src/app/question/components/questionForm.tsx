@@ -1,19 +1,19 @@
-import React, { useEffect, useState, FormEvent } from 'react';
+import Axios from 'axios';
+import React, { FormEvent, useEffect, useState } from 'react';
+import { SUBJECT } from '../../config/endpoint';
 import history from '../../config/history';
-import './questionForm.scss';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
+import './questionForm.scss';
 
 interface Props {
   questionData?: Question;
-  subjects?: Subject[];
   errors?: QuestionErrors;
   onSubmit: (question: Partial<Question>) => void;
 }
 
 export default function QuestionForm({
   questionData,
-  subjects = [],
   errors = {},
   onSubmit,
 }: Props) {
@@ -21,7 +21,9 @@ export default function QuestionForm({
     topic: '',
     solution: '',
   });
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<number>();
+  const [loadingSubjects, setLoadingSubjects] = useState<boolean>();
 
   const TRUE_OR_FALSE = 'True Or False';
   const MULTIPLE_CHOICES = 'Multiple Choices';
@@ -47,6 +49,18 @@ export default function QuestionForm({
     { position: 4, description: '' },
     { position: 5, description: '' },
   ];
+
+  useEffect(() => {
+    setLoadingSubjects(true);
+    Axios.get(SUBJECT)
+      .then((response) => {
+        setLoadingSubjects(false);
+        setSubjects(response.data);
+      })
+      .catch(() => {
+        setLoadingSubjects(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (questionData !== undefined) {
@@ -144,36 +158,38 @@ export default function QuestionForm({
 
   const renderSubjectSelect = () => {
     return (
-      <>
-        <label>
-          Subject
-          <select
-            className="form-control"
-            value={selectedSubject}
-            onChange={(event) => {
-              setQuestion({
-                ...question,
-                subject: {
-                  id: Number.parseInt(event.target.value),
-                },
-              });
-              setSelectedSubject(Number.parseInt(event.target.value));
-            }}
-          >
-            <option value="" label="Select an option" />
-            {subjects.map((subject) => (
-              <option
-                value={subject.id}
-                key={subject.id}
-                label={subject.description}
-              />
-            ))}
-          </select>
-        </label>
-        {errors.subject ? (
-          <div className="validation-error">{errors.subject}</div>
-        ) : null}
-      </>
+      !loadingSubjects && (
+        <>
+          <label>
+            Subject
+            <select
+              className="form-control"
+              value={selectedSubject}
+              onChange={(event) => {
+                setQuestion({
+                  ...question,
+                  subject: {
+                    id: Number.parseInt(event.target.value),
+                  },
+                });
+                setSelectedSubject(Number.parseInt(event.target.value));
+              }}
+            >
+              <option value="" label="Select an option" />
+              {subjects?.map((subject) => (
+                <option
+                  value={subject.id}
+                  key={subject.id}
+                  label={subject.description}
+                />
+              ))}
+            </select>
+          </label>
+          {errors.subject ? (
+            <div className="validation-error">{errors.subject}</div>
+          ) : null}
+        </>
+      )
     );
   };
 
