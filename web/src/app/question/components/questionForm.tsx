@@ -76,12 +76,11 @@ export default function QuestionForm({
   const renderStatementInput = () => {
     return (
       <>
-        <label data-testid="question-form-statement-label">
+        <label>
           Statement
           <textarea
             rows={4}
             className="form-control"
-            data-testid="question-form-statement-input"
             value={question.statement}
             onChange={(event) => {
               setQuestion({ ...question, statement: event.target.value });
@@ -89,12 +88,7 @@ export default function QuestionForm({
           />
         </label>
         {errors.statement ? (
-          <div
-            className="validation-error"
-            data-testid="question-form-statement-error"
-          >
-            {errors.statement}
-          </div>
+          <div className="validation-error">{errors.statement}</div>
         ) : null}
       </>
     );
@@ -103,11 +97,10 @@ export default function QuestionForm({
   const renderTypeSelect = () => {
     return (
       <>
-        <label data-testid="question-form-type-label">
+        <label>
           Type
           <select
             className="form-control"
-            data-testid="question-form-type-input"
             value={question.type}
             disabled={question.id !== undefined}
             onChange={(event) => {
@@ -138,22 +131,12 @@ export default function QuestionForm({
           >
             <option value="" label="Select an option" />
             {types.map((type) => (
-              <option
-                key={type.value}
-                value={type.value}
-                label={type.value}
-                data-testid={type.value}
-              />
+              <option key={type.value} value={type.value} label={type.value} />
             ))}
           </select>
         </label>
         {errors.type ? (
-          <div
-            className="validation-error"
-            data-testid="question-form-type-error"
-          >
-            {errors.type}
-          </div>
+          <div className="validation-error">{errors.type}</div>
         ) : null}
       </>
     );
@@ -162,11 +145,10 @@ export default function QuestionForm({
   const renderSubjectSelect = () => {
     return (
       <>
-        <label data-testid="question-form-subject-label">
+        <label>
           Subject
           <select
             className="form-control"
-            data-testid="question-form-subject-input"
             value={selectedSubject}
             onChange={(event) => {
               setQuestion({
@@ -189,12 +171,7 @@ export default function QuestionForm({
           </select>
         </label>
         {errors.subject ? (
-          <div
-            className="validation-error"
-            data-testid="question-form-subject-error"
-          >
-            {errors.subject}
-          </div>
+          <div className="validation-error">{errors.subject}</div>
         ) : null}
       </>
     );
@@ -203,13 +180,11 @@ export default function QuestionForm({
   const renderSolutionInput = () => {
     return (
       <>
-        <label data-testid="question-form-solution-label">
+        <label>
           Solution
           <textarea
             className="form-control"
             rows={3}
-            data-testid="question-form-solution-input"
-            placeholder="Tell your students why the answer is that"
             value={question.solution}
             onChange={(event) => {
               setQuestion({ ...question, solution: event.target.value });
@@ -217,12 +192,7 @@ export default function QuestionForm({
           />
         </label>
         {errors.solution ? (
-          <div
-            className="validation-error"
-            data-testid="question-form-solution-error"
-          >
-            {errors.solution}
-          </div>
+          <div className="validation-error">{errors.solution}</div>
         ) : null}
       </>
     );
@@ -231,11 +201,10 @@ export default function QuestionForm({
   const renderTopicsInput = () => {
     return (
       <>
-        <label data-testid="question-form-topic-label">
+        <label>
           Topic
           <input
             className="form-control"
-            data-testid="question-form-topic-input"
             type="text"
             value={question.topic}
             onChange={(event) => {
@@ -244,12 +213,7 @@ export default function QuestionForm({
           />
         </label>
         {errors.topic ? (
-          <div
-            className="validation-error"
-            data-testid="question-form-topic-error"
-          >
-            {errors.topic}
-          </div>
+          <div className="validation-error">{errors.topic}</div>
         ) : null}
       </>
     );
@@ -261,20 +225,10 @@ export default function QuestionForm({
         <div className="alternatives">
           Alternatives:
           {errors.alternatives ? (
-            <div
-              className="validation-error"
-              data-testid="question-form-alternatives-error"
-            >
-              {errors.alternatives}
-            </div>
+            <div className="validation-error">{errors.alternatives}</div>
           ) : null}
           {errors.correctAnswer ? (
-            <div
-              className="validation-error"
-              data-testid="question-form-correct-answer-error"
-            >
-              {errors.correctAnswer}
-            </div>
+            <div className="validation-error">{errors.correctAnswer}</div>
           ) : null}
           {question.alternatives.map((alternative) => (
             <div key={alternative.position}>
@@ -331,19 +285,15 @@ export default function QuestionForm({
   };
 
   return (
-    <form
-      data-testid="question-form"
-      className="ui form"
-      onSubmit={onSubmitForm}
-    >
+    <form className="ui form" onSubmit={onSubmitForm} aria-label="form">
       <div className="row field">
         <div className="col-md-12">
           <div className="form-group">{renderStatementInput()}</div>
         </div>
       </div>
       <div className="row field">
-        <div className="col-md-4">{renderTypeSelect()}</div>
-        <div className="col-md-4 offset-col-2">{renderSubjectSelect()}</div>
+        <div className="col-md-6">{renderTypeSelect()}</div>
+        <div className="col-md-6">{renderSubjectSelect()}</div>
       </div>
       <div className="row field">
         <div className="col-md-12">{renderSolutionInput()}</div>
@@ -356,18 +306,10 @@ export default function QuestionForm({
       </div>
       <div className="row">
         <div className="col-md-12 right">
-          <button
-            type="button"
-            data-testid="cancel-button"
-            onClick={onCancelClick}
-          >
+          <button type="button" onClick={onCancelClick}>
             Cancel
           </button>
-          <button
-            className="primary"
-            type="submit"
-            data-testid="question-form-save-button"
-          >
+          <button className="primary" type="submit">
             Save
           </button>
         </div>

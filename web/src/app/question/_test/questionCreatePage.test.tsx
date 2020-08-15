@@ -56,19 +56,19 @@ describe('<QuestionCreatePage />', () => {
   });
 
   it('should render a form', async () => {
-    const { getByTestId } = render(<QuestionCreatePage />);
+    const { getByTestId, getByRole } = render(<QuestionCreatePage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-form')).toBeDefined();
+    expect(getByRole('form')).toBeDefined();
   });
 
   it('should call the question save endpoint when save a form', async () => {
-    const { getByTestId } = render(<QuestionCreatePage />);
+    const { getByTestId, getByText } = render(<QuestionCreatePage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    fireEvent.click(getByTestId('question-form-save-button'));
+    fireEvent.click(getByText('Save'));
 
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));

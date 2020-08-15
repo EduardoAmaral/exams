@@ -33,80 +33,17 @@ describe('<QuestionForm />', () => {
   };
 
   it('should render a form', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
+    const { getByRole } = render(<QuestionForm onSubmit={jest.fn()} />);
 
-    expect(getByTestId('question-form')).toBeDefined();
-  });
-
-  it('should render a text input and label to question statement', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('question-form-statement-label')).toHaveTextContent(
-      'Statement'
-    );
-    expect(getByTestId('question-form-statement-input')).toBeDefined();
-  });
-
-  it('should render a text input and label to question type', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('question-form-type-label')).toHaveTextContent('Type');
-    expect(getByTestId('question-form-type-input')).toBeDefined();
-  });
-
-  it('should render types', () => {
-    const { container } = render(
-      <QuestionForm onSubmit={jest.fn()} subjects={subjects} />
-    );
-    expect(
-      container.querySelectorAll(
-        '[data-testid="question-form-type-input"] option'
-      )
-    ).toHaveLength(3);
-  });
-
-  it('should render a text input and label to question subject', () => {
-    const { getByTestId } = render(
-      <QuestionForm onSubmit={jest.fn()} subjects={subjects} />
-    );
-
-    expect(getByTestId('question-form-subject-label')).toHaveTextContent(
-      'Subject'
-    );
-    expect(getByTestId('question-form-subject-input')).toBeDefined();
-  });
-
-  it('should render all subjects', () => {
-    const { container } = render(
-      <QuestionForm onSubmit={jest.fn()} subjects={subjects} />
-    );
-    expect(
-      container.querySelectorAll(
-        '[data-testid="question-form-subject-input"] option'
-      )
-    ).toHaveLength(subjects.length + 1);
-  });
-
-  it('should render a text input and label to question solution', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('question-form-solution-label')).toHaveTextContent(
-      'Solution'
-    );
-    expect(getByTestId('question-form-solution-input')).toBeDefined();
-  });
-
-  it('should render a text input and label to question topic', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('question-form-topic-label')).toHaveTextContent('Topic');
-    expect(getByTestId('question-form-topic-input')).toBeDefined();
+    expect(getByRole('form')).toBeVisible();
   });
 
   it('should render alternatives true and false when True Or False type is selected', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
+    const { getByTestId, getByLabelText } = render(
+      <QuestionForm onSubmit={jest.fn()} />
+    );
 
-    fireEvent.change(getByTestId('question-form-type-input'), {
+    fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
       target: { value: 'True Or False' },
     });
 
@@ -118,33 +55,19 @@ describe('<QuestionForm />', () => {
     );
   });
 
-  it('should render alternatives true and false when Multiple Choices type is selected', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
+  it('should render five alternatives when Multiple Choices type is selected', () => {
+    const { getByLabelText, getAllByRole } = render(
+      <QuestionForm onSubmit={jest.fn()} />
+    );
 
-    fireEvent.change(getByTestId('question-form-type-input'), {
+    fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
       target: { value: 'Multiple Choices' },
     });
 
-    expect(getByTestId('question-form-alternative-1-input')).toBeDefined();
-    expect(getByTestId('question-form-alternative-2-input')).toBeDefined();
-    expect(getByTestId('question-form-alternative-3-input')).toBeDefined();
-    expect(getByTestId('question-form-alternative-4-input')).toBeDefined();
-    expect(getByTestId('question-form-alternative-5-input')).toBeDefined();
+    expect(getAllByRole('radio')).toHaveLength(5);
   });
 
-  it('should render a save button', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('question-form-save-button')).toHaveTextContent('Save');
-  });
-
-  it('should render a save button', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
-
-    expect(getByTestId('cancel-button')).toHaveTextContent('Cancel');
-  });
-
-  it('should save a true or false question when click on save', () => {
+  it('should save a question when click on save', () => {
     const onSubmit = jest.fn();
 
     const savedQuestion = {
@@ -162,38 +85,38 @@ describe('<QuestionForm />', () => {
       ],
     };
 
-    const { getByTestId } = render(
+    const { getByTestId, getByLabelText, getByText } = render(
       <QuestionForm subjects={subjects} onSubmit={onSubmit} />
     );
 
-    fireEvent.change(getByTestId('question-form-statement-input'), {
+    fireEvent.change(getByLabelText('Statement', { selector: 'textarea' }), {
       target: { value: 'Statement' },
     });
 
-    fireEvent.change(getByTestId('question-form-type-input'), {
+    fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
       target: { value: 'True Or False' },
     });
 
-    fireEvent.change(getByTestId('question-form-subject-input'), {
+    fireEvent.change(getByLabelText('Subject', { selector: 'select' }), {
       target: { value: 1 },
     });
 
-    fireEvent.change(getByTestId('question-form-solution-input'), {
+    fireEvent.change(getByLabelText('Solution', { selector: 'textarea' }), {
       target: { value: 'Solution' },
     });
 
-    fireEvent.change(getByTestId('question-form-topic-input'), {
+    fireEvent.change(getByLabelText('Topic', { selector: 'input' }), {
       target: { value: 'Topic 1; Topic 2;' },
     });
 
     fireEvent.click(getByTestId('question-form-alternative-1-radio'));
 
-    fireEvent.click(getByTestId('question-form-save-button'));
+    fireEvent.click(getByText('Save'));
 
     expect(onSubmit).toBeCalledWith(savedQuestion);
   });
 
-  it('should save a multiple choices question when click on save', () => {
+  it('should update a question when click on save', () => {
     const onSubmit = jest.fn();
 
     const savedQuestion: Question = {
@@ -214,7 +137,7 @@ describe('<QuestionForm />', () => {
       ],
     };
 
-    const { getByTestId } = render(
+    const { getByTestId, getByText } = render(
       <QuestionForm
         subjects={subjects}
         onSubmit={onSubmit}
@@ -224,22 +147,22 @@ describe('<QuestionForm />', () => {
 
     fireEvent.click(getByTestId('question-form-alternative-2'));
 
-    fireEvent.click(getByTestId('question-form-save-button'));
+    fireEvent.click(getByText('Save'));
 
     expect(onSubmit).toBeCalledWith({ ...savedQuestion, correctAnswer: 'B' });
   });
 
   it('should return to the previous page when click on cancel', () => {
     history.goBack = jest.fn();
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
+    const { getByText } = render(<QuestionForm onSubmit={jest.fn()} />);
 
-    fireEvent.click(getByTestId('cancel-button'));
+    fireEvent.click(getByText('Cancel'));
 
     expect(history.goBack).toBeCalledTimes(1);
   });
 
   it('should load the fields if question data is defined', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, getByLabelText } = render(
       <QuestionForm
         onSubmit={jest.fn()}
         questionData={questionData}
@@ -247,26 +170,25 @@ describe('<QuestionForm />', () => {
       />
     );
 
-    expect(getByTestId('question-form-statement-input')).toHaveTextContent(
-      questionData.statement
-    );
+    expect(
+      getByLabelText('Statement', { selector: 'textarea' })
+    ).toHaveTextContent(questionData.statement);
 
-    expect(getByTestId('question-form-type-input')).toHaveProperty(
+    expect(getByLabelText('Type', { selector: 'select' })).toHaveProperty(
       'value',
       questionData.type
     );
 
-    expect(getByTestId('question-form-subject-input')).toHaveProperty(
+    expect(getByLabelText('Subject', { selector: 'select' })).toHaveProperty(
       'value',
       questionData.subject.id.toString()
     );
 
-    expect(getByTestId('question-form-solution-input')).toHaveTextContent(
-      questionData.solution
-    );
+    expect(
+      getByLabelText('Solution', { selector: 'textarea' })
+    ).toHaveTextContent(questionData.solution);
 
-    expect(getByTestId('question-form-topic-input')).toHaveProperty(
-      'value',
+    expect(getByLabelText('Topic', { selector: 'input' })).toHaveDisplayValue(
       questionData.topic
     );
 
@@ -275,126 +197,98 @@ describe('<QuestionForm />', () => {
     );
   });
 
-  it('should not disable the type dropdown when question does not have an id', () => {
-    const { getByTestId } = render(<QuestionForm onSubmit={jest.fn()} />);
+  it('should not disable the type dropdown when question data is not provided', () => {
+    const { getByLabelText } = render(<QuestionForm onSubmit={jest.fn()} />);
 
-    expect(getByTestId('question-form-type-input')).toHaveProperty(
+    expect(getByLabelText('Type', { selector: 'select' })).toHaveProperty(
       'disabled',
       false
     );
   });
 
-  it('should disable the type dropdown when question data has an id - edit mode', () => {
-    const { getByTestId } = render(
+  it('should disable type options when question data is provided', () => {
+    const { getByLabelText } = render(
       <QuestionForm onSubmit={jest.fn()} questionData={questionData} />
     );
 
-    expect(getByTestId('question-form-type-input')).toHaveProperty(
+    expect(getByLabelText('Type', { selector: 'select' })).toHaveProperty(
       'disabled',
       true
     );
   });
 
   describe('Validation handling', () => {
-    it('should not should errors when do not have any', () => {
-      const { container } = render(<QuestionForm onSubmit={jest.fn()} />);
+    it('should not should errors when does not have any', () => {
+      const { queryByText } = render(<QuestionForm onSubmit={jest.fn()} />);
 
-      expect(
-        container.querySelector('[data-testid="question-form-statement-error"]')
-      ).toBeNull();
-      expect(
-        container.querySelector('[data-testid="question-form-type-error"]')
-      ).toBeNull();
-      expect(
-        container.querySelector('[data-testid="question-form-subject-error"]')
-      ).toBeNull();
-      expect(
-        container.querySelector(
-          '[data-testid="question-form-alternatives-error"]'
-        )
-      ).toBeNull();
-      expect(
-        container.querySelector(
-          '[data-testid="question-form-correct-answer-error"]'
-        )
-      ).toBeNull();
+      expect(queryByText('required')).toBeNull();
     });
 
     it('should show statement validation message when have a statement error', () => {
-      const { getByTestId } = render(
+      const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ statement: 'Statement is required' }}
         />
       );
 
-      expect(getByTestId('question-form-statement-error')).toHaveTextContent(
-        'Statement is required'
-      );
+      expect(getByText('Statement is required')).toBeVisible();
     });
 
     it('should show type validation message when have a type error', () => {
-      const { getByTestId } = render(
+      const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ type: 'Type is required' }}
         />
       );
 
-      expect(getByTestId('question-form-type-error')).toHaveTextContent(
-        'Type is required'
-      );
+      expect(getByText('Type is required')).toBeVisible();
     });
 
     it('should show subject validation message when have a subject error', () => {
-      const { getByTestId } = render(
+      const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ subject: 'Subject is required' }}
         />
       );
 
-      expect(getByTestId('question-form-subject-error')).toHaveTextContent(
-        'Subject is required'
-      );
+      expect(getByText('Subject is required')).toBeVisible();
     });
 
     it('should show alternatives validation message when have an alternatives errors', () => {
-      const { getByTestId } = render(
+      const { getByLabelText, getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ alternatives: 'Alternatives are required' }}
         />
       );
 
-      fireEvent.change(getByTestId('question-form-type-input'), {
+      fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
         target: { value: 'True Or False' },
       });
 
-      expect(getByTestId('question-form-alternatives-error')).toHaveTextContent(
-        'Alternatives are required'
-      );
+      expect(getByText('Alternatives are required')).toBeVisible();
     });
 
     it('should show correct answer validation message when have a correct answer error', () => {
-      const { getByTestId } = render(
+      const { getByLabelText, getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ correctAnswer: 'Correct answer is required' }}
         />
       );
 
-      fireEvent.change(getByTestId('question-form-type-input'), {
+      fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
         target: { value: 'True Or False' },
       });
 
-      expect(
-        getByTestId('question-form-correct-answer-error')
-      ).toHaveTextContent('Correct answer is required');
+      expect(getByText('Correct answer is required')).toBeVisible();
     });
 
     it('should show solution validation message when have a solution error', () => {
-      const { getByTestId } = render(
+      const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{
@@ -403,13 +297,13 @@ describe('<QuestionForm />', () => {
         />
       );
 
-      expect(getByTestId('question-form-solution-error')).toHaveTextContent(
-        'Solution should have a maximum of 3000 characters'
-      );
+      expect(
+        getByText('Solution should have a maximum of 3000 characters')
+      ).toBeVisible();
     });
 
     it('should show topics validation message when have a topic error', () => {
-      const { getByTestId } = render(
+      const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{
@@ -418,9 +312,9 @@ describe('<QuestionForm />', () => {
         />
       );
 
-      expect(getByTestId('question-form-topic-error')).toHaveTextContent(
-        'Topic should have a maximum of 255 characters'
-      );
+      expect(
+        getByText('Topic should have a maximum of 255 characters')
+      ).toBeVisible();
     });
   });
 });

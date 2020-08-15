@@ -79,19 +79,19 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should render a form', async () => {
-    const { getByTestId } = render(<QuestionEditPage />);
+    const { getByTestId, getByRole } = render(<QuestionEditPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-form')).toBeDefined();
+    expect(getByRole('form')).toBeDefined();
   });
 
   it('should call the question update endpoint when save a form', async () => {
-    const { getByTestId } = render(<QuestionEditPage />);
+    const { getByTestId, getByText } = render(<QuestionEditPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    fireEvent.click(getByTestId('question-form-save-button'));
+    fireEvent.click(getByText('Save'));
 
     expect(axios.put).toHaveBeenCalledTimes(1);
     expect(axios.put).toHaveBeenCalledWith(QUESTION, expect.any(Object));
