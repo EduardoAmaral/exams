@@ -3,22 +3,33 @@ version: '3'
 services:
   database:
     image: postgres:alpine
-    ports:
-      - "5432:5432"
-    expose:
-      - "5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${EXAMS_DATABASE}
       POSTGRES_USER: ${EXAMS_DATABASE_USER}
       POSTGRES_PASSWORD: ${EXAMS_DATABASE_PASSWORD}
+    network_mode: "service:server"
 
   redis:
     image: redis
     command: redis-server --requirepass ${EXAMS_REDIS_PASSWORD}
-    ports:
-      - "6379:6379"
+    network_mode: "service:server"
+
+  server:
+    image: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    ports: ["8081:8081", "6379:6379", "5432:5432"]
+    environment:
+      EXAMS_DATABASE_URL: ${EXAMS_DATABASE_URL}
+      EXAMS_DATABASE_USER: ${EXAMS_DATABASE_USER}
+      EXAMS_DATABASE_PASSWORD: ${EXAMS_DATABASE_PASSWORD}
+      EXAMS_GOOGLE_CLIENT_ID: ${EXAMS_GOOGLE_CLIENT_ID}
+      EXAMS_GOOGLE_CLIENT_SECRET: ${EXAMS_GOOGLE_CLIENT_SECRET}
+      EXAMS_REDIS_PASSWORD: ${EXAMS_REDIS_PASSWORD}
 
 volumes:
   db-data:
