@@ -4,7 +4,6 @@ import com.eamaral.exams.message.application.redis.dto.MessageDTO;
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.domain.port.CommentPort;
 import com.eamaral.exams.user.domain.port.UserPort;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @Slf4j
 @RestController
 @RequestMapping(value = "api/question/comment", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "Comment")
 public class CommentController {
 
     private final UserPort userPort;

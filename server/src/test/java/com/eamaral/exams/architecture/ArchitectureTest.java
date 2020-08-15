@@ -5,7 +5,6 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.junit.ArchUnitRunner;
 import com.tngtech.archunit.lang.ArchRule;
-import io.swagger.annotations.Api;
 import org.junit.runner.RunWith;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,13 +53,6 @@ public class ArchitectureTest {
             .that().haveSimpleNameEndingWith("Service")
             .should().resideInAPackage("..domain.service..")
             .because("Services belong to the domain layer");
-
-    @ArchTest
-    public static final ArchRule controllersShouldExposeApiDocumentation = classes()
-            .that().areAnnotatedWith(RestController.class)
-            .and().haveSimpleNameNotContaining("AuthController")
-            .should().beAnnotatedWith(Api.class)
-            .because("Controllers should expose API documentation");
 
 
     @ArchTest

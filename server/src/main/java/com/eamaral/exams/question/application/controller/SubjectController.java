@@ -2,7 +2,6 @@ package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.question.application.dto.SubjectDTO;
 import com.eamaral.exams.question.domain.port.SubjectPort;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +17,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @Slf4j
 @RestController
 @RequestMapping(value = "api/question/subject", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "Subject")
 public class SubjectController {
 
     private final SubjectPort subjectPort;

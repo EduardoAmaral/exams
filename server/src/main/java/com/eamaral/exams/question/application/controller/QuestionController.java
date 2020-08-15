@@ -6,7 +6,6 @@ import com.eamaral.exams.question.domain.port.QuestionPort;
 import com.eamaral.exams.user.domain.port.UserPort;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +22,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @Slf4j
 @RestController
 @RequestMapping(value = "api/question", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "Question")
 public class QuestionController {
 
     private final QuestionPort questionPort;
