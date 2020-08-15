@@ -7,7 +7,7 @@ import QuestionForm from '../questionForm';
 
 jest.mock('axios');
 
-const mockedAxios = Axios as jest.Mocked<typeof Axios>;
+const axios = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionForm />', () => {
   const subjects = [
@@ -38,7 +38,7 @@ describe('<QuestionForm />', () => {
   };
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValueOnce({
       data: subjects,
     });
   });

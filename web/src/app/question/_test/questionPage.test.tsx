@@ -4,13 +4,15 @@ import {
   fireEvent,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
-import axios from 'axios';
+import Axios from 'axios';
 import QuestionPage from '../questionPage';
 import { DELETE_QUESTION, QUESTION } from '../../config/endpoint';
 import history from '../../config/history';
 
 jest.mock('axios');
 jest.mock('../../config/history');
+
+const axios = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionPage />', () => {
   const questions = [
@@ -35,25 +37,25 @@ describe('<QuestionPage />', () => {
   ];
 
   beforeEach(() => {
-    (axios.get as any).mockResolvedValueOnce({
+    axios.get.mockResolvedValueOnce({
       data: questions,
     });
 
-    (axios.delete as any).mockResolvedValueOnce({
+    axios.delete.mockResolvedValueOnce({
       status: 204,
     });
   });
 
   afterEach(() => {
-    (axios.get as any).mockRestore();
+    axios.get.mockRestore();
     (history.push as any).mockRestore();
   });
 
   it('should call the questions get endpoint', async () => {
     render(<QuestionPage />);
 
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(QUESTION);
+    expect(Axios.get).toHaveBeenCalledTimes(1);
+    expect(Axios.get).toHaveBeenCalledWith(QUESTION);
   });
 
   it('should render the question page', async () => {
@@ -136,8 +138,8 @@ describe('<QuestionPage />', () => {
 
     fireEvent.click(getByTestId('question-delete-button-1'));
 
-    expect(axios.delete).toBeCalledTimes(1);
-    expect(axios.delete).toBeCalledWith(DELETE_QUESTION.replace(':id', '1'));
+    expect(Axios.delete).toBeCalledTimes(1);
+    expect(Axios.delete).toBeCalledWith(DELETE_QUESTION.replace(':id', '1'));
   });
 
   it('should not show the question after delete it', async () => {

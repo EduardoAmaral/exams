@@ -14,7 +14,7 @@ jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 
-const axiosMocked = Axios as jest.Mocked<typeof Axios>;
+const axios = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionEditPage />', () => {
   const subjects = [
@@ -45,16 +45,16 @@ describe('<QuestionEditPage />', () => {
   };
 
   beforeEach(() => {
-    axiosMocked.get
+    axios.get
       .mockResolvedValueOnce({ data: subjects })
       .mockResolvedValueOnce({ data: question });
 
-    axiosMocked.put.mockResolvedValueOnce({
+    axios.put.mockResolvedValueOnce({
       status: 200,
     });
   });
 
-  afterEach(() => axiosMocked.get.mockRestore());
+  afterEach(() => axios.get.mockRestore());
 
   it('should render the question edit page', async () => {
     const { getByTestId, getByLabelText } = render(<QuestionEditPage />);

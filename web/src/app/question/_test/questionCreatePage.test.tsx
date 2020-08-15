@@ -7,7 +7,7 @@ import QuestionCreatePage from '../questionCreatePage';
 jest.mock('axios');
 jest.mock('../../config/history');
 
-const axiosMocked = Axios as jest.Mocked<typeof Axios>;
+const axios = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionCreatePage />', () => {
   const subjects = [
@@ -22,16 +22,16 @@ describe('<QuestionCreatePage />', () => {
   ];
 
   beforeEach(() => {
-    axiosMocked.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValueOnce({
       data: subjects,
     });
 
-    axiosMocked.post.mockResolvedValueOnce({
+    axios.post.mockResolvedValueOnce({
       status: 201,
     });
   });
 
-  afterEach(() => axiosMocked.get.mockRestore());
+  afterEach(() => axios.get.mockRestore());
 
   it('should render the question creation page', async () => {
     const { getByTestId, getByLabelText } = render(<QuestionCreatePage />);

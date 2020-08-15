@@ -4,7 +4,7 @@ import {
   render,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
-import axios from 'axios';
+import Axios from 'axios';
 import router from 'react-router';
 import { QUESTION_BY_ID, QUESTION_COMMENT } from '../../config/endpoint';
 import history from '../../config/history';
@@ -15,6 +15,8 @@ jest.mock('axios');
 jest.mock('../../config/history');
 jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 jest.mock('../../config/socket');
+
+const axiosMocked = Axios as jest.Mocked<typeof Axios>;
 
 describe('<QuestionDetailPage />', () => {
   const question = {
@@ -34,7 +36,7 @@ describe('<QuestionDetailPage />', () => {
   };
 
   beforeEach(() => {
-    (axios.get as any)
+    axiosMocked.get
       .mockResolvedValueOnce({
         data: question,
       })
@@ -42,7 +44,7 @@ describe('<QuestionDetailPage />', () => {
         data: [],
       });
 
-    (axios.post as any).mockResolvedValueOnce({
+    axiosMocked.post.mockResolvedValueOnce({
       data: {
         id: 1,
         message: 'My Comment',
@@ -52,8 +54,8 @@ describe('<QuestionDetailPage />', () => {
   });
 
   afterEach(() => {
-    (axios.get as any).mockRestore();
-    (axios.post as any).mockRestore();
+    axiosMocked.get.mockRestore();
+    axiosMocked.post.mockRestore();
     (history.push as any).mockRestore();
     (questionCommentsSubscription as any).mockRestore();
   });
@@ -61,7 +63,7 @@ describe('<QuestionDetailPage />', () => {
   it('should call the get question by id endpoint', async () => {
     render(<QuestionDetailPage />);
 
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(Axios.get).toHaveBeenCalledWith(
       QUESTION_BY_ID.replace(':id', question.id.toString())
     );
   });
@@ -177,7 +179,7 @@ describe('<QuestionDetailPage />', () => {
 
       fireEvent.click(getByTestId('send-comment-button'));
 
-      expect(axios.post).toHaveBeenCalledWith(QUESTION_COMMENT, {
+      expect(Axios.post).toHaveBeenCalledWith(QUESTION_COMMENT, {
         message: 'My Comment',
         questionId: question.id,
       });
