@@ -1,6 +1,12 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import Axios from 'axios';
 import React from 'react';
+import { SUBJECT } from '../../../config/endpoint';
 import history from '../../../config/history';
 import Question from '../../../types/Question';
 import QuestionForm from '../questionForm';
@@ -324,6 +330,44 @@ describe('<QuestionForm />', () => {
       expect(
         getByText('Topic should have a maximum of 255 characters')
       ).toBeVisible();
+    });
+  });
+
+  describe('Subject', () => {
+    it('should select the subject added after create it', async () => {
+      axios.post.mockResolvedValueOnce({
+        data: {
+          id: 3,
+          description: 'New Subject',
+        },
+      });
+
+      const { getByTitle, getByLabelText, getByTestId } = render(
+        <QuestionForm onSubmit={jest.fn()} />
+      );
+
+      await waitFor(() => getByLabelText('Subject'));
+
+      fireEvent.click(getByTitle('Add new subject'));
+
+      fireEvent.change(getByLabelText('Subject', { selector: 'input' }), {
+        target: {
+          value: 'New Subject',
+        },
+      });
+
+      fireEvent.click(getByTestId('subject-save-button'));
+
+      expect(axios.post).toHaveBeenCalledWith(SUBJECT, {
+        description: 'New Subject',
+      });
+
+      await waitForElementToBeRemoved(getByTestId('subject-save-button'));
+
+      expect(getByLabelText('Subject', { selector: 'select' })).toHaveProperty(
+        'value',
+        '3'
+      );
     });
   });
 });

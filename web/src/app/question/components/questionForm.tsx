@@ -5,6 +5,7 @@ import history from '../../config/history';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
 import './questionForm.scss';
+import SubjectButton from './subjectButton';
 
 interface Props {
   questionData?: Question;
@@ -185,6 +186,13 @@ export default function QuestionForm({
               ))}
             </select>
           </label>
+          <SubjectButton
+            onSave={(subject: Subject) => {
+              console.log('Here: ', subject);
+              setSubjects((s) => [...s, subject]);
+              setSelectedSubject(subject.id);
+            }}
+          />
           {errors.subject ? (
             <div className="validation-error">{errors.subject}</div>
           ) : null}
@@ -308,8 +316,8 @@ export default function QuestionForm({
         </div>
       </div>
       <div className="row field">
-        <div className="col-md-6">{renderTypeSelect()}</div>
-        <div className="col-md-6">{renderSubjectSelect()}</div>
+        <div className="col-md-4">{renderTypeSelect()}</div>
+        <div className="col-md-4">{renderSubjectSelect()}</div>
       </div>
       <div className="row field">
         <div className="col-md-12">{renderSolutionInput()}</div>
