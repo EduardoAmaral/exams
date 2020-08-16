@@ -41,16 +41,23 @@ class SubjectServiceTest {
 
     @Test
     @DisplayName("should retrieve all subjects")
-    void findAll_shouldReturnAllSubjects() {
-        List<Subject> subjects = new ArrayList<>(List.of(SubjectEntity.builder()
+    void findAll_shouldReturnAllSubjects_orderedByDescription() {
+        List<Subject> subjects = new ArrayList<>(List.of(
+                SubjectEntity.builder()
+                        .description("French")
+                        .build(),
+                SubjectEntity.builder()
                         .description("English")
                         .build(),
                 SubjectEntity.builder()
-                        .description("French")
-                        .build()));
+                        .description("Chinese")
+                        .build()
+        ));
 
         when(repository.findAll()).thenReturn(subjects);
 
-        assertThat(service.findAll()).hasSize(2);
+        assertThat(service.findAll())
+                .extracting(Subject::getDescription)
+                .containsExactly("Chinese", "English", "French");
     }
 }
