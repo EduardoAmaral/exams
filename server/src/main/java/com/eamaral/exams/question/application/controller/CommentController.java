@@ -2,8 +2,8 @@ package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.message.application.redis.dto.MessageDTO;
 import com.eamaral.exams.question.application.dto.CommentDTO;
-import com.eamaral.exams.question.domain.port.CommentPort;
-import com.eamaral.exams.user.domain.port.UserPort;
+import com.eamaral.exams.question.domain.service.CommentService;
+import com.eamaral.exams.user.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,21 +26,21 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = "api/question/comment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CommentController {
 
-    private final UserPort userPort;
-    private final CommentPort commentPort;
+    private final UserService userService;
+    private final CommentService commentService;
 
-    public CommentController(UserPort userPort, CommentPort commentPort) {
-        this.userPort = userPort;
-        this.commentPort = commentPort;
+    public CommentController(UserService userService, CommentService commentService) {
+        this.userService = userService;
+        this.commentService = commentService;
     }
 
     @PostMapping
     public ResponseEntity<CommentDTO> create(@RequestBody @Validated CommentDTO comment) {
-        String currentUserId = userPort.getCurrentUserId();
+        String currentUserId = userService.getCurrentUserId();
         log.info("Creating a comment on Question {} by user {}", comment.getQuestionId(), currentUserId);
 
         return ok(CommentDTO.from(
-                commentPort.create(comment.toBuilder()
+                commentService.create(comment.toBuilder()
                         .author(currentUserId)
                         .build()))
         );
@@ -52,7 +52,7 @@ public class CommentController {
 
         return new MessageDTO<>(
                 FETCH_ALL_COMMENTS,
-                CommentDTO.from(commentPort.findAllBy(id))
+                CommentDTO.from(commentService.findAllBy(id))
         );
     }
 }

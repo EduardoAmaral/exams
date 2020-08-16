@@ -37,8 +37,8 @@ class CommentControllerTest extends ControllerIntegrationTest {
         String userId = "123";
         ZonedDateTime now = ZonedDateTime.now().withFixedOffsetZone();
 
-        when(userPort.getCurrentUserId()).thenReturn(userId);
-        when(commentPort.create(any())).thenReturn(CommentDTO.builder()
+        when(userService.getCurrentUserId()).thenReturn(userId);
+        when(commentService.create(any())).thenReturn(CommentDTO.builder()
                 .id(1L)
                 .message("First Comment")
                 .questionId(1L)
@@ -64,7 +64,7 @@ class CommentControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.author", is("0987")))
                 .andExpect(jsonPath("$.creationDate", containsString(now.toLocalDate().toString())));
 
-        verify(commentPort).create(commentArgumentCaptor.capture());
+        verify(commentService).create(commentArgumentCaptor.capture());
         Assertions.assertThat(commentArgumentCaptor.getValue())
                 .extracting("author", "message", "questionId")
                 .containsExactly(userId, "My First Comment", 1L);

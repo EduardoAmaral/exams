@@ -1,7 +1,7 @@
 package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.question.application.dto.SubjectDTO;
-import com.eamaral.exams.question.domain.port.SubjectPort;
+import com.eamaral.exams.question.domain.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +18,16 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = "api/question/subject", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SubjectController {
 
-    private final SubjectPort subjectPort;
+    private final SubjectService service;
 
-    public SubjectController(SubjectPort subjectPort) {
-        this.subjectPort = subjectPort;
+    public SubjectController(SubjectService service) {
+        this.service = service;
     }
 
     @GetMapping
     public ResponseEntity<List<SubjectDTO>> list() {
         log.info("Getting all subjects");
-        return ok(subjectPort.findAll()
+        return ok(service.findAll()
                 .stream()
                 .map(SubjectDTO::from)
                 .collect(toList()));
@@ -36,6 +36,6 @@ public class SubjectController {
     @PostMapping
     public ResponseEntity<SubjectDTO> save(@RequestBody @Validated SubjectDTO subject) {
         log.info("Saving subject {}", subject.getDescription());
-        return ok(SubjectDTO.from(subjectPort.save(subject)));
+        return ok(SubjectDTO.from(service.save(subject)));
     }
 }

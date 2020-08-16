@@ -2,7 +2,6 @@ package com.eamaral.exams.question.domain.service;
 
 import com.eamaral.exams.message.infrastructure.redis.port.MessagePublisher;
 import com.eamaral.exams.question.domain.Comment;
-import com.eamaral.exams.question.domain.port.CommentPort;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
-public class CommentService implements CommentPort {
+public class CommentService {
 
     private final CommentRepositoryPort repositoryPort;
 
@@ -23,7 +22,6 @@ public class CommentService implements CommentPort {
         this.publisher = publisher;
     }
 
-    @Override
     public Comment create(Comment comment) {
         Comment newComment = repositoryPort.create(comment);
 
@@ -32,7 +30,6 @@ public class CommentService implements CommentPort {
         return newComment;
     }
 
-    @Override
     public List<Comment> findAllBy(long questionId) {
         List<Comment> comments = repositoryPort.findAllBy(questionId);
 

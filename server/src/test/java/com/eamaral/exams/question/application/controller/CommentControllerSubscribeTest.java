@@ -3,7 +3,7 @@ package com.eamaral.exams.question.application.controller;
 import com.eamaral.exams.message.application.redis.dto.MessageDTO;
 import com.eamaral.exams.question.application.dto.CommentDTO;
 import com.eamaral.exams.question.domain.Comment;
-import com.eamaral.exams.question.domain.port.CommentPort;
+import com.eamaral.exams.question.domain.service.CommentService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class CommentControllerSubscribeTest {
 
 
     @Mock
-    private CommentPort commentPort;
+    private CommentService commentService;
 
     @InjectMocks
     private CommentController controller;
@@ -47,7 +47,7 @@ class CommentControllerSubscribeTest {
                         .creationDate(now)
                         .build()
         );
-        when(commentPort.findAllBy(1L)).thenReturn(comments);
+        when(commentService.findAllBy(1L)).thenReturn(comments);
 
         final MessageDTO<List<CommentDTO>> message = controller.subscribe(1L, () -> "1234");
 

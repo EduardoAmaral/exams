@@ -1,10 +1,10 @@
 package com.eamaral.exams.configuration.controller;
 
-import com.eamaral.exams.exam.domain.port.ExamPort;
-import com.eamaral.exams.question.domain.port.CommentPort;
-import com.eamaral.exams.question.domain.port.QuestionPort;
-import com.eamaral.exams.question.domain.port.SubjectPort;
-import com.eamaral.exams.user.domain.port.UserPort;
+import com.eamaral.exams.exam.domain.service.ExamService;
+import com.eamaral.exams.question.domain.service.CommentService;
+import com.eamaral.exams.question.domain.service.QuestionService;
+import com.eamaral.exams.question.domain.service.SubjectService;
+import com.eamaral.exams.user.domain.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +24,19 @@ import org.springframework.test.web.servlet.MockMvc;
 public abstract class ControllerIntegrationTest {
 
     @MockBean
-    protected QuestionPort questionPort;
+    protected QuestionService questionService;
 
     @MockBean
-    protected SubjectPort subjectPort;
+    protected SubjectService subjectService;
 
     @MockBean
-    protected UserPort userPort;
+    protected UserService userService;
 
     @MockBean
-    protected ExamPort examPort;
+    protected ExamService examService;
 
     @MockBean
-    protected CommentPort commentPort;
+    protected CommentService commentService;
 
     @Autowired
     protected MockMvc mockMvc;

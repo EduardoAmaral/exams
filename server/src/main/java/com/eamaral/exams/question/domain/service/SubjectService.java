@@ -1,7 +1,6 @@
 package com.eamaral.exams.question.domain.service;
 
 import com.eamaral.exams.question.domain.Subject;
-import com.eamaral.exams.question.domain.port.SubjectPort;
 import com.eamaral.exams.question.domain.port.SubjectRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class SubjectService implements SubjectPort {
+public class SubjectService {
 
     private final SubjectRepositoryPort repository;
 

@@ -53,8 +53,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     void get_shouldReturnAllQuestions() throws Exception {
         List<Question> questions = new ArrayList<>(getQuestionsDTO());
 
-        when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(questionPort.findByUser(currentUser)).thenReturn(questions);
+        when(userService.getCurrentUserId()).thenReturn(currentUser);
+        when(questionService.findByUser(currentUser)).thenReturn(questions);
 
         mockMvc.perform(
                 get(ENDPOINT))
@@ -85,8 +85,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @Test
     @DisplayName("should retrieve a question by id")
     void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(questionPort.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion());
+        when(userService.getCurrentUserId()).thenReturn(currentUser);
+        when(questionService.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion());
 
         mockMvc.perform(
                 get("/api/question/1"))
@@ -108,8 +108,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     void create_whenAllFieldsAreValid_shouldReturnCreatedStatus() throws Exception {
         QuestionDTO dto = getTrueOrFalseQuestion();
 
-        when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        doNothing().when(questionPort).save(questionCaptor.capture());
+        when(userService.getCurrentUserId()).thenReturn(currentUser);
+        doNothing().when(questionService).save(questionCaptor.capture());
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -148,8 +148,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
         List<Question> questions = new ArrayList<>(dtos);
 
         String author = "40030";
-        when(userPort.getCurrentUserId()).thenReturn(author);
-        when(questionPort.saveAll(questionListCaptor.capture())).thenReturn(questions);
+        when(userService.getCurrentUserId()).thenReturn(author);
+        when(questionService.saveAll(questionListCaptor.capture())).thenReturn(questions);
 
         mockMvc.perform(
                 post("/api/question/list")
@@ -176,8 +176,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .correctAnswer("False")
                 .build();
 
-        when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(questionPort.update(any(), eq(currentUser))).thenReturn(question);
+        when(userService.getCurrentUserId()).thenReturn(currentUser);
+        when(questionService.update(any(), eq(currentUser))).thenReturn(question);
 
         mockMvc.perform(
                 put(ENDPOINT)
@@ -199,8 +199,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     void delete_shouldReturnSuccess() throws Exception {
         String author = "590093";
 
-        when(userPort.getCurrentUserId()).thenReturn(author);
-        doNothing().when(questionPort).delete(eq(questionId), stringCaptor.capture());
+        when(userService.getCurrentUserId()).thenReturn(author);
+        doNothing().when(questionService).delete(eq(questionId), stringCaptor.capture());
 
         mockMvc.perform(
                 delete("/api/question/1")
@@ -213,8 +213,8 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @Test
     @DisplayName("search should use logged user")
     void search_shouldUseCurrentUserAsParameter() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(currentUser);
-        when(questionPort.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getQuestionsDTO()));
+        when(userService.getCurrentUserId()).thenReturn(currentUser);
+        when(questionService.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search"))
@@ -229,7 +229,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @DisplayName("search should retrieve questions by filter")
     void search_shouldReturnAListOfQuestionBySearchTerm(SearchQuestionScenario search) throws Exception {
 
-        when(questionPort.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
+        when(questionService.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")

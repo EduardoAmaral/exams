@@ -24,7 +24,7 @@ class SubjectControllerTest extends ControllerIntegrationTest {
     @Test
     @DisplayName("should retrieve all subjects")
     void list_shouldReturnAllSubjects() throws Exception {
-        when(subjectPort.findAll()).thenReturn(new ArrayList<>(List.of(
+        when(subjectService.findAll()).thenReturn(new ArrayList<>(List.of(
                 SubjectDTO.builder()
                         .id(1L)
                         .description("English")
@@ -49,7 +49,7 @@ class SubjectControllerTest extends ControllerIntegrationTest {
                 .description("English")
                 .build();
 
-        when(subjectPort.save(dto)).thenReturn(SubjectDTO.builder()
+        when(subjectService.save(dto)).thenReturn(SubjectDTO.builder()
                 .id(1L)
                 .description("English")
                 .build());

@@ -49,7 +49,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
     void create_whenFieldsAreValid_AndReturnCreatedStatus() throws Exception {
         ExamDTO dto = getExamDTO();
 
-        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
+        when(userService.getCurrentUserId()).thenReturn(currentUserId);
 
         mockMvc.perform(
                 post(ENDPOINT)
@@ -59,8 +59,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isCreated());
 
-        verify(userPort).getCurrentUserId();
-        verify(examPort).create(examCaptor.capture(), eq(currentUserId));
+        verify(userService).getCurrentUserId();
+        verify(examService).create(examCaptor.capture(), eq(currentUserId));
 
         Exam exam = examCaptor.getValue();
 
@@ -93,15 +93,15 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.errors['title']", is("Title is required")))
                 .andExpect(jsonPath("$.errors['questions']", is("Questions are required")));
 
-        verify(examPort, never()).create(any(), anyString());
+        verify(examService, never()).create(any(), anyString());
     }
 
     @Test
     @DisplayName("should retrieve all exams by their author")
     void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
 
-        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
-        when(examPort.findByUser(currentUserId)).thenReturn(singletonList(getExamDTO()));
+        when(userService.getCurrentUserId()).thenReturn(currentUserId);
+        when(examService.findByUser(currentUserId)).thenReturn(singletonList(getExamDTO()));
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
@@ -113,15 +113,15 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(2)));
 
-        verify(userPort).getCurrentUserId();
-        verify(examPort).findByUser(currentUserId);
+        verify(userService).getCurrentUserId();
+        verify(examService).findByUser(currentUserId);
     }
 
     @Test
     @DisplayName("should retrieve all available exams at current time")
     void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
-        when(examPort.findAvailable()).thenReturn(singletonList(getExamDTO()));
+        when(userService.getCurrentUserId()).thenReturn(currentUserId);
+        when(examService.findAvailable()).thenReturn(singletonList(getExamDTO()));
 
         mockMvc.perform(get(ENDPOINT + "/available"))
                 .andExpect(status().isOk())
@@ -133,15 +133,15 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(0)));
 
-        verify(userPort).getCurrentUserId();
-        verify(examPort).findAvailable();
+        verify(userService).getCurrentUserId();
+        verify(examService).findAvailable();
     }
 
     @Test
     @DisplayName("should retrieve an exam by id")
     void getById_shouldReturnAnExistentExam() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
-        when(examPort.findById(examId, currentUserId)).thenReturn(getExamDTO());
+        when(userService.getCurrentUserId()).thenReturn(currentUserId);
+        when(examService.findById(examId, currentUserId)).thenReturn(getExamDTO());
 
         mockMvc.perform(get(String.format("%s/%s", ENDPOINT, examId)))
                 .andExpect(status().isOk())
@@ -156,14 +156,14 @@ class ExamControllerTest extends ControllerIntegrationTest {
 
     @Test
     void delete_shouldReturnNoContentStatus() throws Exception {
-        when(userPort.getCurrentUserId()).thenReturn(currentUserId);
+        when(userService.getCurrentUserId()).thenReturn(currentUserId);
 
         mockMvc.perform(
                 delete(ENDPOINT + "/" + examId)
                         .with(csrf()))
                 .andExpect(status().isNoContent());
-        verify(userPort).getCurrentUserId();
-        verify(examPort).delete(examId, currentUserId);
+        verify(userService).getCurrentUserId();
+        verify(examService).delete(examId, currentUserId);
     }
 
     private ExamDTO getExamDTO() {
