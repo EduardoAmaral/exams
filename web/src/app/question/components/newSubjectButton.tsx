@@ -2,12 +2,13 @@ import Axios from 'axios';
 import React, { useState } from 'react';
 import { SUBJECT } from '../../config/endpoint';
 import Subject from '../../types/Subject';
+import './newSubjectButton.scss';
 
 interface Props {
   readonly onSave: (subject: Subject) => void;
 }
 
-const SubjectButton = ({ onSave }: Props) => {
+const NewSubjectButton = ({ onSave }: Props) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('');
 
@@ -27,17 +28,17 @@ const SubjectButton = ({ onSave }: Props) => {
     });
   };
 
-  const renderModal = () => {
+  const renderInput = () => {
     return (
-      <div>
-        <label>
-          Subject
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
+      <div className="input-container">
+        <label htmlFor="new-subject">Subject</label>
+        <input
+          id="new-subject"
+          type="text"
+          placeholder="Add new subject"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         <button type="button" onClick={() => setVisible(false)}>
           Cancel
         </button>
@@ -54,7 +55,7 @@ const SubjectButton = ({ onSave }: Props) => {
   };
 
   return (
-    <>
+    <span className={`container ${visible ? 'input-space' : ''}`}>
       <button
         type="button"
         className="icon"
@@ -63,9 +64,9 @@ const SubjectButton = ({ onSave }: Props) => {
       >
         <i className="ri-add-circle-line" />
       </button>
-      {visible ? renderModal() : null}
-    </>
+      {visible ? renderInput() : null}
+    </span>
   );
 };
 
-export default SubjectButton;
+export default NewSubjectButton;

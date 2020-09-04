@@ -5,7 +5,7 @@ import history from '../../config/history';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
 import './questionForm.scss';
-import SubjectButton from './subjectButton';
+import NewSubjectButton from './newSubjectButton';
 
 interface Props {
   questionData?: Question;
@@ -162,7 +162,7 @@ export default function QuestionForm({
       !loadingSubjects && (
         <>
           <label htmlFor="subject">Subject</label>
-          <div className="subjectContainer">
+          <div className="subject-container">
             <select
               id="subject"
               name="subject"
@@ -187,7 +187,7 @@ export default function QuestionForm({
                 />
               ))}
             </select>
-            <SubjectButton
+            <NewSubjectButton
               onSave={(subject: Subject) => {
                 console.log('Here: ', subject);
                 setSubjects((s) => [...s, subject]);
