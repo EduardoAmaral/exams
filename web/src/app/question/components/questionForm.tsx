@@ -91,17 +91,17 @@ export default function QuestionForm({
   const renderStatementInput = () => {
     return (
       <>
-        <label>
-          Statement
-          <textarea
-            rows={4}
-            className="form-control"
-            value={question.statement}
-            onChange={(event) => {
-              setQuestion({ ...question, statement: event.target.value });
-            }}
-          />
-        </label>
+        <label htmlFor="statement">Statement</label>
+        <textarea
+          id="statement"
+          name="statement"
+          rows={4}
+          className={`${errors.statement ? 'error' : ''}`}
+          value={question.statement}
+          onChange={(event) => {
+            setQuestion({ ...question, statement: event.target.value });
+          }}
+        />
         {errors.statement ? (
           <div className="validation-error">{errors.statement}</div>
         ) : null}
@@ -112,44 +112,44 @@ export default function QuestionForm({
   const renderTypeSelect = () => {
     return (
       <>
-        <label>
-          Type
-          <select
-            className="form-control"
-            value={question.type}
-            disabled={question.id !== undefined}
-            onChange={(event) => {
-              switch (event.target.value) {
-                case TRUE_OR_FALSE:
-                  setQuestion({
-                    ...question,
-                    type: event.target.value,
-                    alternatives: trueOrFalseAlternatives,
-                  });
-                  break;
-                case MULTIPLE_CHOICES:
-                  setQuestion({
-                    ...question,
-                    type: event.target.value,
-                    alternatives: multipleChoicesAlternatives,
-                  });
-                  break;
-                default:
-                  setQuestion({
-                    ...question,
-                    type: event.target.value,
-                    alternatives: [],
-                  });
-                  break;
-              }
-            }}
-          >
-            <option value="" label="Select an option" />
-            {types.map((type) => (
-              <option key={type.value} value={type.value} label={type.value} />
-            ))}
-          </select>
-        </label>
+        <label htmlFor="type">Type</label>
+        <select
+          id="type"
+          name="type"
+          className={`${errors.type ? 'error' : ''}`}
+          value={question.type}
+          disabled={question.id !== undefined}
+          onChange={(event) => {
+            switch (event.target.value) {
+              case TRUE_OR_FALSE:
+                setQuestion({
+                  ...question,
+                  type: event.target.value,
+                  alternatives: trueOrFalseAlternatives,
+                });
+                break;
+              case MULTIPLE_CHOICES:
+                setQuestion({
+                  ...question,
+                  type: event.target.value,
+                  alternatives: multipleChoicesAlternatives,
+                });
+                break;
+              default:
+                setQuestion({
+                  ...question,
+                  type: event.target.value,
+                  alternatives: [],
+                });
+                break;
+            }
+          }}
+        >
+          <option value="" label="Select an option" />
+          {types.map((type) => (
+            <option key={type.value} value={type.value} label={type.value} />
+          ))}
+        </select>
         {errors.type ? (
           <div className="validation-error">{errors.type}</div>
         ) : null}
@@ -161,10 +161,12 @@ export default function QuestionForm({
     return (
       !loadingSubjects && (
         <>
-          <label>
-            Subject
+          <label htmlFor="subject">Subject</label>
+          <div className="subjectContainer">
             <select
-              className="form-control"
+              id="subject"
+              name="subject"
+              className={`${errors.subject ? 'error' : ''}`}
               value={selectedSubject}
               onChange={(event) => {
                 setQuestion({
@@ -185,14 +187,14 @@ export default function QuestionForm({
                 />
               ))}
             </select>
-          </label>
-          <SubjectButton
-            onSave={(subject: Subject) => {
-              console.log('Here: ', subject);
-              setSubjects((s) => [...s, subject]);
-              setSelectedSubject(subject.id);
-            }}
-          />
+            <SubjectButton
+              onSave={(subject: Subject) => {
+                console.log('Here: ', subject);
+                setSubjects((s) => [...s, subject]);
+                setSelectedSubject(subject.id);
+              }}
+            />
+          </div>
           {errors.subject ? (
             <div className="validation-error">{errors.subject}</div>
           ) : null}
@@ -204,17 +206,17 @@ export default function QuestionForm({
   const renderSolutionInput = () => {
     return (
       <>
-        <label>
-          Solution
-          <textarea
-            className="form-control"
-            rows={3}
-            value={question.solution}
-            onChange={(event) => {
-              setQuestion({ ...question, solution: event.target.value });
-            }}
-          />
-        </label>
+        <label htmlFor="solution">Solution</label>
+        <textarea
+          id="solution"
+          name="solution"
+          className={`${errors.solution ? 'error' : ''}`}
+          rows={3}
+          value={question.solution}
+          onChange={(event) => {
+            setQuestion({ ...question, solution: event.target.value });
+          }}
+        />
         {errors.solution ? (
           <div className="validation-error">{errors.solution}</div>
         ) : null}
@@ -225,17 +227,17 @@ export default function QuestionForm({
   const renderTopicsInput = () => {
     return (
       <>
-        <label>
-          Topic
-          <input
-            className="form-control"
-            type="text"
-            value={question.topic}
-            onChange={(event) => {
-              setQuestion({ ...question, topic: event.target.value });
-            }}
-          />
-        </label>
+        <label htmlFor="topic">Topic</label>
+        <input
+          id="topic"
+          name="topic"
+          className={`${errors.topic ? 'error' : ''}`}
+          type="text"
+          value={question.topic}
+          onChange={(event) => {
+            setQuestion({ ...question, topic: event.target.value });
+          }}
+        />
         {errors.topic ? (
           <div className="validation-error">{errors.topic}</div>
         ) : null}
@@ -247,7 +249,7 @@ export default function QuestionForm({
     if (question.alternatives) {
       return (
         <div className="alternatives">
-          Alternatives:
+          <span>Alternatives:</span>
           {errors.alternatives ? (
             <div className="validation-error">{errors.alternatives}</div>
           ) : null}
@@ -309,34 +311,22 @@ export default function QuestionForm({
   };
 
   return (
-    <form className="ui form" onSubmit={onSubmitForm} aria-label="form">
-      <div className="row field">
-        <div className="col-md-12">
-          <div className="form-group">{renderStatementInput()}</div>
-        </div>
+    <form className="form" onSubmit={onSubmitForm} aria-label="form">
+      <div className="container">
+        <div className="statement">{renderStatementInput()}</div>
+        <div className="type">{renderTypeSelect()}</div>
+        <div className="subject">{renderSubjectSelect()}</div>
+        <div className="solution">{renderSolutionInput()}</div>
+        <div className="topic">{renderTopicsInput()}</div>
+        <div className="alternatives">{renderAlternatives()}</div>
       </div>
-      <div className="row field">
-        <div className="col-md-4">{renderTypeSelect()}</div>
-        <div className="col-md-4">{renderSubjectSelect()}</div>
-      </div>
-      <div className="row field">
-        <div className="col-md-12">{renderSolutionInput()}</div>
-      </div>
-      <div className="row field">
-        <div className="col-md-12">{renderTopicsInput()}</div>
-      </div>
-      <div className="row field">
-        <div className="col-md-6">{renderAlternatives()}</div>
-      </div>
-      <div className="row">
-        <div className="col-md-12 right">
-          <button type="button" onClick={onCancelClick}>
-            Cancel
-          </button>
-          <button className="primary" type="submit">
-            Save
-          </button>
-        </div>
+      <div className="right">
+        <button type="button" onClick={onCancelClick}>
+          Cancel
+        </button>
+        <button className="primary" type="submit">
+          Save
+        </button>
       </div>
     </form>
   );

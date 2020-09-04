@@ -54,7 +54,7 @@ const SubjectButton = ({ onSave }: Props) => {
   };
 
   return (
-    <div className="subject-button-container">
+    <>
       <button
         type="button"
         className="icon"
@@ -64,7 +64,7 @@ const SubjectButton = ({ onSave }: Props) => {
         <i className="ri-add-circle-line" />
       </button>
       {visible ? renderModal() : null}
-    </div>
+    </>
   );
 };
 

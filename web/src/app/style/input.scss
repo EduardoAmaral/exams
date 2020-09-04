@@ -11,16 +11,11 @@ label {
 }
 
 .form-control {
-  display: block;
-  width: 100%;
-  margin: 8px auto;
-}
-
-.field {
-  margin: 4px auto 28px;
+  display: flex;
 }
 
 .validation-error {
+  margin-top: $minimun-margin;
   font-size: $font-disclaimer;
   color: $error-color;
 }
@@ -41,8 +36,12 @@ select {
   color: $font-color;
   padding: 4px 8px;
 
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+
   &.error {
-    border: $error-color;
+    border: 1px solid $error-color;
   }
 }
 
@@ -93,7 +92,7 @@ select {
 
 input[type='radio'] {
   height: 16px;
-  margin: 4px;
+  margin: $minimun-margin;
 }
 
 textarea {

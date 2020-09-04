@@ -17,32 +17,30 @@ export default function Comments({ comments = [], onSend }: Props) {
 
   return (
     <div className="comments-section" data-testid="comments-section">
-      <div className="row">
-        <div className="comment-input-container">
-          <label htmlFor="comment-input">
-            <i className="ri-chat-1-line" />
-            Comments
-          </label>
-          <div className="comment-input">
-            <textarea
-              id="comment-input"
-              value={newComment.message}
-              data-testid="comment-input"
-              placeholder="Write your comment..."
-              rows={2}
-              onChange={(e) =>
-                setNewComment({ ...newComment, message: e.target.value })
-              }
-            />
-            <button
-              type="button"
-              className="icon"
-              data-testid="send-comment-button"
-              onClick={sendComment}
-            >
-              <i className="ri-send-plane-2-line" />
-            </button>
-          </div>
+      <div className="comment-input-container">
+        <label htmlFor="comment-input">
+          <i className="ri-chat-1-line" />
+          Comments
+        </label>
+        <div className="comment-input">
+          <textarea
+            id="comment-input"
+            value={newComment.message}
+            data-testid="comment-input"
+            placeholder="Write your comment..."
+            rows={2}
+            onChange={(e) =>
+              setNewComment({ ...newComment, message: e.target.value })
+            }
+          />
+          <button
+            type="button"
+            className="icon"
+            data-testid="send-comment-button"
+            onClick={sendComment}
+          >
+            <i className="ri-send-plane-2-line" />
+          </button>
         </div>
       </div>
       <div className="comments-container">
