@@ -51,6 +51,7 @@ public class ArchitectureTest {
     @ArchTest
     public static final ArchRule servicesShouldResidesInDomainServicesPackage = classes()
             .that().haveSimpleNameEndingWith("Service")
+            .and().doNotHaveSimpleName("AuthenticationService")
             .should().resideInAPackage("..domain.service..")
             .because("Services belong to the domain layer");
 
