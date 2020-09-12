@@ -8,8 +8,6 @@ plugins {
 
 group = 'com.eamaral'
 version = '0.0.1-SNAPSHOT'
-targetCompatibility = 11
-sourceCompatibility = 11
 
 springBoot {
     mainClassName = "com.eamaral.exams.configuration.ExamsApplication"
@@ -27,7 +25,7 @@ sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "EduardoAmaral_exams"
-        property "sonar.organization", "$System.env.EXAMS_SONAR_ORG"
+        property "sonar.organization", "eduardoamaral"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", "$System.env.EXAMS_SONAR_TOKEN"
         property "sonar.coverage.exclusions", ["**/*DTO.java", "**/*Entity.java", "**/configuration/*"]

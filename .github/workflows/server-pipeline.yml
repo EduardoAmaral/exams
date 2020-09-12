@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: ./gradlew :server:build :server:jacocoTestReport
+        run: ./gradlew :server:build :server:jacocoTestReport --info
       
       - name: Upload jacocoTestReport
         uses: actions/upload-artifact@v1
