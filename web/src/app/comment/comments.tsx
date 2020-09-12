@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CommentModel from '../types/Comment';
-import './comments.scss';
+import style from './comments.module.scss';
 
 interface Props {
   comments?: CommentModel[];
@@ -16,19 +16,19 @@ export default function Comments({ comments = [], onSend }: Props) {
   };
 
   return (
-    <div className="comments-section" data-testid="comments-section">
-      <div className="comment-input-container">
+    <div className={style.section} data-testid="comments-section">
+      <div>
         <label htmlFor="comment-input">
           <i className="ri-chat-1-line" />
           Comments
         </label>
-        <div className="comment-input">
+        <div className={style.input}>
           <textarea
             id="comment-input"
             value={newComment.message}
             data-testid="comment-input"
             placeholder="Write your comment..."
-            rows={2}
+            rows={4}
             onChange={(e) =>
               setNewComment({ ...newComment, message: e.target.value })
             }
@@ -74,15 +74,21 @@ export function Comment({ comment }: CommentProps) {
   };
 
   return (
-    <div className="comment" data-testid={`comment-${comment.id}`}>
-      <span className="author" data-testid={`comment-${comment.id}-author`}>
+    <div className={style.comment} data-testid={`comment-${comment.id}`}>
+      <span
+        className={style.author}
+        data-testid={`comment-${comment.id}-author`}
+      >
         {comment.authorName}
       </span>
-      <div className="message" data-testid={`comment-${comment.id}-message`}>
+      <div
+        className={style.message}
+        data-testid={`comment-${comment.id}-message`}
+      >
         {comment.message}
       </div>
       <span
-        className="date"
+        className={style.date}
         data-testid={`comment-${comment.id}-creation-date`}
       >
         {printDate()}
