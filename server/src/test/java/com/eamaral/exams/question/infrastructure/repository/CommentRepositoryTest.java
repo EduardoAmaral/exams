@@ -40,8 +40,9 @@ class CommentRepositoryTest extends JpaIntegrationTest {
                 "Question is required",
                 "Author is required");
 
+        final Comment emptyComment = Comment.builder().build();
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> repository.create(Comment.builder().build()))
+                .isThrownBy(() -> repository.create(emptyComment))
                 .matches(e -> e.getConstraintViolations().size() == validationMessages.size())
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));

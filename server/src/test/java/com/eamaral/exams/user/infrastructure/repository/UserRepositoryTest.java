@@ -45,9 +45,10 @@ class UserRepositoryTest extends JpaIntegrationTest {
         List<String> validationMessages = List.of("Email is required",
                 "Name is required",
                 "Surname is required");
+        final User emptyUser = User.builder().id("1").build();
 
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> repository.save(User.builder().id("1").build()))
+                .isThrownBy(() -> repository.save(emptyUser))
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
     }
@@ -55,16 +56,15 @@ class UserRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should not save an user that has an invalid email")
     void save_whenEmailIsInvalid() {
+        final User user = User.builder()
+                .id("1")
+                .email("abc")
+                .name("A")
+                .surname("B")
+                .build();
+
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> {
-                    final User user = User.builder()
-                            .id("1")
-                            .email("abc")
-                            .name("A")
-                            .surname("B")
-                            .build();
-                    repository.save(user);
-                })
+                .isThrownBy(() -> repository.save(user))
                 .matches(e -> e.getConstraintViolations().stream()
                         .anyMatch(v -> v.getMessage().equals("Email used is invalid")));
     }
