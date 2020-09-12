@@ -1,4 +1,4 @@
-.container {
+.new-subject-container {
   position: relative;
   margin-top: 5px;
 
@@ -10,7 +10,7 @@
     align-items: center;
   }
 
-  .input-space {
+  &.input-space {
     margin-bottom: 50px;
   }
 

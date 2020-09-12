@@ -55,7 +55,7 @@ const NewSubjectButton = ({ onSave }: Props) => {
   };
 
   return (
-    <span className={`container ${visible ? 'input-space' : ''}`}>
+    <span className={`new-subject-container ${visible ? 'input-space' : ''}`}>
       <button
         type="button"
         className="icon"
