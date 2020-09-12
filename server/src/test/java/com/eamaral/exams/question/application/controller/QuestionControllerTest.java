@@ -48,6 +48,34 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @Captor
     private ArgumentCaptor<String> stringCaptor;
 
+    private static Stream<SearchQuestionScenario> getSearchTerm() {
+        return Stream.of(
+                SearchQuestionScenario.builder()
+                        .queryParam("subject")
+                        .searchTerm("1")
+                        .assertField("subject.id")
+                        .expectValue(1L)
+                        .build(),
+                SearchQuestionScenario.builder()
+                        .queryParam("statement")
+                        .searchTerm("Question")
+                        .assertField("statement")
+                        .expectValue("Question")
+                        .build(),
+                SearchQuestionScenario.builder()
+                        .queryParam("topic")
+                        .searchTerm("T01")
+                        .assertField("topic")
+                        .expectValue("T01")
+                        .build(),
+                SearchQuestionScenario.builder()
+                        .queryParam("type")
+                        .searchTerm(QuestionType.TRUE_OR_FALSE.toString())
+                        .assertField("type")
+                        .expectValue(QuestionType.TRUE_OR_FALSE)
+                        .build());
+    }
+
     @Test
     @DisplayName("should retrieve all questions")
     void get_shouldReturnAllQuestions() throws Exception {
@@ -241,50 +269,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .isEqualTo(search.expectValue);
     }
 
-    private static Stream<SearchQuestionScenario> getSearchTerm() {
-        return Stream.of(
-                SearchQuestionScenario.builder()
-                        .queryParam("subject")
-                        .searchTerm("1")
-                        .assertField("subject.id")
-                        .expectValue(1L)
-                        .build(),
-                SearchQuestionScenario.builder()
-                        .queryParam("statement")
-                        .searchTerm("Question")
-                        .assertField("statement")
-                        .expectValue("Question")
-                        .build(),
-                SearchQuestionScenario.builder()
-                        .queryParam("topic")
-                        .searchTerm("T01")
-                        .assertField("topic")
-                        .expectValue("T01")
-                        .build(),
-                SearchQuestionScenario.builder()
-                        .queryParam("type")
-                        .searchTerm(QuestionType.TRUE_OR_FALSE.toString())
-                        .assertField("type")
-                        .expectValue(QuestionType.TRUE_OR_FALSE)
-                        .build());
-    }
-
-    @Builder
-    @Getter
-    private static class SearchQuestionScenario {
-        private final String queryParam;
-        private final String searchTerm;
-        private final String assertField;
-        private final Object expectValue;
-
-        @Override
-        public String toString() {
-            return String.format("search should retrieve the questions where %s matches with %s",
-                    queryParam,
-                    searchTerm);
-        }
-    }
-
     private QuestionDTO getTrueOrFalseQuestion() {
         return QuestionDTO.builder()
                 .id(questionId)
@@ -341,5 +325,21 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                         .description("C")
                         .build()
         );
+    }
+
+    @Builder
+    @Getter
+    private static class SearchQuestionScenario {
+        private final String queryParam;
+        private final String searchTerm;
+        private final String assertField;
+        private final Object expectValue;
+
+        @Override
+        public String toString() {
+            return String.format("search should retrieve the questions where %s matches with %s",
+                    queryParam,
+                    searchTerm);
+        }
     }
 }

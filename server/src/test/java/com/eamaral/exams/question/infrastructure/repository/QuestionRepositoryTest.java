@@ -39,6 +39,47 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private QuestionRepository repository;
 
+    private static Stream<SearchByCriteriaScenario> findByCriteriaScenarios() {
+        return Stream.of(
+                SearchByCriteriaScenario.builder()
+                        .assertField("statement")
+                        .criteria(
+                                TrueOrFalseEntity.builder()
+                                        .statement("Can")
+                                        .build()
+                        )
+                        .matcher(statement -> statement.contains("Can"))
+                        .build(),
+                SearchByCriteriaScenario.builder()
+                        .assertField("type")
+                        .criteria(
+                                TrueOrFalseEntity.builder()
+                                        .type(QuestionType.MULTIPLE_CHOICES)
+                                        .build()
+                        )
+                        .matcher(type -> type.equals(QuestionType.MULTIPLE_CHOICES.toString()))
+                        .build(),
+                SearchByCriteriaScenario.builder()
+                        .assertField("topic")
+                        .criteria(
+                                TrueOrFalseEntity.builder()
+                                        .topic("language")
+                                        .build()
+                        )
+                        .matcher(topic -> topic.toLowerCase().contains("language"))
+                        .build(),
+                SearchByCriteriaScenario.builder()
+                        .assertField("author")
+                        .criteria(
+                                TrueOrFalseEntity.builder()
+                                        .author("20001")
+                                        .build()
+                        )
+                        .matcher(author -> author.equals("20001"))
+                        .build()
+        );
+    }
+
     @BeforeEach
     void setUp() {
         insertSubjects();
@@ -347,59 +388,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .allMatch(content -> scenario.matcher.test(content.toString()));
     }
 
-    private static Stream<SearchByCriteriaScenario> findByCriteriaScenarios() {
-        return Stream.of(
-                SearchByCriteriaScenario.builder()
-                        .assertField("statement")
-                        .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .statement("Can")
-                                        .build()
-                        )
-                        .matcher(statement -> statement.contains("Can"))
-                        .build(),
-                SearchByCriteriaScenario.builder()
-                        .assertField("type")
-                        .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .type(QuestionType.MULTIPLE_CHOICES)
-                                        .build()
-                        )
-                        .matcher(type -> type.equals(QuestionType.MULTIPLE_CHOICES.toString()))
-                        .build(),
-                SearchByCriteriaScenario.builder()
-                        .assertField("topic")
-                        .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .topic("language")
-                                        .build()
-                        )
-                        .matcher(topic -> topic.toLowerCase().contains("language"))
-                        .build(),
-                SearchByCriteriaScenario.builder()
-                        .assertField("author")
-                        .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .author("20001")
-                                        .build()
-                        )
-                        .matcher(author -> author.equals("20001"))
-                        .build()
-        );
-    }
-
-    @Builder
-    private static class SearchByCriteriaScenario {
-        private final Question criteria;
-        private final String assertField;
-        private final Predicate<String> matcher;
-
-        @Override
-        public String toString() {
-            return String.format("should retrieve all questions where %s matches %s", assertField, criteria);
-        }
-    }
-
     private void insertSubjects() {
         english = SubjectEntity.from(
                 subjectRepository.save(
@@ -471,6 +459,18 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 AlternativeEntity.builder()
                         .description("E")
                         .build());
+    }
+
+    @Builder
+    private static class SearchByCriteriaScenario {
+        private final Question criteria;
+        private final String assertField;
+        private final Predicate<String> matcher;
+
+        @Override
+        public String toString() {
+            return String.format("should retrieve all questions where %s matches %s", assertField, criteria);
+        }
     }
 
 }
