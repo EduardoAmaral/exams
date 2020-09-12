@@ -52,13 +52,12 @@ class CommentServiceTest {
                 .build();
 
         final Comment newComment = CommentDTO.builder().id(1L).build();
-        when(repository.create(comment)).thenReturn(newComment);
 
-        final CompletableFuture<Comment> future = CompletableFuture.supplyAsync(
-                () -> service.create(comment));
-
-        future.join();
-        verify(publisher).publish(newComment);
+        CompletableFuture.runAsync(
+                () -> service.create(comment)).thenApply(s -> {
+            verify(publisher).publish(newComment);
+            return s;
+        });
     }
 
     @Test
