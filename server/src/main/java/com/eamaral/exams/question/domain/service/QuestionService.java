@@ -27,7 +27,7 @@ public class QuestionService {
         }
 
         return repository.find(id, currentUser)
-                .orElseThrow(() -> new NotFoundException(String.format("Question's %s doesn't exist or it's not accessible to the user %s", id, currentUser)));
+                .orElseThrow(() -> new NotFoundException(String.format("Question's %s doesn't exist or it's not accessible to user %s", id, currentUser)));
     }
 
     public void save(Question question) {

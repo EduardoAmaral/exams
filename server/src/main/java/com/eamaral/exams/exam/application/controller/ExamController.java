@@ -63,7 +63,7 @@ public class ExamController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<ExamDTO> getById(@PathVariable Long id) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Getting exam {} to the user {}", id, currentUserId);
+        log.info("Getting exam {} to user {}", id, currentUserId);
 
         return ResponseEntity.ok(
                 ExamDTO.from(examService.findById(id, currentUserId)));
@@ -73,7 +73,7 @@ public class ExamController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Deleting exam {} to the user {}", id, currentUserId);
+        log.info("Deleting exam {} to user {}", id, currentUserId);
 
         examService.delete(id, currentUserId);
     }

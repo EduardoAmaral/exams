@@ -35,7 +35,7 @@ public class QuestionController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<QuestionDTO> getById(@PathVariable("id") Long id) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Getting question {} to the user {}", id, currentUserId);
+        log.info("Getting question {} to user {}", id, currentUserId);
 
         return ok(QuestionDTO.from(questionService.find(id, currentUserId)));
     }
@@ -44,7 +44,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDTO>> get() {
         String currentUserId = userService.getCurrentUserId();
 
-        log.info("Getting all questions to the user {}", currentUserId);
+        log.info("Getting all questions to user {}", currentUserId);
 
         return ok(questionService.findByUser(currentUserId)
                 .stream()
@@ -68,7 +68,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createByList(@RequestBody @Validated List<QuestionDTO> questions) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Saving a list of {} questions to the user {}", questions.size(), currentUserId);
+        log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
 
         questions.replaceAll(question -> question.toBuilder().author(currentUserId).build());
         questionService.saveAll(new ArrayList<>(questions));
@@ -77,7 +77,7 @@ public class QuestionController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionDTO> update(@RequestBody @Validated QuestionDTO question) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Updating question {} to the user {}", question.getId(), currentUserId);
+        log.info("Updating question {} to user {}", question.getId(), currentUserId);
 
         return ok(QuestionDTO.from(
                 questionService.update(question, currentUserId)));
@@ -87,7 +87,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         String currentUserId = userService.getCurrentUserId();
-        log.info("Deleting question {} to the user {}", id, currentUserId);
+        log.info("Deleting question {} to user {}", id, currentUserId);
         questionService.delete(id, currentUserId);
     }
 
@@ -95,7 +95,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDTO>> search(QuestionCriteriaDTO criteria) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String currentUserId = userService.getCurrentUserId();
-        log.info("Search by criteria {} to the user {}", mapper.writeValueAsString(criteria), currentUserId);
+        log.info("Search by criteria {} to user {}", mapper.writeValueAsString(criteria), currentUserId);
 
         return ok(questionService.search(criteria.toQuestion(), currentUserId)
                 .stream()

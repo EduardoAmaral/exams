@@ -90,7 +90,7 @@ class QuestionServiceTest {
         assertThatThrownBy(
                 () -> service.find(questionId, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to user %s", questionId, currentUser));
     }
 
     @Test
@@ -199,7 +199,7 @@ class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to user %s", questionId, currentUser));
     }
 
     @Test
@@ -220,7 +220,7 @@ class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.update(question, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to user %s", questionId, currentUser));
     }
 
     @Test
@@ -263,7 +263,7 @@ class QuestionServiceTest {
 
         Assertions.assertThatThrownBy(() -> service.delete(questionId, currentUser))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to the user %s", questionId, currentUser));
+                .hasMessage(String.format("Question's %s doesn't exist or it's not accessible to user %s", questionId, currentUser));
     }
 
     @Test
