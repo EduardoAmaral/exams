@@ -47,7 +47,7 @@ class ExamServiceTest {
     void create_whenExamIsValid_shouldSaveANewExam() {
         Exam exam = getExamBuilderWithDefault().build();
 
-        service.create(exam, currentUser);
+        service.create(exam);
 
         verify(examRepositoryPort).save(exam);
     }
@@ -62,7 +62,7 @@ class ExamServiceTest {
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
-                .isThrownBy(() -> service.create(exam, currentUser))
+                .isThrownBy(() -> service.create(exam))
                 .withMessage("Dates are required when not a mock test");
 
         verify(examRepositoryPort, never()).save(any());
@@ -77,7 +77,7 @@ class ExamServiceTest {
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
-                .isThrownBy(() -> service.create(exam, currentUser))
+                .isThrownBy(() -> service.create(exam))
                 .withMessage("Dates are required when not a mock test");
 
         verify(examRepositoryPort, never()).save(any());
@@ -93,7 +93,7 @@ class ExamServiceTest {
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
-                .isThrownBy(() -> service.create(exam, currentUser))
+                .isThrownBy(() -> service.create(exam))
                 .withMessage("The start time must be before the end time");
 
         verify(examRepositoryPort, never()).save(any());
@@ -109,7 +109,7 @@ class ExamServiceTest {
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
-                .isThrownBy(() -> service.create(exam, currentUser))
+                .isThrownBy(() -> service.create(exam))
                 .withMessage("The exam duration must be at least 30 minutes");
 
         verify(examRepositoryPort, never()).save(any());
@@ -124,7 +124,7 @@ class ExamServiceTest {
                 .mockTest(true)
                 .build();
 
-        service.create(exam, currentUser);
+        service.create(exam);
 
         verify(examRepositoryPort).save(exam);
     }
@@ -138,7 +138,7 @@ class ExamServiceTest {
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
-                .isThrownBy(() -> service.create(exam, currentUser))
+                .isThrownBy(() -> service.create(exam))
                 .withMessage("Couldn't create exam starting in the past");
 
         verify(examRepositoryPort, never()).save(any());

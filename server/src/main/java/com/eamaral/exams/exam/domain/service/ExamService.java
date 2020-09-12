@@ -18,7 +18,7 @@ public class ExamService {
         this.repository = repository;
     }
 
-    public void create(Exam exam, String currentUser) {
+    public void create(Exam exam) {
         exam.validate();
         repository.save(exam);
     }

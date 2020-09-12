@@ -60,7 +60,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isCreated());
 
         verify(userService).getCurrentUserId();
-        verify(examService).create(examCaptor.capture(), eq(currentUserId));
+        verify(examService).create(examCaptor.capture());
 
         Exam exam = examCaptor.getValue();
 
@@ -93,7 +93,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.errors['title']", is("Title is required")))
                 .andExpect(jsonPath("$.errors['questions']", is("Questions are required")));
 
-        verify(examService, never()).create(any(), anyString());
+        verify(examService, never()).create(any());
     }
 
     @Test
