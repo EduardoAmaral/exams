@@ -24,7 +24,7 @@ jacocoTestReport {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "eduardoamaral_exams_server"
+        property "sonar.projectKey", "eduardoamaral_exams"
         property "sonar.organization", "eduardoamaral"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", "$System.env.EXAMS_SONAR_TOKEN"
