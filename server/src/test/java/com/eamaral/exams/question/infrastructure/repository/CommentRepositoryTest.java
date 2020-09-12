@@ -2,7 +2,6 @@ package com.eamaral.exams.question.infrastructure.repository;
 
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.domain.Comment;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import javax.validation.ConstraintViolationException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity.from;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -36,14 +36,12 @@ class CommentRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should validate required fields when creating a comment")
     void create_whenRequiredFieldsAreNotFilled_shouldThrowException() {
-        Comment comment = CommentEntity.builder().build();
-
         List<String> validationMessages = List.of("Message is required",
                 "Question is required",
                 "Author is required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> repository.create(comment))
+                .isThrownBy(() -> repository.create(Comment.builder().build()))
                 .matches(e -> e.getConstraintViolations().size() == validationMessages.size())
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
@@ -52,9 +50,9 @@ class CommentRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should validate the message length when creating a comment")
     void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
-        Comment comment = CommentEntity.builder()
+        Comment comment = Comment.builder()
                 .message(new String(new char[601]).replace('\0', 'A'))
-                .author("1234")
+                .authorId("1234")
                 .questionId(1L)
                 .creationDate(ZonedDateTime.now())
                 .build();
@@ -72,19 +70,19 @@ class CommentRepositoryTest extends JpaIntegrationTest {
     @DisplayName("should retrieve all comments from a given question id")
     void findAllBy_shouldReturnAllQuestionComments() {
         long questionId = 1L;
-        entityManager.merge(getComment(questionId));
-        entityManager.merge(getComment(questionId));
-        entityManager.merge(getComment(2L));
+        entityManager.merge(from(getComment(questionId)));
+        entityManager.merge(from(getComment(questionId)));
+        entityManager.merge(from(getComment(2L)));
 
         List<Comment> result = repository.findAllBy(questionId);
 
         assertThat(result).hasSize(2);
     }
 
-    private CommentEntity getComment(long questionId) {
-        return CommentEntity.builder()
+    private Comment getComment(long questionId) {
+        return Comment.builder()
                 .message("Comment")
-                .author("1234")
+                .authorId("1234")
                 .questionId(questionId)
                 .creationDate(ZonedDateTime.now())
                 .build();

@@ -17,6 +17,7 @@ import java.time.ZonedDateTime;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -38,11 +39,12 @@ class CommentControllerTest extends ControllerIntegrationTest {
         ZonedDateTime now = ZonedDateTime.now().withFixedOffsetZone();
 
         when(userService.getCurrentUserId()).thenReturn(userId);
-        when(commentService.create(any())).thenReturn(CommentDTO.builder()
+        when(commentService.create(any(), eq(userId))).thenReturn(Comment.builder()
                 .id(1L)
                 .message("First Comment")
                 .questionId(1L)
-                .author("0987")
+                .authorId("0987")
+                .authorName("Bo-young Park")
                 .creationDate(now)
                 .build());
 
@@ -61,13 +63,14 @@ class CommentControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.message", is("First Comment")))
                 .andExpect(jsonPath("$.questionId", is(1)))
-                .andExpect(jsonPath("$.author", is("0987")))
+                .andExpect(jsonPath("$.authorId", is("0987")))
+                .andExpect(jsonPath("$.authorName", is("Bo-young Park")))
                 .andExpect(jsonPath("$.creationDate", containsString(now.toLocalDate().toString())));
 
-        verify(commentService).create(commentArgumentCaptor.capture());
+        verify(commentService).create(commentArgumentCaptor.capture(), eq(userId));
         Assertions.assertThat(commentArgumentCaptor.getValue())
-                .extracting("author", "message", "questionId")
-                .containsExactly(userId, "My First Comment", 1L);
+                .extracting("message", "questionId")
+                .containsExactly("My First Comment", 1L);
     }
 
     @Test

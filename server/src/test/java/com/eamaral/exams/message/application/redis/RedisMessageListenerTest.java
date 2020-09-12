@@ -57,8 +57,8 @@ class RedisMessageListenerTest {
                 "\"id\": 1, " +
                 "\"questionId\": 12256, " +
                 "\"message\": \"Comment\", " +
-                "\"creationDate\": \""+ creationDate +"\", " +
-                "\"author\": \"1234\" " +
+                "\"creationDate\": \"" + creationDate + "\", " +
+                "\"authorId\": \"1234\" " +
                 "}");
 
         verify(simpMessagingTemplate).convertAndSend(
@@ -78,6 +78,6 @@ class RedisMessageListenerTest {
         assertThat(result.getQuestionId()).isEqualTo(12256L);
         assertThat(result.getCreationDate()).isEqualTo(creationDate);
         assertThat(result.getMessage()).isEqualTo("Comment");
-        assertThat(result.getAuthor()).isEqualTo("1234");
+        assertThat(result.getAuthorId()).isEqualTo("1234");
     }
 }

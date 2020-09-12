@@ -29,13 +29,15 @@ describe('<Comments />', () => {
       {
         id: 1,
         message: 'Comment 1',
-        author: '1234',
+        authorId: '1234',
+        authorName: 'Name 1',
         creationDate: '',
       },
       {
         id: 2,
         message: 'Comment 2',
-        author: '7777',
+        authorId: '7777',
+        authorName: 'Name 2',
         creationDate: '',
       },
     ];
@@ -45,9 +47,9 @@ describe('<Comments />', () => {
     );
 
     expect(container.querySelectorAll('.comment')).toHaveLength(2);
-    expect(getByTestId('comment-1-author')).toHaveTextContent('1234');
+    expect(getByTestId('comment-1-author')).toHaveTextContent('Name 1');
     expect(getByTestId('comment-1-message')).toHaveTextContent('Comment 1');
-    expect(getByTestId('comment-2-author')).toHaveTextContent('7777');
+    expect(getByTestId('comment-2-author')).toHaveTextContent('Name 2');
     expect(getByTestId('comment-2-message')).toHaveTextContent('Comment 2');
   });
 
@@ -68,7 +70,8 @@ describe('<Comments />', () => {
       const comment = {
         id: 1,
         message: 'Message',
-        author: 'Author',
+        authorId: '1',
+        authorName: 'Author',
         creationDate: '2011-12-03T10:15:30+01:00',
       };
       const { getByTestId } = render(<Comment comment={comment} />);
@@ -85,7 +88,8 @@ describe('<Comments />', () => {
       const comment = {
         id: 1,
         message: 'Message',
-        author: 'Author',
+        authorId: '1',
+        authorName: 'Author',
         creationDate: date.toISOString(),
       };
       const { getByTestId } = render(<Comment comment={comment} />);
@@ -101,7 +105,7 @@ describe('<Comments />', () => {
       const comment = {
         id: 1,
         message: '',
-        author: '',
+        authorId: '',
         creationDate: date.toISOString(),
       };
       const { getByTestId } = render(<Comment comment={comment} />);
@@ -115,7 +119,7 @@ describe('<Comments />', () => {
       const comment = {
         id: 1,
         message: '',
-        author: '',
+        authorId: '',
         creationDate: '2011-12-03T10:15:30+01:00',
       };
       const { getByTestId } = render(<Comment comment={comment} />);

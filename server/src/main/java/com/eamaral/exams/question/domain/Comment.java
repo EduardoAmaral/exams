@@ -1,16 +1,25 @@
 package com.eamaral.exams.question.domain;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.time.ZonedDateTime;
 
-public interface Comment {
+@Getter
+@Builder(toBuilder = true)
+@EqualsAndHashCode
+public class Comment {
 
-    Long getId();
+    private final Long id;
 
-    String getMessage();
+    private final String message;
 
-    Long getQuestionId();
+    private final Long questionId;
 
-    String getAuthor();
+    private final String authorId;
 
-    ZonedDateTime getCreationDate();
+    private final String authorName;
+
+    private final ZonedDateTime creationDate;
 }

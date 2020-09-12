@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommentDTO implements Serializable, Comment {
+public class CommentDTO implements Serializable {
 
     private Long id;
 
@@ -34,7 +34,9 @@ public class CommentDTO implements Serializable, Comment {
     @NotNull(message = "{comment.question.required}")
     private Long questionId;
 
-    private String author;
+    private String authorId;
+
+    private String authorName;
 
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime creationDate;
@@ -49,11 +51,23 @@ public class CommentDTO implements Serializable, Comment {
     public static CommentDTO from(Comment comment) {
         return builder()
                 .id(comment.getId())
-                .author(comment.getAuthor())
+                .authorId(comment.getAuthorId())
+                .authorName(comment.getAuthorName())
                 .message(comment.getMessage())
                 .questionId(comment.getQuestionId())
                 .creationDate(comment.getCreationDate())
                 .build();
     }
+
+    public Comment toComment() {
+        return Comment.builder()
+                .id(getId())
+                .message(getMessage())
+                .questionId(getQuestionId())
+                .authorId(getAuthorId())
+                .creationDate(getCreationDate())
+                .build();
+    }
+
 }
 

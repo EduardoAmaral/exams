@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -93,5 +94,28 @@ class UserRepositoryTest extends JpaIntegrationTest {
     @DisplayName("should retrieve empty when user is not found by their email")
     void findByEmail_whenEmailDoesNotExist() {
         assertThat(repository.findByEmail("a")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("should retrieve all users by their ids")
+    void findByIds() {
+        entityManager.merge(UserEntity.builder()
+                .id("1")
+                .email("m@email.com")
+                .name("Min-young")
+                .surname("Park")
+                .build());
+
+        entityManager.merge(UserEntity.builder()
+                .id("2")
+                .email("j@email.com")
+                .name("Jong-suk")
+                .surname("Lee")
+                .build());
+
+        final List<User> users = repository.findAllByIds(Set.of("1", "2"));
+
+        assertThat(users).extracting(User::getName)
+                .containsExactlyInAnyOrder("Min-young", "Jong-suk");
     }
 }

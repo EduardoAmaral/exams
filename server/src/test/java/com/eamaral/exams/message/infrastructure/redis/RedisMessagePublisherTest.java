@@ -1,6 +1,6 @@
 package com.eamaral.exams.message.infrastructure.redis;
 
-import com.eamaral.exams.question.application.dto.CommentDTO;
+import com.eamaral.exams.question.domain.Comment;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -43,11 +43,11 @@ class RedisMessagePublisherTest {
     @DisplayName("should publish a message on Redis")
     void publish_shouldSendAMessageToRedisChannel() {
         final ZonedDateTime creationDate = ZonedDateTime.now().withFixedOffsetZone();
-        CommentDTO comment = CommentDTO.builder()
+        Comment comment = Comment.builder()
                 .id(1L)
                 .questionId(256L)
                 .message("Monster")
-                .author("512")
+                .authorId("512")
                 .creationDate(creationDate)
                 .build();
 

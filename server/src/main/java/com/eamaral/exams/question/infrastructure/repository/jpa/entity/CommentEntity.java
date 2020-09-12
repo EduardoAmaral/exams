@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_QUESTION_COMMENT")
-public class CommentEntity implements Comment {
+public class CommentEntity {
 
     @Id
     @Column
@@ -43,8 +43,18 @@ public class CommentEntity implements Comment {
                 .id(comment.getId())
                 .message(comment.getMessage())
                 .questionId(comment.getQuestionId())
-                .author(comment.getAuthor())
+                .author(comment.getAuthorId())
                 .creationDate(ZonedDateTime.now())
+                .build();
+    }
+
+    public Comment toComment() {
+        return Comment.builder()
+                .id(getId())
+                .message(getMessage())
+                .questionId(getQuestionId())
+                .authorId(getAuthor())
+                .creationDate(getCreationDate())
                 .build();
     }
 }

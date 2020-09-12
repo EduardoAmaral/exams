@@ -6,8 +6,9 @@ import com.eamaral.exams.question.infrastructure.repository.jpa.CommentJpaReposi
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.CommentEntity;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class CommentRepository implements CommentRepositoryPort {
@@ -20,11 +21,14 @@ public class CommentRepository implements CommentRepositoryPort {
 
     @Override
     public Comment create(Comment comment) {
-        return repository.saveAndFlush(CommentEntity.from(comment));
+        return repository.saveAndFlush(CommentEntity.from(comment))
+                .toComment();
     }
 
     @Override
     public List<Comment> findAllBy(Long questionId) {
-        return new ArrayList<>(repository.findAllByQuestionId(questionId));
+        return repository.findAllByQuestionId(questionId).stream()
+                .map(CommentEntity::toComment)
+                .collect(toList());
     }
 }

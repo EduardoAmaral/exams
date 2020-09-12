@@ -76,7 +76,7 @@ export function Comment({ comment }: CommentProps) {
   return (
     <div className="comment" data-testid={`comment-${comment.id}`}>
       <span className="author" data-testid={`comment-${comment.id}-author`}>
-        {comment.author}
+        {comment.authorName}
       </span>
       <div className="message" data-testid={`comment-${comment.id}-message`}>
         {comment.message}

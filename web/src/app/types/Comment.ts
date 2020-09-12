@@ -1,6 +1,7 @@
 export default interface Comment {
   id: number;
-  author: string;
+  authorId: string;
+  authorName?: string;
   message: string;
   creationDate: any;
 }

@@ -39,11 +39,7 @@ public class CommentController {
         String currentUserId = userService.getCurrentUserId();
         log.info("Creating a comment on Question {} by user {}", comment.getQuestionId(), currentUserId);
 
-        return ok(CommentDTO.from(
-                commentService.create(comment.toBuilder()
-                        .author(currentUserId)
-                        .build()))
-        );
+        return ok(CommentDTO.from(commentService.create(comment.toComment(), currentUserId)));
     }
 
     @SubscribeMapping("/question/{id}/comments")

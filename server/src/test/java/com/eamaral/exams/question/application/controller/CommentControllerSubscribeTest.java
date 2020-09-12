@@ -32,18 +32,18 @@ class CommentControllerSubscribeTest {
     void subscribe_shouldRetrieveAllQuestionComments() {
         final ZonedDateTime now = ZonedDateTime.now();
         final List<Comment> comments = List.of(
-                CommentDTO.builder()
+                Comment.builder()
                         .id(1L)
                         .message("First Comment")
                         .questionId(1L)
-                        .author("0987")
+                        .authorId("0987")
                         .creationDate(now)
                         .build(),
-                CommentDTO.builder()
+                Comment.builder()
                         .id(2L)
                         .message("Second Comment")
                         .questionId(1L)
-                        .author("1234")
+                        .authorId("1234")
                         .creationDate(now)
                         .build()
         );
@@ -52,6 +52,7 @@ class CommentControllerSubscribeTest {
         final MessageDTO<List<CommentDTO>> message = controller.subscribe(1L, () -> "1234");
 
         Assertions.assertThat(message.getType()).isEqualTo(MessageDTO.MessageType.FETCH_ALL_COMMENTS);
-        Assertions.assertThat(message.getData()).isEqualTo(comments);
+        Assertions.assertThat(message.getData()).extracting(CommentDTO::getMessage)
+                .containsExactlyInAnyOrder("First Comment", "Second Comment");
     }
 }
