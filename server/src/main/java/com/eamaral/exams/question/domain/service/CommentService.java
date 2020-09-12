@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,7 +26,7 @@ public class CommentService {
     public Comment create(Comment comment) {
         Comment newComment = repositoryPort.create(comment);
 
-        publisher.publish(newComment);
+        CompletableFuture.runAsync(() -> publisher.publish(newComment));
 
         return newComment;
     }

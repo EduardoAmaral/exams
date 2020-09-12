@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -53,8 +54,10 @@ class CommentServiceTest {
         final Comment newComment = CommentDTO.builder().id(1L).build();
         when(repository.create(comment)).thenReturn(newComment);
 
-        service.create(comment);
+        final CompletableFuture<Comment> future = CompletableFuture.supplyAsync(
+                () -> service.create(comment));
 
+        future.join();
         verify(publisher).publish(newComment);
     }
 
