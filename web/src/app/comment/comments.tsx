@@ -70,7 +70,11 @@ export function Comment({ comment }: CommentProps) {
       return 'Yesterday';
     }
 
-    return date.toLocaleDateString();
+    return date.toLocaleDateString(navigator.language, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
   };
 
   return (

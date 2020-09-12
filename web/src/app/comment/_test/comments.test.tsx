@@ -79,7 +79,7 @@ describe('<Comments />', () => {
       expect(getByTestId('comment-1-message')).toHaveTextContent('Message');
       expect(getByTestId('comment-1-author')).toHaveTextContent('Author');
       expect(getByTestId('comment-1-creation-date')).toHaveTextContent(
-        '12/3/2011'
+        'Dec 3, 2011'
       );
     });
 
@@ -125,7 +125,7 @@ describe('<Comments />', () => {
       const { getByTestId } = render(<Comment comment={comment} />);
 
       expect(getByTestId('comment-1-creation-date')).toHaveTextContent(
-        '12/3/2011'
+        'Dec 3, 2011'
       );
     });
   });
