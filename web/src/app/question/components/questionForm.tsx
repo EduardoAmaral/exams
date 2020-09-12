@@ -4,8 +4,9 @@ import { SUBJECT } from '../../config/endpoint';
 import history from '../../config/history';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
-import './questionForm.scss';
 import NewSubjectButton from './newSubjectButton';
+
+import style from './questionForm.module.scss';
 
 interface Props {
   questionData?: Question;
@@ -162,7 +163,7 @@ export default function QuestionForm({
       !loadingSubjects && (
         <>
           <label htmlFor="subject">Subject</label>
-          <div className="subject-container">
+          <div className={style.subjectContainer}>
             <select
               id="subject"
               name="subject"
@@ -312,13 +313,13 @@ export default function QuestionForm({
 
   return (
     <form className="form" onSubmit={onSubmitForm} aria-label="form">
-      <div className="container">
-        <div className="statement">{renderStatementInput()}</div>
-        <div className="type">{renderTypeSelect()}</div>
-        <div className="subject">{renderSubjectSelect()}</div>
-        <div className="solution">{renderSolutionInput()}</div>
-        <div className="topic">{renderTopicsInput()}</div>
-        <div className="alternatives">{renderAlternatives()}</div>
+      <div className={style.container}>
+        <div className={style.statement}>{renderStatementInput()}</div>
+        <div className={style.type}>{renderTypeSelect()}</div>
+        <div className={style.subject}>{renderSubjectSelect()}</div>
+        <div className={style.solution}>{renderSolutionInput()}</div>
+        <div className={style.topic}>{renderTopicsInput()}</div>
+        <div className={style.alternatives}>{renderAlternatives()}</div>
       </div>
       <div className="right">
         <button type="button" onClick={onCancelClick}>

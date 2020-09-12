@@ -2,7 +2,7 @@ import Axios from 'axios';
 import React, { useState } from 'react';
 import { SUBJECT } from '../../config/endpoint';
 import Subject from '../../types/Subject';
-import './newSubjectButton.scss';
+import style from './newSubjectButton.module.scss';
 
 interface Props {
   readonly onSave: (subject: Subject) => void;
@@ -30,7 +30,7 @@ const NewSubjectButton = ({ onSave }: Props) => {
 
   const renderInput = () => {
     return (
-      <div className="input-container">
+      <div className={style.inputContainer}>
         <label htmlFor="new-subject">Subject</label>
         <input
           id="new-subject"
@@ -55,7 +55,7 @@ const NewSubjectButton = ({ onSave }: Props) => {
   };
 
   return (
-    <span className={`new-subject-container ${visible ? 'input-space' : ''}`}>
+    <span className={`${style.container} ${visible ? style.inputSpace : ''}`}>
       <button
         type="button"
         className="icon"

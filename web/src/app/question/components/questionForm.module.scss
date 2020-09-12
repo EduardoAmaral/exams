@@ -1,0 +1,53 @@
+@import '../../style/variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 16px;
+
+  .statement,
+  .solution,
+  .topic {
+    grid-column-start: 1;
+    grid-column-end: span 2;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: $minimun-margin;
+    }
+
+    .subjectContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: top;
+
+      select {
+        flex: 1;
+      }
+    }
+  }
+
+  .alternatives {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    span {
+      margin-bottom: $minimun-margin;
+    }
+
+    div {
+      width: 100%;
+
+      label {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+}
