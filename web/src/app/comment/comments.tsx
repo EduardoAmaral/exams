@@ -58,19 +58,19 @@ interface CommentProps {
 
 export function Comment({ comment }: CommentProps) {
   const printDate = () => {
-    const date = new Date(comment.creationDate);
-    const today = new Date();
+    const creationDate = new Date(comment.creationDate);
+    const currentDate = new Date();
 
-    if (today.toDateString() === date.toDateString()) {
-      return date.toLocaleTimeString();
+    if (currentDate.toDateString() === creationDate.toDateString()) {
+      return creationDate.toLocaleTimeString();
     }
 
-    today.setDate(today.getDate() - 1);
-    if (today.toDateString() === date.toDateString()) {
+    currentDate.setDate(currentDate.getDate() - 1);
+    if (currentDate.toDateString() === creationDate.toDateString()) {
       return 'Yesterday';
     }
 
-    return date.toLocaleDateString(navigator.language, {
+    return creationDate.toLocaleDateString(navigator.language, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
