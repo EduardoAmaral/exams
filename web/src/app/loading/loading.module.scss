@@ -1,6 +1,6 @@
 @import '../style/variables.scss';
 
-.loading-container {
+.container {
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  background-color: rgba(lighten($color: $base-color, $amount: 10), .3);
+  background-color: rgba(lighten($color: $base-color, $amount: 10), 0.3);
 
   .loading {
     display: inline-block;
@@ -30,6 +30,7 @@
       animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
       border-color: #fff transparent transparent transparent;
     }
+
     div:nth-child(1) {
       animation-delay: -0.45s;
     }

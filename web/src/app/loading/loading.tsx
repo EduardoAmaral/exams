@@ -1,5 +1,5 @@
 import React from 'react';
-import './loading.scss';
+import style from './loading.module.scss';
 
 interface Props {
   isLoading: boolean;
@@ -8,8 +8,8 @@ interface Props {
 export default function Loading({ isLoading }: Props) {
   if (isLoading) {
     return (
-      <div className="loading-container">
-        <div className="loading" data-testid="loading">
+      <div className={style.container}>
+        <div className={style.loading} data-testid="loading">
           <div></div>
           <div></div>
           <div></div>
