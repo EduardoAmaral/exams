@@ -1,12 +1,25 @@
 import React from 'react';
-import Profile from './profile';
-import './headerBar.scss';
+import { useSelector } from 'react-redux';
+import style from './headerBar.module.scss';
 
 export default function HeaderBar() {
   return (
-    <div className="header-bar" data-testid="header-bar">
+    <header className={style.header}>
       <h1>Exams</h1>
       <Profile />
-    </div>
+    </header>
+  );
+}
+
+function Profile() {
+  const user = useSelector((state: any) => state.user);
+
+  return (
+    <section className={style.profile}>
+      <div className={style.photo}>
+        <img src={user?.profileSrc} alt="profile" />
+      </div>
+      <span>{user?.name}</span>
+    </section>
   );
 }

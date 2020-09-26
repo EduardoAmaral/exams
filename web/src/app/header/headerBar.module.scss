@@ -3,7 +3,7 @@
 $icon-header-size: 28px;
 $defaut-space-between-elements: 16px;
 
-div.header-bar {
+.header {
   width: 100vw;
   background-color: $base-color;
   height: 60px;
@@ -11,9 +11,8 @@ div.header-bar {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  border-bottom: 1px solid #383a3b;
 
-  div {
+  div, section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,11 +22,11 @@ div.header-bar {
     margin-left: $defaut-space-between-elements;
   }
 
-  div.profile {
+  .profile {
     margin-right: $defaut-space-between-elements;
     font-weight: $font-medium;
 
-    div.photo {
+    .photo {
       border-radius: 50%;
       background-color: $secundary-color;
       height: 40px;

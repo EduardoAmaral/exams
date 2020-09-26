@@ -7,34 +7,32 @@ import store from '../../store/store';
 
 describe('<HeaderBar />', () => {
   it('should render the header bar', () => {
-    const { getByTestId } = render(
+    const { getByRole } = render(
       <Provider store={store}>
         <HeaderBar />
       </Provider>
     );
 
-    expect(getByTestId('header-bar')).toBeDefined();
+    expect(getByRole('banner')).toBeDefined();
   });
 
   it('should render the application name', () => {
-    const { getByTestId } = render(
+    const { getByRole } = render(
       <Provider store={store}>
         <HeaderBar />
       </Provider>
     );
 
-    expect(getByTestId('header-bar')).toHaveTextContent('Exams');
+    expect(getByRole('heading')).toHaveTextContent('Exams');
   });
 
-  it('should render user profile', () => {
-    const { getByTestId } = render(
+  it('should render user profile picture', () => {
+    const { getByRole } = render(
       <Provider store={store}>
         <HeaderBar />
       </Provider>
     );
 
-    expect(getByTestId('header-profile')).toBeDefined();
-    expect(getByTestId('profile-photo')).toBeDefined();
-    expect(getByTestId('profile-name')).toBeDefined();
+    expect(getByRole('img')).toBeDefined();
   });
 });
