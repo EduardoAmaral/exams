@@ -24,7 +24,7 @@ export default function ExamPage() {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div>
+      <section>
         <h2>My exams</h2>
         <table className="table">
           <thead>
@@ -44,7 +44,7 @@ export default function ExamPage() {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
     </>
   );
 }

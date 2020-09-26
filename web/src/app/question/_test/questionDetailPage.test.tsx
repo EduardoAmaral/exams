@@ -74,11 +74,11 @@ describe('<QuestionDetailPage />', () => {
   });
 
   it('should render the question detail page', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
+    const { getByTestId, getByRole } = render(<QuestionDetailPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-detail-page')).toBeDefined();
+    expect(getByRole('heading')).toHaveTextContent(`Question ${question.id}`);
   });
 
   it('should render the question statement', async () => {
@@ -148,11 +148,15 @@ describe('<QuestionDetailPage />', () => {
 
   it('should return to the previous after click on the cancel button', async () => {
     history.goBack = jest.fn();
-    const { getByTestId } = render(<QuestionDetailPage />);
+    const { getByTestId, getByRole } = render(<QuestionDetailPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    fireEvent.click(getByTestId('cancel-button'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Cancel',
+      })
+    );
 
     expect(history.goBack).toBeCalledTimes(1);
   });

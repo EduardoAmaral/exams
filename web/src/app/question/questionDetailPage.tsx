@@ -71,7 +71,7 @@ export default function QuestionDetailPage() {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div data-testid="question-detail-page">
+      <section>
         <h2>Question {id}</h2>
         <div className="field">
           <span data-testid="question-detail-statement-title">Statement:</span>{' '}
@@ -103,16 +103,11 @@ export default function QuestionDetailPage() {
         </div>
         <Comments comments={comments} onSend={onSendComment} />
         <div>
-          <button
-            className="ui button"
-            type="button"
-            data-testid="cancel-button"
-            onClick={onCancelClick}
-          >
+          <button className="ui button" type="button" onClick={onCancelClick}>
             Cancel
           </button>
         </div>
-      </div>
+      </section>
     </>
   );
 }

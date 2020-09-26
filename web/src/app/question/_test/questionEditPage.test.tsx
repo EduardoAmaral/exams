@@ -57,11 +57,11 @@ describe('<QuestionEditPage />', () => {
   afterEach(() => axios.get.mockRestore());
 
   it('should render the question edit page', async () => {
-    const { getByTestId, getByLabelText } = render(<QuestionEditPage />);
+    const { getByRole, getByLabelText } = render(<QuestionEditPage />);
 
     await waitFor(() => getByLabelText('Subject'));
 
-    expect(getByTestId('question-edit-page')).toBeDefined();
+    expect(getByRole('heading')).toHaveTextContent('Edit Question');
   });
 
   it('should call the questionById and subject endpoint', async () => {

@@ -1,9 +1,4 @@
-import {
-  fireEvent,
-  render,
-  waitFor,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import Axios from 'axios';
 import React from 'react';
 import { QUESTION, SUBJECT } from '../../config/endpoint';
@@ -38,11 +33,11 @@ describe('<QuestionCreatePage />', () => {
   });
 
   it('should render the question creation page', async () => {
-    const { getByTestId, getByLabelText } = render(<QuestionCreatePage />);
+    const { getByRole, getByLabelText } = render(<QuestionCreatePage />);
 
     await waitFor(() => getByLabelText('Subject'));
 
-    expect(getByTestId('question-create-page')).toBeDefined();
+    expect(getByRole('heading')).toHaveTextContent('Create Question');
   });
 
   it('should call the subject get endpoint', async () => {
@@ -65,11 +60,15 @@ describe('<QuestionCreatePage />', () => {
       status: 201,
     });
 
-    const { getByLabelText, getByText } = render(<QuestionCreatePage />);
+    const { getByLabelText, getByRole } = render(<QuestionCreatePage />);
 
     await waitFor(() => getByLabelText('Subject'));
 
-    fireEvent.click(getByText('Save'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Save',
+      })
+    );
 
     expect(Axios.post).toHaveBeenCalledTimes(1);
     expect(Axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));
@@ -88,11 +87,17 @@ describe('<QuestionCreatePage />', () => {
       },
     });
 
-    const { getByLabelText, getByText } = render(<QuestionCreatePage />);
+    const { getByLabelText, getByText, getByRole } = render(
+      <QuestionCreatePage />
+    );
 
     await waitFor(() => getByLabelText('Subject'));
 
-    fireEvent.click(getByText('Save'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Save',
+      })
+    );
 
     await waitFor(() => getByText('Type is required'));
 

@@ -51,7 +51,7 @@ export default function QuestionPage() {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div>
+      <section>
         <h2>My questions</h2>
         <table className="table">
           <thead>
@@ -85,7 +85,7 @@ export default function QuestionPage() {
             Create Question
           </button>
         </div>
-      </div>
+      </section>
     </>
   );
 }

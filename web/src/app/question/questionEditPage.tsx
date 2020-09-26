@@ -45,10 +45,10 @@ export default function QuestionEditPage() {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div data-testid="question-edit-page">
+      <section>
         <h2>Edit Question</h2>
         <QuestionForm questionData={question} onSubmit={onSubmit} />
-      </div>
+      </section>
     </>
   );
 }

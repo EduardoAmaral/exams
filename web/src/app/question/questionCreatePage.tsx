@@ -14,7 +14,7 @@ export default function QuestionCreatePage() {
     setLoading(true);
     axios
       .post(QUESTION, question)
-      .then((response) => {
+      .then(() => {
         history.goBack();
       })
       .catch(({ response }) => {
@@ -26,10 +26,10 @@ export default function QuestionCreatePage() {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div data-testid="question-create-page">
+      <section>
         <h2>Create Question</h2>
         <QuestionForm onSubmit={handleSubmit} errors={errors} />
-      </div>
+      </section>
     </>
   );
 }
