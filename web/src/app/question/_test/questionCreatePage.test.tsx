@@ -1,4 +1,9 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import Axios from 'axios';
 import React from 'react';
 import { QUESTION, SUBJECT } from '../../config/endpoint';
@@ -25,13 +30,12 @@ describe('<QuestionCreatePage />', () => {
     axios.get.mockResolvedValueOnce({
       data: subjects,
     });
-
-    axios.post.mockResolvedValueOnce({
-      status: 201,
-    });
   });
 
-  afterEach(() => axios.get.mockRestore());
+  afterEach(() => {
+    axios.get.mockRestore();
+    axios.post.mockRestore();
+  });
 
   it('should render the question creation page', async () => {
     const { getByTestId, getByLabelText } = render(<QuestionCreatePage />);
@@ -57,6 +61,10 @@ describe('<QuestionCreatePage />', () => {
   });
 
   it('should call the question save endpoint when save a form', async () => {
+    axios.post.mockResolvedValueOnce({
+      status: 201,
+    });
+
     const { getByLabelText, getByText } = render(<QuestionCreatePage />);
 
     await waitFor(() => getByLabelText('Subject'));
@@ -65,5 +73,31 @@ describe('<QuestionCreatePage />', () => {
 
     expect(Axios.post).toHaveBeenCalledTimes(1);
     expect(Axios.post).toHaveBeenCalledWith(QUESTION, expect.any(Object));
+  });
+
+  it('should show errors on fields when save with invalid fields', async () => {
+    axios.post.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: {
+          errors: {
+            type: 'Type is required',
+            statement: 'Statement is required',
+          },
+        },
+      },
+    });
+
+    const { getByLabelText, getByText } = render(<QuestionCreatePage />);
+
+    await waitFor(() => getByLabelText('Subject'));
+
+    fireEvent.click(getByText('Save'));
+
+    await waitFor(() => getByText('Type is required'));
+
+    expect(Axios.post).toHaveBeenCalledTimes(1);
+    expect(getByText('Type is required')).toBeDefined();
+    expect(getByText('Statement is required')).toBeDefined();
   });
 });

@@ -15,9 +15,7 @@ export default function QuestionCreatePage() {
     axios
       .post(QUESTION, question)
       .then((response) => {
-        if (response.status === 201) {
-          history.goBack();
-        }
+        history.goBack();
       })
       .catch(({ response }) => {
         setLoading(false);
