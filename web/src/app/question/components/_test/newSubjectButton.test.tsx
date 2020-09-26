@@ -13,13 +13,17 @@ const axiosMocked = Axios as jest.Mocked<typeof Axios>;
 
 describe('<NewSubjectButton />', () => {
   it('should show subject modal once clicked on the add subject button', () => {
-    const { getByTitle, queryByText } = render(
+    const { getByRole, queryByText } = render(
       <NewSubjectButton onSave={jest.fn()} />
     );
 
     expect(queryByText('Subject')).toBeNull();
 
-    fireEvent.click(getByTitle('Add new subject'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Add new subject',
+      })
+    );
 
     expect(queryByText('Subject')).toBeVisible();
   });
@@ -31,17 +35,25 @@ describe('<NewSubjectButton />', () => {
   });
 
   it('should save a new subject once click on the save button', async () => {
-    const { getByTitle, getByLabelText, queryByText } = render(
+    const { getByLabelText, getByRole, queryByText } = render(
       <NewSubjectButton onSave={jest.fn()} />
     );
 
-    fireEvent.click(getByTitle('Add new subject'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Add new subject',
+      })
+    );
 
     fireEvent.change(getByLabelText('Subject', { selector: 'input' }), {
       target: { value: 'Games' },
     });
 
-    fireEvent.click(queryByText('Save'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Save',
+      })
+    );
 
     expect(Axios.post).toHaveBeenCalledWith(SUBJECT, {
       description: 'Games',
@@ -51,13 +63,21 @@ describe('<NewSubjectButton />', () => {
   });
 
   it('should close the modal once click on cancel button', () => {
-    const { getByTitle, queryByText } = render(
+    const { queryByText, getByRole } = render(
       <NewSubjectButton onSave={jest.fn()} />
     );
 
-    fireEvent.click(getByTitle('Add new subject'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Add new subject',
+      })
+    );
 
-    fireEvent.click(queryByText('Cancel'));
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Cancel',
+      })
+    );
 
     expect(queryByText('Subject')).toBeNull();
   });

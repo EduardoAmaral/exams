@@ -190,7 +190,6 @@ export default function QuestionForm({
             </select>
             <NewSubjectButton
               onSave={(subject: Subject) => {
-                console.log('Here: ', subject);
                 setSubjects((s) => [...s, subject]);
                 setSelectedSubject(subject.id);
               }}
