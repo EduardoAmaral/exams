@@ -58,38 +58,34 @@ describe('<QuestionPage />', () => {
     expect(Axios.get).toHaveBeenCalledWith(QUESTION);
   });
 
-  it('should render the question page', async () => {
-    const { getByTestId } = render(<QuestionPage />);
+  it('should render question page title', async () => {
+    const { getByTestId, getByText } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-page')).toBeDefined();
+    expect(getByText('My questions')).toBeDefined();
   });
 
-  it('should render the table question header', async () => {
-    const { getByTestId } = render(<QuestionPage />);
+  it('should render user questions on a table', async () => {
+    const { getByTestId, getByText, getAllByText } = render(<QuestionPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-header-statement')).toHaveTextContent(
-      'Statement'
-    );
-    expect(getByTestId('question-header-subject')).toHaveTextContent('Subject');
-    expect(getByTestId('question-header-type')).toHaveTextContent('Type');
-    expect(getByTestId('question-header-actions')).toHaveTextContent('Actions');
+    expect(getByText('Statement')).toBeDefined();
+    expect(getByText('Subject')).toBeDefined();
+    expect(getByText('Type')).toBeDefined();
+    expect(getByText('Actions')).toBeDefined();
+
+    expect(getByText('Question?')).toBeDefined();
+    expect(getByText('True Or False')).toBeDefined();
+
+    expect(getByText('Question 2?')).toBeDefined();
+    expect(getByText('Multiple Choice')).toBeDefined();
+
+    expect(getAllByText('English')).toHaveLength(2);
   });
 
-  it('should render questions when endpoint return them', async () => {
-    const { container, getByTestId } = render(<QuestionPage />);
-
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
-
-    expect(
-      container.querySelectorAll('[data-testid^="question-statement-"]')
-    ).toHaveLength(2);
-  });
-
-  it('should render a loading while calling endpoint', () => {
+  it('should render a loading while calling an endpoint', () => {
     const { getByTestId } = render(<QuestionPage />);
     expect(getByTestId('loading')).toBeDefined();
   });
