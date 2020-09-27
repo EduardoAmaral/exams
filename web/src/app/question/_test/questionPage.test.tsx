@@ -74,7 +74,6 @@ describe('<QuestionPage />', () => {
     expect(getByText('Statement')).toBeDefined();
     expect(getByText('Subject')).toBeDefined();
     expect(getByText('Type')).toBeDefined();
-    expect(getByText('Actions')).toBeDefined();
 
     expect(getByText('Question?')).toBeDefined();
     expect(getByText('True Or False')).toBeDefined();

@@ -1,0 +1,36 @@
+@import './variables.scss';
+
+table {
+  border-collapse: collapse;
+
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  box-sizing: border-box;
+  overflow-x: auto;
+
+  margin-bottom: 16px;
+
+  thead {
+    th {
+      text-align: left;
+      padding-right: 16px;
+      padding-left: 16px;
+      height: 56px;
+    }
+  }
+
+  tbody {
+    tr {
+      border-top-width: 1px;
+      border-top-style: solid;
+
+      td {
+        padding-right: 16px;
+        padding-left: 16px;
+        height: 52px;
+        font-weight: $font-light;
+      }
+    }
+  }
+}

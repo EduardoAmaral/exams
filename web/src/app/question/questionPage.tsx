@@ -59,7 +59,7 @@ export default function QuestionPage() {
               <th>Statement</th>
               <th>Subject</th>
               <th>Type</th>
-              <th>Actions</th>
+              <th />
             </tr>
           </thead>
 
