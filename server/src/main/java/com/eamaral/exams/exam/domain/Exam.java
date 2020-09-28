@@ -3,7 +3,7 @@ package com.eamaral.exams.exam.domain;
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.domain.Question;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public abstract class Exam {
@@ -12,9 +12,9 @@ public abstract class Exam {
 
     public abstract String getTitle();
 
-    public abstract LocalDateTime getStartDateTime();
+    public abstract ZonedDateTime getStartDateTime();
 
-    public abstract LocalDateTime getEndDateTime();
+    public abstract ZonedDateTime getEndDateTime();
 
     public abstract boolean isMockTest();
 
@@ -37,7 +37,7 @@ public abstract class Exam {
             throw new InvalidDataException("The start time must be before the end time");
         }
 
-        if (getStartDateTime().isBefore(LocalDateTime.now())) {
+        if (getStartDateTime().isBefore(ZonedDateTime.now())) {
             throw new InvalidDataException("Couldn't create exam starting in the past");
         }
 

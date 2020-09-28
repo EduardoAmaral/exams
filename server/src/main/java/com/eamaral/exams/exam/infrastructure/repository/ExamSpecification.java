@@ -4,14 +4,14 @@ import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class ExamSpecification {
     private ExamSpecification() {
         super();
     }
 
-    public static Specification<ExamEntity> isAvailableNow(LocalDateTime currentDateTime) {
+    public static Specification<ExamEntity> isAvailableNow(ZonedDateTime currentDateTime) {
         return (exam, cq, cb) -> {
             Predicate availableByDate = cb.and(
                     cb.greaterThanOrEqualTo(exam.get("endDateTime"), currentDateTime),

@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +25,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ExamServiceTest {
 
-    private final LocalDateTime startDateTime = LocalDateTime.now()
+    private final ZonedDateTime startDateTime = ZonedDateTime.now()
             .plusDays(2);
 
-    private final LocalDateTime endDateTime = LocalDateTime.now()
+    private final ZonedDateTime endDateTime = ZonedDateTime.now()
             .plusDays(2)
             .plusMinutes(180);
 
@@ -133,8 +133,8 @@ class ExamServiceTest {
     @DisplayName("should validate that exams can't be create with dates in the past")
     void create_whenDatesAreInThePast_shouldThrowCouldNotCreateExamInThePast() {
         Exam exam = getExamBuilderWithDefault()
-                .startDateTime(LocalDateTime.now().minusHours(1))
-                .endDateTime(LocalDateTime.now().plusHours(3))
+                .startDateTime(ZonedDateTime.now().minusHours(1))
+                .endDateTime(ZonedDateTime.now().plusHours(3))
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)

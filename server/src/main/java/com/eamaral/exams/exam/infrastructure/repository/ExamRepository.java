@@ -6,7 +6,7 @@ import com.eamaral.exams.exam.infrastructure.repository.jpa.ExamJpaRepository;
 import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class ExamRepository implements ExamRepositoryPort {
     @Override
     public List<Exam> findAvailable() {
         return new ArrayList<>(
-                repository.findAll(isAvailableNow(LocalDateTime.now()))
+                repository.findAll(isAvailableNow(ZonedDateTime.now()))
         );
     }
 

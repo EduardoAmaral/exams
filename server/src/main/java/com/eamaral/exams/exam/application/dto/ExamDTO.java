@@ -5,12 +5,12 @@ import com.eamaral.exams.question.application.dto.QuestionDTO;
 import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +30,11 @@ public class ExamDTO extends Exam {
     @NotBlank(message = "{exam.title.required}")
     private String title;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime startDateTime;
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    private ZonedDateTime startDateTime;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime endDateTime;
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    private ZonedDateTime endDateTime;
 
     private boolean mockTest;
 

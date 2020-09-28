@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,14 +87,14 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("findAvailable should retrieve all exams where current time is between exams start and end date/time")
     void findAvailable_shouldReturnAllExamsWhereTheCurrentDateIsBetweenTheirInterval() {
-        LocalDateTime today = LocalDateTime.now();
+        ZonedDateTime today = ZonedDateTime.now();
         repository.save(getExam()
                 .startDateTime(today.minusMinutes(30))
                 .endDateTime(today.plusHours(2))
                 .mockTest(false)
                 .build());
 
-        LocalDateTime nextDay = today.plusDays(1);
+        ZonedDateTime nextDay = today.plusDays(1);
         repository.save(getExam()
                 .startDateTime(nextDay)
                 .endDateTime(nextDay.plusHours(2))
@@ -110,12 +110,10 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @DisplayName("findAvailable should retrieve all mock tests where current time is between the start and end date/time")
     void findAvailable_shouldRetrieveAllMockTests() {
         repository.save(getExam()
-                .startDateTime(LocalDateTime.MIN)
-                .endDateTime(LocalDateTime.MIN)
                 .mockTest(true)
                 .build());
 
-        LocalDateTime nextDay = LocalDateTime.now().plusDays(1);
+        ZonedDateTime nextDay = ZonedDateTime.now().plusDays(1);
         repository.save(getExam()
                 .startDateTime(nextDay)
                 .endDateTime(nextDay.plusHours(2))
@@ -176,8 +174,8 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                 .title("Exam 1")
                 .author(currentUser)
                 .questions(questions)
-                .startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now().plusHours(2))
+                .startDateTime(ZonedDateTime.now())
+                .endDateTime(ZonedDateTime.now().plusHours(2))
                 .mockTest(false);
     }
 

@@ -11,7 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +31,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
     private static final String ENDPOINT = "/api/exam";
     private final String currentUserId = "100023";
     private final Long examId = 1L;
-    private final LocalDateTime startDateTime = LocalDateTime.now();
-    private final LocalDateTime endDateTime = LocalDateTime.now().plusHours(2);
+    private final ZonedDateTime startDateTime = ZonedDateTime.now();
+    private final ZonedDateTime endDateTime = ZonedDateTime.now().plusHours(2);
     private final String startDateTimeFormatted = DateTimeFormatter
             .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             .format(startDateTime);

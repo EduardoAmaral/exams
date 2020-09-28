@@ -35,7 +35,9 @@ public class ExamController {
         String currentUserId = userService.getCurrentUserId();
         log.info("Creating an exam to user {}", currentUserId);
 
-        examService.create(exam);
+        examService.create(exam.toBuilder()
+                .author(currentUserId)
+                .build());
     }
 
     @GetMapping

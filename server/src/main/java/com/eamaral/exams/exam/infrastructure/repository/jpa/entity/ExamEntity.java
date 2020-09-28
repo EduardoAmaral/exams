@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +38,10 @@ public class ExamEntity extends Exam {
     private String title;
 
     @Column
-    private LocalDateTime startDateTime;
+    private ZonedDateTime startDateTime;
 
     @Column
-    private LocalDateTime endDateTime;
+    private ZonedDateTime endDateTime;
 
     @Column(nullable = false)
     private boolean mockTest;
