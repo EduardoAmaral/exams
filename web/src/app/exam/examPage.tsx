@@ -4,6 +4,7 @@ import { EXAM } from '../config/endpoint';
 import Loading from '../loading/loading';
 import Exam from '../types/Exam';
 import { formatDateTime } from '../util/dateUtil';
+import history from '../config/history';
 
 export default function ExamPage() {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -44,6 +45,15 @@ export default function ExamPage() {
             ))}
           </tbody>
         </table>
+        <div className="right">
+          <button
+            className="positive ui button"
+            type="button"
+            onClick={() => history.push('/exam/create')}
+          >
+            Create Exam
+          </button>
+        </div>
       </section>
     </>
   );

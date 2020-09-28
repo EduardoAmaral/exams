@@ -1,0 +1,23 @@
+@import '../style/variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .title,
+  .questions {
+    grid-column-start: 1;
+    grid-column-end: span 2;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: $minimun-margin;
+    }
+  }
+}

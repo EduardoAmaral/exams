@@ -1,10 +1,16 @@
 import React from 'react';
-import { render, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import ExamPage from '../examPage';
 import Axios from 'axios';
 import { formatDateTime } from '../../util/dateUtil';
+import history from '../../config/history';
 
 jest.mock('axios');
+jest.mock('../../config/history');
 
 const axios = Axios as jest.Mocked<typeof Axios>;
 
@@ -58,5 +64,20 @@ describe('<ExamPage />', () => {
     expect(
       getByText(formatDateTime('2020-09-14T15:30:00-05:00'))
     ).toBeDefined();
+  });
+
+  it('should redirect to create exam page when click on create button', async () => {
+    const { getByRole, getByTestId } = render(<ExamPage />);
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Create Exam',
+      })
+    );
+
+    expect(history.push).toBeCalledTimes(1);
+    expect(history.push).toBeCalledWith('/exam/create');
   });
 });

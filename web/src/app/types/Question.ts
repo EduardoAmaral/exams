@@ -11,6 +11,8 @@ export default interface Question {
   sharable?: boolean;
   alternatives?: Alternative[];
   correctAnswer?: string;
+  authorName?: string;
+  selected?: boolean;
 }
 
 export interface QuestionErrors {
