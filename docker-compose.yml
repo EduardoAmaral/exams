@@ -1,8 +1,9 @@
-version: '3'
+version: '3.6'
 
 services:
   database:
     image: postgres:alpine
+    container_name: exams-db
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -13,16 +14,18 @@ services:
 
   redis:
     image: redis
+    container_name: exams-redis
     command: redis-server --requirepass ${EXAMS_REDIS_PASSWORD}
     network_mode: "service:server"
 
   server:
     image: server
+    container_name: exams-server
     build:
       context: ./server
       dockerfile: Dockerfile
     restart: always
-    ports: ["8081:8081", "6379:6379", "5432:5432"]
+    ports: [ "8081:8081", "6379:6379", "5432:5432" ]
     environment:
       EXAMS_DATABASE_URL: ${EXAMS_DATABASE_URL}
       EXAMS_DATABASE_USER: ${EXAMS_DATABASE_USER}
@@ -31,5 +34,18 @@ services:
       EXAMS_GOOGLE_CLIENT_SECRET: ${EXAMS_GOOGLE_CLIENT_SECRET}
       EXAMS_REDIS_PASSWORD: ${EXAMS_REDIS_PASSWORD}
 
+  solr:
+    image: solr:8.4
+    container_name: exams-solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr-data:/var/solr
+      - ./solr/configsets:/opt/solr/server/solr/configsets
+    entrypoint:
+      - solr-precreate
+      - questions
+      - /opt/solr/server/solr/configsets/questions
 volumes:
   db-data:
+  solr-data:
