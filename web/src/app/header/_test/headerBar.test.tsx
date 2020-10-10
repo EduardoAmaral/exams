@@ -1,16 +1,19 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { Provider } from 'react-redux';
+import { AuthContext } from '../../../context';
 import HeaderBar from '../headerBar';
-import store from '../../store/store';
 
 describe('<HeaderBar />', () => {
   it('should render the header bar', () => {
     const { getByRole } = render(
-      <Provider store={store}>
+      <AuthContext.Provider
+        value={{
+          user: { name: 'Eduardo Amaral' },
+        }}
+      >
         <HeaderBar />
-      </Provider>
+      </AuthContext.Provider>
     );
 
     expect(getByRole('banner')).toBeDefined();
@@ -18,9 +21,13 @@ describe('<HeaderBar />', () => {
 
   it('should render the application name', () => {
     const { getByRole } = render(
-      <Provider store={store}>
+      <AuthContext.Provider
+        value={{
+          user: { name: 'Eduardo Amaral' },
+        }}
+      >
         <HeaderBar />
-      </Provider>
+      </AuthContext.Provider>
     );
 
     expect(getByRole('heading')).toHaveTextContent('Exams');
@@ -28,9 +35,13 @@ describe('<HeaderBar />', () => {
 
   it('should render user profile picture', () => {
     const { getByRole } = render(
-      <Provider store={store}>
+      <AuthContext.Provider
+        value={{
+          user: { name: 'Eduardo Amaral' },
+        }}
+      >
         <HeaderBar />
-      </Provider>
+      </AuthContext.Provider>
     );
 
     expect(getByRole('img')).toBeDefined();

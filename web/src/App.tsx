@@ -1,37 +1,63 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import Axios from 'axios';
+import React, { useContext, useState } from 'react';
 import { Router } from 'react-router';
 import './App.scss';
+import { AUTH } from './app/config/endpoint';
 import history from './app/config/history';
 import HeaderBar from './app/header/headerBar';
-import { authenticate } from './app/store/modules/user/action';
+import User from './app/types/User';
+import { AuthContext } from './context';
 import Routes from './routes';
 
 const Authenticated = () => {
-  return (
-    <div data-testid="app" className="app">
-      <HeaderBar />
-      <div className="content">
-        <Router history={history}>
-          <Routes />
-        </Router>
+  const context = useContext(AuthContext);
+
+  if (context.user) {
+    return (
+      <div data-testid="app" className="app">
+        <HeaderBar />
+        <div className="content">
+          <Router history={history}>
+            <Routes />
+          </Router>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <></>;
 };
 
-const Login = () => {
-  const dispatch = useDispatch();
+const Authentication = () => {
+  const context = useContext(AuthContext);
 
-  useEffect(() => {
-    dispatch(authenticate());
-  }, [dispatch]);
+  if (!context.user) {
+    Axios.get(AUTH)
+      .then((response) => {
+        context.login && context.login(response.data);
+      })
+      .catch(() => {
+        window.location.replace(
+          'http://localhost:8081/oauth2/authorization/google'
+        );
+      });
+  }
 
-  return <div data-testid="login">Login</div>;
+  return <></>;
 };
 
 export default function App() {
-  const user = useSelector((state: any) => state.user);
+  const [user, setUser] = useState<User>();
 
-  return user ? <Authenticated /> : <Login />;
+  return (
+    <AuthContext.Provider
+      value={{
+        user: user,
+        login: (user: User) => setUser(user),
+      }}
+    >
+      <Authentication />
+      <Authenticated />
+    </AuthContext.Provider>
+  );
 }

@@ -1,33 +1,39 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import Axios from 'axios';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
 import App from './App';
-import rootReducer from './app/store/modules/rootReducer';
+
+jest.mock('axios');
+jest.mock('./app/config/history');
+
+const axios = Axios as jest.Mocked<typeof Axios>;
+
+afterEach(() => {
+  axios.get.mockRestore();
+});
 
 describe('<App />', () => {
-  it('should render Login when not authenticated', () => {
-    const { getByTestId } = render(
-      <Provider store={createStore(rootReducer, applyMiddleware(thunk))}>
-        <App />
-      </Provider>
-    );
+  it('should call Login when not authenticated', async () => {
+    axios.get.mockRejectedValueOnce({ status: 401 });
 
-    expect(getByTestId('login')).toBeDefined();
+    window.location.replace = jest.fn();
+
+    render(<App />);
+
+    setTimeout(function () {
+      expect(window.location.replace).toHaveBeenCalledTimes(1);
+    }, 1000);
   });
 
-  it('should render App when Authenticated', () => {
-    const store = createStore(
-      () => ({ user: { id: '1' } }),
-      applyMiddleware(thunk)
-    );
+  it('should render App when Authenticated', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { name: 'Someone' },
+    });
+    axios.get.mockResolvedValueOnce({ data: [] });
 
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
+    const { getByTestId } = render(<App />);
+
+    await waitFor(() => getByTestId('app'));
 
     expect(getByTestId('app')).toBeDefined();
   });
