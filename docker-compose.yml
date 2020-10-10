@@ -4,13 +4,14 @@ services:
   database:
     image: postgres:alpine
     container_name: exams-db
+    ports:
+      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${EXAMS_DATABASE}
       POSTGRES_USER: ${EXAMS_DATABASE_USER}
       POSTGRES_PASSWORD: ${EXAMS_DATABASE_PASSWORD}
-    network_mode: "service:server"
 
   redis:
     image: redis
@@ -25,7 +26,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     restart: always
-    ports: [ "8081:8081", "6379:6379", "5432:5432" ]
+    ports: [ "8081:8081", "6379:6379" ]
     environment:
       EXAMS_DATABASE_URL: ${EXAMS_DATABASE_URL}
       EXAMS_DATABASE_USER: ${EXAMS_DATABASE_USER}
@@ -33,6 +34,8 @@ services:
       EXAMS_GOOGLE_CLIENT_ID: ${EXAMS_GOOGLE_CLIENT_ID}
       EXAMS_GOOGLE_CLIENT_SECRET: ${EXAMS_GOOGLE_CLIENT_SECRET}
       EXAMS_REDIS_PASSWORD: ${EXAMS_REDIS_PASSWORD}
+    links:
+      - "database:database"
 
   solr:
     image: solr:8.4
