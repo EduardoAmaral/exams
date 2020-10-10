@@ -20,7 +20,7 @@ export default function QuestionForm({
   onSubmit,
 }: Props) {
   const [question, setQuestion] = useState<Partial<Question>>({
-    topic: '',
+    keywords: '',
     solution: '',
   });
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -224,22 +224,22 @@ export default function QuestionForm({
     );
   };
 
-  const renderTopicsInput = () => {
+  const renderKeywordsInput = () => {
     return (
       <>
-        <label htmlFor="topic">Topic</label>
+        <label htmlFor="keywords">Keywords</label>
         <input
-          id="topic"
-          name="topic"
-          className={`${errors.topic ? 'error' : ''}`}
+          id="keywords"
+          name="keywords"
+          className={`${errors.keywords ? 'error' : ''}`}
           type="text"
-          value={question.topic}
+          value={question.keywords}
           onChange={(event) => {
-            setQuestion({ ...question, topic: event.target.value });
+            setQuestion({ ...question, keywords: event.target.value });
           }}
         />
-        {errors.topic ? (
-          <div className="validation-error">{errors.topic}</div>
+        {errors.keywords ? (
+          <div className="validation-error">{errors.keywords}</div>
         ) : null}
       </>
     );
@@ -317,7 +317,7 @@ export default function QuestionForm({
         <div className={style.type}>{renderTypeSelect()}</div>
         <div className={style.subject}>{renderSubjectSelect()}</div>
         <div className={style.solution}>{renderSolutionInput()}</div>
-        <div className={style.topic}>{renderTopicsInput()}</div>
+        <div className={style.keywords}>{renderKeywordsInput()}</div>
         <div className={style.alternatives}>{renderAlternatives()}</div>
       </div>
       <div className="right">

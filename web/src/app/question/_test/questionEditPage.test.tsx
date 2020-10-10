@@ -39,7 +39,7 @@ describe('<QuestionEditPage />', () => {
       { id: 2, description: 'False' },
     ],
     correctAnswer: 'True',
-    topic: 'Topic',
+    keywords: 'Key',
     subject: { id: 1, description: 'English' },
     author: '1',
   };

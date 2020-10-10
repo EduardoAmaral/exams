@@ -23,7 +23,7 @@ public interface Question {
 
     String getCorrectAnswer();
 
-    String getTopic();
+    String getKeywords();
 
     Subject getSubject();
 

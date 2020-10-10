@@ -53,8 +53,8 @@ public abstract class QuestionEntity implements Question {
     private String correctAnswer;
 
     @Column
-    @Size(max = 255, message = "{question.topic.size}")
-    private String topic;
+    @Size(max = 255, message = "{question.keywords.size}")
+    private String keywords;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private SubjectEntity subject;

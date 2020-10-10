@@ -74,31 +74,28 @@ export default function QuestionDetailPage() {
       <section>
         <h2>Question {id}</h2>
         <div className="field">
-          <span data-testid="question-detail-statement-title">Statement:</span>{' '}
-          <span data-testid="question-detail-statement-value">
-            {question.statement}
+          <span>
+            Statement: <span>{question?.statement}</span>
           </span>
         </div>
         <div className="field">
-          <span data-testid="question-detail-type-title">Type:</span>{' '}
-          <span data-testid="question-detail-type-value">{question?.type}</span>
-        </div>
-        <div className="field">
-          <span data-testid="question-detail-subject-title">Subject:</span>{' '}
-          <span data-testid="question-detail-subject-value">
-            {question.subject?.description}
+          <span>
+            Type: <span>{question?.type}</span>
           </span>
         </div>
         <div className="field">
-          <span data-testid="question-detail-solution-title">Solution:</span>{' '}
-          <span data-testid="question-detail-solution-value">
-            {question.solution}
+          <span>
+            Subject: <span>{question.subject?.description}</span>
           </span>
         </div>
         <div className="field">
-          <span data-testid="question-detail-topic-title">Topics:</span>{' '}
-          <span data-testid="question-detail-topic-value">
-            {question.topic}
+          <span>
+            Solution: <span>{question?.solution}</span>
+          </span>
+        </div>
+        <div className="field">
+          <span>
+            Keywords: <span>{question?.keywords}</span>
           </span>
         </div>
         <Comments comments={comments} onSend={onSendComment} />

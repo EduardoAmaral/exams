@@ -189,7 +189,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                         .correctAnswer("True")
                         .shared(true)
                         .subject(subject)
-                        .topic("Idioms")
+                        .keywords("Idioms")
                         .author(currentUser)
                         .build(),
                 MultipleChoiceEntity.builder()
@@ -198,7 +198,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                         .correctAnswer("Three")
                         .shared(true)
                         .subject(subject)
-                        .topic("Idioms")
+                        .keywords("Idioms")
                         .alternatives(getAlternatives())
                         .author(currentUser)
                         .build());

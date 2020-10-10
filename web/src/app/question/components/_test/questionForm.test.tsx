@@ -38,7 +38,7 @@ describe('<QuestionForm />', () => {
       { id: 2, description: 'False' },
     ],
     correctAnswer: 'True',
-    topic: 'Topic',
+    keywords: 'Key',
     subject: { id: 1, description: 'English' },
     author: '107859231324466082693',
   };
@@ -91,7 +91,7 @@ describe('<QuestionForm />', () => {
       statement: 'Statement',
       type: 'True Or False',
       solution: 'Solution',
-      topic: 'Topic 1; Topic 2;',
+      keywords: 'Key 1; Key 2;',
       subject: {
         id: 1,
       },
@@ -124,8 +124,8 @@ describe('<QuestionForm />', () => {
       target: { value: 'Solution' },
     });
 
-    fireEvent.change(getByLabelText('Topic', { selector: 'input' }), {
-      target: { value: 'Topic 1; Topic 2;' },
+    fireEvent.change(getByLabelText('Keywords', { selector: 'input' }), {
+      target: { value: 'Key 1; Key 2;' },
     });
 
     fireEvent.click(getByTestId('question-form-alternative-1-radio'));
@@ -142,7 +142,7 @@ describe('<QuestionForm />', () => {
       statement: 'Statement',
       type: 'Multiple Choices',
       solution: 'Solution',
-      topic: 'Topic 1; Topic 2;',
+      keywords: 'Key 1; Key 2;',
       subject: {
         id: 1,
       },
@@ -201,9 +201,9 @@ describe('<QuestionForm />', () => {
       getByLabelText('Solution', { selector: 'textarea' })
     ).toHaveTextContent(questionData.solution);
 
-    expect(getByLabelText('Topic', { selector: 'input' })).toHaveDisplayValue(
-      questionData.topic
-    );
+    expect(
+      getByLabelText('Keywords', { selector: 'input' })
+    ).toHaveDisplayValue(questionData.keywords);
 
     expect(getByTestId('question-form-alternative-1-radio')).toHaveProperty(
       'checked'
@@ -317,18 +317,18 @@ describe('<QuestionForm />', () => {
       ).toBeVisible();
     });
 
-    it('should show topics validation message when have a topic error', () => {
+    it('should show keywords validation message if have an error', () => {
       const { getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{
-            topic: 'Topic should have a maximum of 255 characters',
+            keywords: 'Keywords should have a maximum of 255 characters',
           }}
         />
       );
 
       expect(
-        getByText('Topic should have a maximum of 255 characters')
+        getByText('Keywords should have a maximum of 255 characters')
       ).toBeVisible();
     });
   });

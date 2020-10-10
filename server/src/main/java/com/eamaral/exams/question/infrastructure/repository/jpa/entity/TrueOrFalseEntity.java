@@ -22,10 +22,10 @@ public class TrueOrFalseEntity extends QuestionEntity {
                              boolean deleted,
                              boolean shared,
                              String correctAnswer,
-                             String topic,
+                             String keywords,
                              SubjectEntity subject,
                              String author) {
-        super(id, statement, type, solution, deleted, shared, correctAnswer, topic, subject, author);
+        super(id, statement, type, solution, deleted, shared, correctAnswer, keywords, subject, author);
     }
 
     @Override

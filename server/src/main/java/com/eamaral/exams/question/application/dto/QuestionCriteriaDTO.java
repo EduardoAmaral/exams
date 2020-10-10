@@ -19,7 +19,7 @@ public class QuestionCriteriaDTO {
 
     private QuestionType type;
 
-    private String topic;
+    private String keywords;
 
     private Long subject;
 
@@ -29,7 +29,7 @@ public class QuestionCriteriaDTO {
         return QuestionDTO.builder()
                 .statement(statement)
                 .type(type)
-                .topic(topic)
+                .keywords(keywords)
                 .author(author)
                 .subject(SubjectDTO.builder()
                         .id(subject)

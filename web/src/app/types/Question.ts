@@ -7,7 +7,7 @@ export default interface Question {
   type: string;
   subject: Subject;
   solution?: string;
-  topic?: string;
+  keywords?: string;
   sharable?: boolean;
   alternatives?: Alternative[];
   correctAnswer?: string;
@@ -20,7 +20,7 @@ export interface QuestionErrors {
   type?: string;
   subject?: string;
   solution?: string;
-  topic?: string;
+  keywords?: string;
   alternatives?: string;
   correctAnswer?: string;
 }

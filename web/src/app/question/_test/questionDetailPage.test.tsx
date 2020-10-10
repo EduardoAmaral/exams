@@ -23,14 +23,14 @@ describe('<QuestionDetailPage />', () => {
     id: 2,
     statement: 'Question 1?',
     type: 'True Or False',
-    solution: 'Solution 1',
+    solution: 'Some comments about how to resolve the question 1',
     shared: false,
     alternatives: [
       { id: 1, description: 'True' },
       { id: 2, description: 'False' },
     ],
     correctAnswer: 'True',
-    topic: 'Topic',
+    keywords: 'Key',
     subject: { id: 1, description: 'English' },
     author: '1',
   };
@@ -81,72 +81,35 @@ describe('<QuestionDetailPage />', () => {
     expect(getByRole('heading')).toHaveTextContent(`Question ${question.id}`);
   });
 
-  it('should render the question statement', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
+  it('should render the question details', async () => {
+    const { getByText, getByTestId } = render(<QuestionDetailPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByTestId('question-detail-statement-title')).toHaveTextContent(
-      'Statement:'
-    );
-    expect(getByTestId('question-detail-statement-value')).toHaveTextContent(
+    expect(getByText(/Type/)).toBeDefined();
+    expect(getByText(/Statement/)).toBeDefined();
+    expect(getByText(/Subject/)).toBeDefined();
+    expect(getByText(/Solution/)).toBeDefined();
+    expect(getByText(/Keywords/)).toBeDefined();
+
+    expect(getByText(/Statement/, { selector: 'span' })).toHaveTextContent(
       question.statement
     );
-  });
-
-  it('should render the question type', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
-
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
-
-    expect(getByTestId('question-detail-type-title')).toHaveTextContent(
-      'Type:'
-    );
-    expect(getByTestId('question-detail-type-value')).toHaveTextContent(
+    expect(getByText(/Type/, { selector: 'span' })).toHaveTextContent(
       question.type
     );
-  });
-
-  it('should render the question subject', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
-
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
-
-    expect(getByTestId('question-detail-subject-title')).toHaveTextContent(
-      'Subject:'
-    );
-    expect(getByTestId('question-detail-subject-value')).toHaveTextContent(
+    expect(getByText(/Subject/, { selector: 'span' })).toHaveTextContent(
       question.subject.description
     );
-  });
-
-  it('should render the question solution', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
-
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
-
-    expect(getByTestId('question-detail-solution-title')).toHaveTextContent(
-      'Solution:'
-    );
-    expect(getByTestId('question-detail-solution-value')).toHaveTextContent(
+    expect(getByText(/Solution/, { selector: 'span' })).toHaveTextContent(
       question.solution
     );
-  });
-
-  it('should render the question topic', async () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
-
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
-
-    expect(getByTestId('question-detail-topic-title')).toHaveTextContent(
-      'Topics:'
-    );
-    expect(getByTestId('question-detail-topic-value')).toHaveTextContent(
-      question.topic
+    expect(getByText(/Keywords/, { selector: 'span' })).toHaveTextContent(
+      question.keywords
     );
   });
 
-  it('should return to the previous after click on the cancel button', async () => {
+  it('should return to the previous page after click on the cancel button', async () => {
     history.goBack = jest.fn();
     const { getByTestId, getByRole } = render(<QuestionDetailPage />);
 

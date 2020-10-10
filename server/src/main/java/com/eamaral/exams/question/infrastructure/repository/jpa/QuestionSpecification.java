@@ -26,8 +26,8 @@ public class QuestionSpecification {
                 predicates.add(cb.equal(question.get("type"), query.getType()));
             }
 
-            if (shouldFilterByTopic(query)) {
-                predicates.add(cb.like(cb.upper(question.get("topic")), like(query.getTopic())));
+            if (shouldFilterByKeywords(query)) {
+                predicates.add(cb.like(cb.upper(question.get("keywords")), like(query.getKeywords())));
             }
 
             if (shouldFilterBySubject(query)) {
@@ -63,8 +63,8 @@ public class QuestionSpecification {
         return query.getType() != null;
     }
 
-    private static boolean shouldFilterByTopic(QuestionEntity query) {
-        return !StringUtils.isEmpty(query.getTopic());
+    private static boolean shouldFilterByKeywords(QuestionEntity query) {
+        return !StringUtils.isEmpty(query.getKeywords());
     }
 
     private static boolean shouldFilterBySubject(QuestionEntity query) {

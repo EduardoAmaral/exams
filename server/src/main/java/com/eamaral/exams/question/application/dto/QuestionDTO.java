@@ -46,8 +46,8 @@ public class QuestionDTO implements Serializable, Question {
     @NotBlank(message = "{question.answer.required}")
     private String correctAnswer;
 
-    @Size(max = 255, message = "{question.topic.size}")
-    private String topic;
+    @Size(max = 255, message = "{question.keywords.size}")
+    private String keywords;
 
     @NotNull(message = "{question.subject.required}")
     private SubjectDTO subject;
@@ -63,7 +63,7 @@ public class QuestionDTO implements Serializable, Question {
                     .solution(question.getSolution())
                     .type(question.getType())
                     .correctAnswer(question.getCorrectAnswer())
-                    .topic(question.getTopic())
+                    .keywords(question.getKeywords())
                     .alternatives(AlternativeDTO.from(question.getAlternatives()))
                     .subject(SubjectDTO.from(question.getSubject()))
                     .author(question.getAuthor());

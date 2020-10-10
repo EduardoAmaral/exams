@@ -19,7 +19,7 @@ public class QuestionConverter {
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
-                    .topic(question.getTopic())
+                    .keywords(question.getKeywords())
                     .subject(SubjectEntity.from(question.getSubject()))
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
                     .author(question.getAuthor())
@@ -32,7 +32,7 @@ public class QuestionConverter {
                     .solution(question.getSolution())
                     .statement(question.getStatement())
                     .type(question.getType())
-                    .topic(question.getTopic())
+                    .keywords(question.getKeywords())
                     .subject(SubjectEntity.from(question.getSubject()))
                     .author(question.getAuthor())
                     .build();

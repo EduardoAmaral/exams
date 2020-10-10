@@ -60,13 +60,13 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         .matcher(type -> type.equals(QuestionType.MULTIPLE_CHOICES.toString()))
                         .build(),
                 SearchByCriteriaScenario.builder()
-                        .assertField("topic")
+                        .assertField("keywords")
                         .criteria(
                                 TrueOrFalseEntity.builder()
-                                        .topic("language")
+                                        .keywords("language")
                                         .build()
                         )
-                        .matcher(topic -> topic.toLowerCase().contains("language"))
+                        .matcher(keywords -> keywords.toLowerCase().contains("language"))
                         .build(),
                 SearchByCriteriaScenario.builder()
                         .assertField("author")
@@ -136,7 +136,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .subject(english)
                 .correctAnswer("A")
                 .author("1")
-                .topic(new String(new char[256]).replace('\0', 'A'))
+                .keywords(new String(new char[256]).replace('\0', 'A'))
                 .statement(new String(new char[2001]).replace('\0', 'A'))
                 .type(QuestionType.TRUE_OR_FALSE)
                 .solution(new String(new char[3001]).replace('\0', 'A'))
@@ -145,7 +145,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
         List<String> validationMessages = List.of(
                 "Statement should have a maximum of 2000 characters",
                 "Solution should have a maximum of 3000 characters",
-                "Topic should have a maximum of 255 characters");
+                "Keywords should have a maximum of 255 characters");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(question))
@@ -286,7 +286,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .statement("Hello")
                 .shared(false)
                 .solution("Hello World!")
-                .topic("Greetings")
+                .keywords("Greetings")
                 .subject(english)
                 .author("1")
                 .build();
@@ -299,7 +299,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getStatement,
                         Question::getSolution,
                         Question::getCorrectAnswer,
-                        Question::getTopic,
+                        Question::getKeywords,
                         Question::isShared,
                         q -> q.getSubject().getDescription(),
                         Question::getAuthor)
@@ -410,7 +410,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         .statement("Can I test TF?")
                         .type(QuestionType.TRUE_OR_FALSE)
                         .correctAnswer("True")
-                        .topic("Language; Latin Language")
+                        .keywords("Language; Latin Language")
                         .subject(portuguese)
                         .shared(true)
                         .author("20001")
@@ -424,7 +424,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("True")
                 .shared(true)
                 .subject(english)
-                .topic("Language")
+                .keywords("Language")
                 .author(currentUser)
                 .build();
     }
@@ -436,7 +436,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .correctAnswer("B")
                 .shared(false)
                 .subject(english)
-                .topic("Test")
+                .keywords("Test")
                 .alternatives(getAlternatives())
                 .author(currentUser)
                 .build();
