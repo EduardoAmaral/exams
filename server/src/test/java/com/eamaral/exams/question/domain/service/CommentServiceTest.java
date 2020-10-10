@@ -8,6 +8,7 @@ import com.eamaral.exams.user.domain.port.UserRepositoryPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,16 +42,21 @@ class CommentServiceTest {
     @Test
     @DisplayName("should create a comment")
     void create_shouldCallRepositoryPortToSaveAComment() {
+        final String authorId = "1";
         final Comment comment = Comment.builder()
-                .authorId("1")
+                .authorId(authorId)
                 .build();
 
         final Comment newComment = Comment.builder()
-                .id(1L).authorId("1").build();
+                .id(1L).authorId(authorId).build();
 
         when(repository.create(any())).thenReturn(newComment);
 
-        service.create(comment, "1");
+        when(userRepositoryPort.findById(authorId)).thenReturn(User.builder()
+                .name("Author Name")
+                .build());
+
+        service.create(comment, authorId);
 
         verify(repository).create(any());
     }
@@ -60,14 +66,25 @@ class CommentServiceTest {
     void create_shouldPublishAMessage() {
         Comment comment = Comment.builder()
                 .build();
+        final String authorId = "1";
 
-        final Comment newComment = Comment.builder().id(1L).build();
+        final Comment newComment = Comment.builder()
+                .id(1L).authorId(authorId).build();
 
-        CompletableFuture.runAsync(
-                () -> service.create(comment, "1")).thenApply(s -> {
-            verify(publisher).publish(newComment);
-            return s;
-        });
+        when(repository.create(any())).thenReturn(newComment);
+
+        when(userRepositoryPort.findById(authorId)).thenReturn(User.builder()
+                .name("Author Name")
+                .build());
+
+        final CompletableFuture<Comment> supplyAsync = CompletableFuture.supplyAsync(() -> service.create(comment, authorId));
+
+        final Comment result = supplyAsync.join();
+        final ArgumentCaptor<Comment> argumentCaptor = ArgumentCaptor.forClass(Comment.class);
+        verify(publisher).publish(argumentCaptor.capture());
+
+        assertThat(argumentCaptor.getValue())
+                .isEqualToComparingFieldByField(result);
     }
 
     @Test

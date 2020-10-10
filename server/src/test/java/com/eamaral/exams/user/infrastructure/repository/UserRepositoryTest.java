@@ -118,4 +118,28 @@ class UserRepositoryTest extends JpaIntegrationTest {
         assertThat(users).extracting(User::getName)
                 .containsExactlyInAnyOrder("Min-young", "Jong-suk");
     }
+
+    @Test
+    @DisplayName("should retrieve an user by its id")
+    void findById() {
+        final UserEntity park = UserEntity.builder()
+                .id("1")
+                .email("m@email.com")
+                .name("Min-young")
+                .surname("Park")
+                .build();
+        entityManager.merge(park);
+
+        final User user = repository.findById("1");
+
+        assertThat(user).isEqualToComparingFieldByField(park);
+    }
+
+    @Test
+    @DisplayName("should retrieve an empty user when its id is not registred")
+    void findById_whenUserDoesNotExist() {
+        final User user = repository.findById("1");
+
+        assertThat(user).isEqualToComparingFieldByField(User.builder().build());
+    }
 }

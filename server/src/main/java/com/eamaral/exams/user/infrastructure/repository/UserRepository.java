@@ -4,6 +4,7 @@ import com.eamaral.exams.user.domain.User;
 import com.eamaral.exams.user.domain.port.UserRepositoryPort;
 import com.eamaral.exams.user.infrastructure.repository.jpa.UserJpaRepository;
 import com.eamaral.exams.user.infrastructure.repository.jpa.entity.UserEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Repository
 public class UserRepository implements UserRepositoryPort {
 
@@ -37,5 +39,15 @@ public class UserRepository implements UserRepositoryPort {
         return repository.findAllByIdIn(userIds).stream()
                 .map(UserEntity::toUser)
                 .collect(toList());
+    }
+
+    @Override
+    public User findById(String authorId) {
+        return repository.findById(authorId).map(UserEntity::toUser)
+                .orElseGet(() -> {
+                    log.warn("User id {} not found", authorId);
+                    return User.builder()
+                            .build();
+                });
     }
 }

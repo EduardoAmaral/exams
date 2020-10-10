@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.*;
 
 @Service
@@ -31,9 +32,17 @@ public class CommentService {
     }
 
     public Comment create(Comment comment, String authorId) {
-        Comment newComment = repositoryPort.create(comment.toBuilder()
-                .authorId(authorId)
-                .build());
+        final CompletableFuture<Comment> commentSupply = supplyAsync(
+                () -> repositoryPort.create(comment.toBuilder()
+                        .authorId(authorId)
+                        .build()));
+
+        final CompletableFuture<User> userSupply = supplyAsync(() -> userRepositoryPort.findById(authorId));
+
+        final Comment newComment = commentSupply.join()
+                .toBuilder()
+                .authorName(userSupply.join().getFullName())
+                .build();
 
         CompletableFuture.runAsync(() -> publisher.publish(newComment));
 

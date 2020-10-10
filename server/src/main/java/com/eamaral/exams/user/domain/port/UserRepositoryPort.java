@@ -13,4 +13,6 @@ public interface UserRepositoryPort {
     Optional<User> findByEmail(String email);
 
     List<User> findAllByIds(Set<String> userIds);
+
+    User findById(String authorId);
 }
