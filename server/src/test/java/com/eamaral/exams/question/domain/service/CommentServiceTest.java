@@ -62,7 +62,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("should publish a message after create a comment")
-    void create_shouldPublishAMessage() {
+    void create_shouldPublishAMessage() throws InterruptedException {
         Comment comment = Comment.builder()
                 .build();
         final String authorId = "1";
@@ -77,6 +77,8 @@ class CommentServiceTest {
                 .build());
 
         final Comment result = CompletableFuture.supplyAsync(() -> service.create(comment, authorId)).join();
+
+        Thread.sleep(10);
 
         verify(publisher).publish(result);
     }
