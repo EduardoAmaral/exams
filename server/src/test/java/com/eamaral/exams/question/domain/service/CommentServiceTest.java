@@ -5,6 +5,7 @@ import com.eamaral.exams.question.domain.Comment;
 import com.eamaral.exams.question.domain.port.CommentRepositoryPort;
 import com.eamaral.exams.user.domain.User;
 import com.eamaral.exams.user.domain.port.UserRepositoryPort;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +64,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("should publish a message after create a comment")
-    void create_shouldPublishAMessage() throws InterruptedException {
+    void create_shouldPublishAMessage() {
         Comment comment = Comment.builder()
                 .build();
         final String authorId = "1";
@@ -78,9 +80,8 @@ class CommentServiceTest {
 
         final Comment result = CompletableFuture.supplyAsync(() -> service.create(comment, authorId)).join();
 
-        Thread.sleep(10);
-
-        verify(publisher).publish(result);
+        await().atMost(Durations.FIVE_HUNDRED_MILLISECONDS)
+                .untilAsserted(() -> verify(publisher).publish(result));
     }
 
     @Test
