@@ -120,7 +120,7 @@
     <field name="subject" type="string" indexed="true" stored="true" required="false" multiValued="false" />
     <field name="keywords" type="string" indexed="true" stored="true" required="false" multiValued="false" />
     <field name="author" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-    <field name="coauthor" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+    <field name="type" type="string" indexed="true" stored="true" required="false" multiValued="false" />
     <!-- docValues are enabled by default for long type so we don't need to index the version field  -->
     <field name="_version_" type="plong" indexed="false" stored="false"/>
 
@@ -131,6 +131,7 @@
     <copyField source="author" dest="_text_"/>
     <copyField source="subject" dest="_text_"/>
     <copyField source="keywords" dest="_text_"/>
+    <copyField source="type" dest="_text_"/>
 
     <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true" />
