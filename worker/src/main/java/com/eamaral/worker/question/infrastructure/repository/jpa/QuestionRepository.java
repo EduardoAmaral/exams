@@ -2,7 +2,6 @@ package com.eamaral.worker.question.infrastructure.repository.jpa;
 
 import com.eamaral.worker.question.domain.Question;
 import com.eamaral.worker.question.domain.port.QuestionPort;
-import com.eamaral.worker.question.infrastructure.repository.jpa.QuestionJpaRepository;
 import com.eamaral.worker.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;

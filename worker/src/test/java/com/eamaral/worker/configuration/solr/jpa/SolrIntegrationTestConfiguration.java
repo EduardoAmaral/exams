@@ -13,10 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 import org.springframework.stereotype.Repository;
-import org.xml.sax.SAXException;
 
 import javax.annotation.PreDestroy;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
