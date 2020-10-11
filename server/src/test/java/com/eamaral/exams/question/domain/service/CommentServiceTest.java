@@ -8,7 +8,6 @@ import com.eamaral.exams.user.domain.port.UserRepositoryPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -77,14 +76,9 @@ class CommentServiceTest {
                 .name("Author Name")
                 .build());
 
-        final CompletableFuture<Comment> supplyAsync = CompletableFuture.supplyAsync(() -> service.create(comment, authorId));
+        final Comment result = CompletableFuture.supplyAsync(() -> service.create(comment, authorId)).join();
 
-        final Comment result = supplyAsync.join();
-        final ArgumentCaptor<Comment> argumentCaptor = ArgumentCaptor.forClass(Comment.class);
-        verify(publisher).publish(argumentCaptor.capture());
-
-        assertThat(argumentCaptor.getValue())
-                .isEqualToComparingFieldByField(result);
+        verify(publisher).publish(result);
     }
 
     @Test
