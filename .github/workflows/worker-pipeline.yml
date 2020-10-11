@@ -35,7 +35,7 @@ jobs:
         env:
           EXAMS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.SONAR_GITHUB_TOKEN }}
-        run: ./gradlew sonarqube --info
+        run: ./gradlew :worker:sonarqube --info
         
       - name: Docker Build Image
         run: cd worker && docker build .
