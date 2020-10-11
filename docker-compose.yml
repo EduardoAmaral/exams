@@ -49,6 +49,22 @@ services:
       - solr-precreate
       - questions
       - /opt/solr/server/solr/configsets/questions
+
+  worker:
+    image: worker
+    container_name: exams-worker
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      EXAMS_DATABASE_URL: ${EXAMS_DATABASE_URL}
+      EXAMS_DATABASE_USER: ${EXAMS_DATABASE_USER}
+      EXAMS_DATABASE_PASSWORD: ${EXAMS_DATABASE_PASSWORD}
+    links:
+      - "database:database"
+
 volumes:
   db-data:
   solr-data:

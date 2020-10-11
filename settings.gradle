@@ -1,2 +1,3 @@
 rootProject.name = 'exams'
 include 'server'
+include 'worker'
