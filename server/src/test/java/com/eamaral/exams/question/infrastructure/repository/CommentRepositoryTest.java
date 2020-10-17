@@ -52,13 +52,13 @@ class CommentRepositoryTest extends JpaIntegrationTest {
     @DisplayName("should validate the message length when creating a comment")
     void create_whenMessageIsGreaterThanExpected_shouldThrowException() {
         Comment comment = Comment.builder()
-                .message(new String(new char[3001]).replace('\0', 'A'))
+                .message(new String(new char[601]).replace('\0', 'A'))
                 .authorId("1234")
                 .questionId(1L)
                 .creationDate(ZonedDateTime.now())
                 .build();
 
-        List<String> validationMessages = List.of("Comments should have a maximum of 3000 characters");
+        List<String> validationMessages = List.of("Comments should have a maximum of 600 characters");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.create(comment))

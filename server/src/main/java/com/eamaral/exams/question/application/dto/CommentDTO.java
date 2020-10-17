@@ -28,7 +28,7 @@ public class CommentDTO implements Serializable {
     private Long id;
 
     @NotBlank(message = "{comment.message.required}")
-    @Size(max = 3000, message = "{comment.message.size}")
+    @Size(max = 300, message = "{comment.message.size}")
     private String message;
 
     @NotNull(message = "{comment.question.required}")

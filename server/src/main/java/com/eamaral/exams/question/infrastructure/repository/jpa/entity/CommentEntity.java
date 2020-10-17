@@ -25,20 +25,16 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     @NotBlank(message = "{comment.message.required}")
-    @Size(max = 3000, message = "{comment.message.size}")
+    @Size(max = 300, message = "{comment.message.size}")
     private String message;
 
-    @Column(name = "QUESTION_ID")
     @NotNull(message = "{comment.question.required}")
     private Long questionId;
 
-    @Column
     @NotNull(message = "{comment.author.required}")
-    private String authorId;
+    private String author;
 
-    @Column
     @NotNull(message = "{comment.creationDate.required}")
     private ZonedDateTime creationDate;
 
@@ -47,7 +43,7 @@ public class CommentEntity {
                 .id(comment.getId())
                 .message(comment.getMessage())
                 .questionId(comment.getQuestionId())
-                .authorId(comment.getAuthorId())
+                .author(comment.getAuthorId())
                 .creationDate(ZonedDateTime.now())
                 .build();
     }
@@ -57,7 +53,7 @@ public class CommentEntity {
                 .id(getId())
                 .message(getMessage())
                 .questionId(getQuestionId())
-                .authorId(getAuthorId())
+                .authorId(getAuthor())
                 .creationDate(getCreationDate())
                 .build();
     }
