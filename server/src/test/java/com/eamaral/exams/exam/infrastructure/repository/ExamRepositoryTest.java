@@ -113,7 +113,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
 
         assertThat(result).isNotEmpty();
         assertThat(result.get())
-                .extracting("title", "author")
+                .extracting(Exam::getTitle, Exam::getAuthorId)
                 .containsExactly("Exam 1", currentUser);
         assertThat(result.get().getQuestions()).hasSize(2);
     }
@@ -151,7 +151,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     private ExamEntity.ExamEntityBuilder getExam() {
         return ExamEntity.builder()
                 .title("Exam 1")
-                .author(currentUser)
+                .authorId(currentUser)
                 .questions(questions)
                 .startDateTime(ZonedDateTime.now())
                 .endDateTime(ZonedDateTime.now().plusHours(2));

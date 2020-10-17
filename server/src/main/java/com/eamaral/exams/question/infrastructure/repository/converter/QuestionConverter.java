@@ -21,7 +21,7 @@ public class QuestionConverter {
                     .keywords(question.getKeywords())
                     .subject(SubjectEntity.from(question.getSubject()))
                     .alternatives(AlternativeEntity.from(question.getAlternatives()))
-                    .author(question.getAuthor())
+                    .author(question.getAuthorId())
                     .build();
         } else {
             return TrueOrFalseEntity.builder()
@@ -32,7 +32,7 @@ public class QuestionConverter {
                     .type(question.getType())
                     .keywords(question.getKeywords())
                     .subject(SubjectEntity.from(question.getSubject()))
-                    .author(question.getAuthor())
+                    .author(question.getAuthorId())
                     .build();
         }
     }

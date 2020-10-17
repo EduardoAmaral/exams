@@ -52,7 +52,7 @@ public class QuestionDTO implements Serializable, Question {
     @NotNull(message = "{question.subject.required}")
     private SubjectDTO subject;
 
-    private String author;
+    private String authorId;
 
     public static QuestionDTO from(Question question) {
         final QuestionDTOBuilder builder = builder();
@@ -66,7 +66,7 @@ public class QuestionDTO implements Serializable, Question {
                     .keywords(question.getKeywords())
                     .alternatives(AlternativeDTO.from(question.getAlternatives()))
                     .subject(SubjectDTO.from(question.getSubject()))
-                    .author(question.getAuthor());
+                    .authorId(question.getAuthorId());
         }
 
         return builder.build();

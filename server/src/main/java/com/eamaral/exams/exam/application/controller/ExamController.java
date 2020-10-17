@@ -36,7 +36,7 @@ public class ExamController {
         log.info("Creating an exam to user {}", currentUserId);
 
         examService.create(exam.toBuilder()
-                .author(currentUserId)
+                .authorId(currentUserId)
                 .build());
     }
 

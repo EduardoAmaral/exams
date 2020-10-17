@@ -44,11 +44,11 @@ class QuestionServiceTest {
         List<Question> questions = List.of(
                 QuestionDTO.builder()
                         .statement(statement1)
-                        .author(currentUser)
+                        .authorId(currentUser)
                         .build(),
                 QuestionDTO.builder()
                         .statement(statement2)
-                        .author(currentUser)
+                        .authorId(currentUser)
                         .build());
 
         when(repositoryPort.findByUser(currentUser)).thenReturn(questions);
@@ -56,7 +56,7 @@ class QuestionServiceTest {
         List<Question> result = service.findByUser(currentUser);
 
         assertThat(result)
-                .extracting(Question::getStatement, Question::getAuthor)
+                .extracting(Question::getStatement, Question::getAuthorId)
                 .containsOnly(
                         tuple(statement1, currentUser),
                         tuple(statement2, currentUser));
@@ -211,7 +211,7 @@ class QuestionServiceTest {
                 .correctAnswer("True")
                 .alternatives(getAlternatives())
                 .type(QuestionType.TRUE_OR_FALSE)
-                .author("123");
+                .authorId("123");
         Question question = builder
                 .build();
 
@@ -232,7 +232,7 @@ class QuestionServiceTest {
                 .correctAnswer("Wrong")
                 .alternatives(getAlternatives())
                 .type(QuestionType.TRUE_OR_FALSE)
-                .author("123").build();
+                .authorId("123").build();
 
         when(repositoryPort.find(questionId, currentUser))
                 .thenReturn(Optional.of(question));
@@ -311,7 +311,7 @@ class QuestionServiceTest {
                 .type(QuestionType.TRUE_OR_FALSE)
                 .shared(false)
                 .correctAnswer(correctAnswer)
-                .author(currentUser)
+                .authorId(currentUser)
                 .subject(SubjectDTO.builder()
                         .description("English")
                         .build())

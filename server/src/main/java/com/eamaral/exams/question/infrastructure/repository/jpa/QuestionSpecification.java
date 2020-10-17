@@ -35,7 +35,7 @@ public class QuestionSpecification {
             }
 
             if (shouldFilterByAuthor(query)) {
-                predicates.add(cb.equal(question.get("author"), query.getAuthor()));
+                predicates.add(cb.equal(question.get("authorId"), query.getAuthorId()));
             }
 
             cb.asc(question.get("statement"));
@@ -46,7 +46,7 @@ public class QuestionSpecification {
     }
 
     private static boolean shouldFilterByAuthor(QuestionEntity query) {
-        return !StringUtils.isEmpty(query.getAuthor());
+        return !StringUtils.isEmpty(query.getAuthorId());
     }
 
     private static boolean shouldFilterByStatement(QuestionEntity query) {
@@ -66,7 +66,7 @@ public class QuestionSpecification {
     }
 
     private static boolean isAuthorTheCurrentUser(QuestionEntity query, String currentUser) {
-        return currentUser.equals(query.getAuthor());
+        return currentUser.equals(query.getAuthorId());
     }
 
     private static String like(String field) {

@@ -95,7 +95,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].shared", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].keywords", is("T01")))
-                .andExpect(jsonPath("$[0].author", is(currentUser)))
+                .andExpect(jsonPath("$[0].authorId", is(currentUser)))
                 .andExpect(jsonPath("$[0].subject.description", is("English")))
                 .andExpect(jsonPath("$[0].alternatives", hasSize(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
@@ -105,7 +105,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].shared", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].keywords", is("T02")))
-                .andExpect(jsonPath("$[1].author", is(currentUser)))
+                .andExpect(jsonPath("$[1].authorId", is(currentUser)))
                 .andExpect(jsonPath("$[1].subject.description", is("English")))
                 .andExpect(jsonPath("$[1].alternatives", hasSize(3)));
     }
@@ -126,7 +126,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.shared", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))
                 .andExpect(jsonPath("$.keywords", is("T01")))
-                .andExpect(jsonPath("$.author", is("1")))
+                .andExpect(jsonPath("$.authorId", is("1")))
                 .andExpect(jsonPath("$.subject.description", is("English")))
                 .andExpect(jsonPath("$.alternatives", hasSize(2)));
     }
@@ -147,7 +147,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                         .with(csrf()))
                 .andExpect(status().isCreated());
 
-        assertThat(questionCaptor.getValue()).extracting("author").isEqualTo(currentUser);
+        assertThat(questionCaptor.getValue()).extracting("authorId").isEqualTo(currentUser);
     }
 
     @Test
@@ -189,7 +189,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
 
         assertThat(questionListCaptor.getValue())
                 .withFailMessage("Expecting all elements to have user id %s", author)
-                .allMatch(question -> question.getAuthor().equals(author));
+                .allMatch(question -> question.getAuthorId().equals(author));
     }
 
     @Test
@@ -278,7 +278,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .shared(true)
                 .correctAnswer("True")
                 .keywords("T01")
-                .author(currentUser)
+                .authorId(currentUser)
                 .subject(SubjectDTO.builder()
                         .id(1L)
                         .description("English")
@@ -305,7 +305,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                         .shared(false)
                         .correctAnswer("A")
                         .keywords("T02")
-                        .author(currentUser)
+                        .authorId(currentUser)
                         .subject(SubjectDTO.builder()
                                 .description("English")
                                 .build())

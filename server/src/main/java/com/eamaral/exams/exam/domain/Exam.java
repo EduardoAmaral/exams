@@ -16,7 +16,7 @@ public abstract class Exam {
 
     public abstract ZonedDateTime getEndDateTime();
 
-    public abstract String getAuthor();
+    public abstract String getAuthorId();
 
     public abstract List<Question> getQuestions();
 

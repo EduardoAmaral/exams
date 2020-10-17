@@ -71,7 +71,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .extracting("id")
                 .matches(Objects::nonNull);
 
-        assertThat(exam.getAuthor())
+        assertThat(exam.getAuthorId())
                 .isEqualTo(currentUserId);
     }
 
@@ -106,7 +106,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].title", is(title)))
-                .andExpect(jsonPath("$[0].author", is(currentUserId)))
+                .andExpect(jsonPath("$[0].authorId", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(2)));
 
         verify(userService).getCurrentUserId();
@@ -125,7 +125,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].title", is(title)))
-                .andExpect(jsonPath("$[0].author", is(currentUserId)))
+                .andExpect(jsonPath("$[0].authorId", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(0)));
 
         verify(userService).getCurrentUserId();
@@ -142,7 +142,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is(title)))
-                .andExpect(jsonPath("$.author", is(currentUserId)))
+                .andExpect(jsonPath("$.authorId", is(currentUserId)))
                 .andExpect(jsonPath("$.startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$.endDateTime", containsString(endDateTimeFormatted)))
                 .andExpect(jsonPath("$.questions", hasSize(2)));
@@ -165,7 +165,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .id(1L)
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)
-                .author(currentUserId)
+                .authorId(currentUserId)
                 .title(title)
                 .questions(getQuestions())
                 .build();

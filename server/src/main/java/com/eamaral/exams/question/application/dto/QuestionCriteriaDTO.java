@@ -23,14 +23,14 @@ public class QuestionCriteriaDTO {
 
     private Long subject;
 
-    private String author;
+    private String authorId;
 
     public Question toQuestion() {
         return QuestionDTO.builder()
                 .statement(statement)
                 .type(type)
                 .keywords(keywords)
-                .author(author)
+                .authorId(authorId)
                 .subject(SubjectDTO.builder()
                         .id(subject)
                         .build())

@@ -30,7 +30,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
     @Override
     public List<Question> findByUser(String currentUser) {
         return new ArrayList<>(
-                repository.findAllByAuthorAndDeletedIsFalse(currentUser));
+                repository.findAllByAuthorId(currentUser));
     }
 
     @Override

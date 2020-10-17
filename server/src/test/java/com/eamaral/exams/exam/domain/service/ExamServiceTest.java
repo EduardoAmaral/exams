@@ -202,7 +202,7 @@ class ExamServiceTest {
         return ExamDTO.builder()
                 .id(1L)
                 .title("Exam 1")
-                .author(currentUser)
+                .authorId(currentUser)
                 .questions(getQuestions())
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime);

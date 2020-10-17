@@ -43,9 +43,9 @@ public class ExamEntity extends Exam {
     @Column
     private ZonedDateTime endDateTime;
 
-    @Column
+    @Column(name = "AUTHOR_ID")
     @NotBlank(message = "{exam.author.required}")
-    private String author;
+    private String authorId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @NotEmpty(message = "{exam.questions.required}")
@@ -62,7 +62,7 @@ public class ExamEntity extends Exam {
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
                     .title(exam.getTitle())
-                    .author(exam.getAuthor())
+                    .authorId(exam.getAuthorId())
                     .questions(
                             emptyIfNull(exam.getQuestions())
                                     .stream()

@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface ExamJpaRepository extends JpaRepository<ExamEntity, String>, JpaSpecificationExecutor<ExamEntity> {
 
-    Optional<ExamEntity> findByIdAndAuthorAndDeletedIsFalse(Long id, String author);
+    Optional<ExamEntity> findByIdAndAuthorId(Long id, String authorId);
 
-    List<ExamEntity> findAllByAuthorAndDeletedIsFalse(String author);
+    List<ExamEntity> findAllByAuthorId(String authorId);
 }
 

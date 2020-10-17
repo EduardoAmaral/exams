@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface QuestionJpaRepository extends JpaRepository<QuestionEntity, Long>, JpaSpecificationExecutor<QuestionEntity> {
 
-    List<QuestionEntity> findAllByAuthorAndDeletedIsFalse(String author);
+    List<QuestionEntity> findAllByAuthorId(String authorId);
 
 }

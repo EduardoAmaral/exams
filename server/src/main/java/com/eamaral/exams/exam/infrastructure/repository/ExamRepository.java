@@ -31,7 +31,7 @@ public class ExamRepository implements ExamRepositoryPort {
 
     @Override
     public List<Exam> findByUser(String currentUser) {
-        return new ArrayList<>(repository.findAllByAuthorAndDeletedIsFalse(currentUser));
+        return new ArrayList<>(repository.findAllByAuthorId(currentUser));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ExamRepository implements ExamRepositoryPort {
 
     @Override
     public Optional<Exam> findById(Long id, String currentUser) {
-        return repository.findByIdAndAuthorAndDeletedIsFalse(id, currentUser)
+        return repository.findByIdAndAuthorId(id, currentUser)
                 .flatMap(Optional::of);
     }
 

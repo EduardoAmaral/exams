@@ -56,8 +56,8 @@ public abstract class QuestionEntity implements Question {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private SubjectEntity subject;
 
-    @Column
+    @Column(name = "AUTHOR_ID")
     @NotEmpty(message = "{question.author.required}")
-    private String author;
+    private String authorId;
 
 }

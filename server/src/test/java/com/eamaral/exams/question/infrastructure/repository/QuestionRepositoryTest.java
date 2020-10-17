@@ -69,7 +69,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         .matcher(keywords -> keywords.toLowerCase().contains("language"))
                         .build(),
                 SearchByCriteriaScenario.builder()
-                        .assertField("author")
+                        .assertField("authorId")
                         .criteria(
                                 TrueOrFalseEntity.builder()
                                         .author("20001")
@@ -276,7 +276,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getCorrectAnswer,
                         Question::getKeywords,
                         q -> q.getSubject().getDescription(),
-                        Question::getAuthor)
+                        Question::getAuthorId)
                 .containsExactlyInAnyOrder(
                         entity.getId(),
                         "Hello",

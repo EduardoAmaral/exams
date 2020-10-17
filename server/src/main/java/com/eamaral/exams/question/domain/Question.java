@@ -25,7 +25,7 @@ public interface Question {
 
     Subject getSubject();
 
-    String getAuthor();
+    String getAuthorId();
 
     default void validateTypeChange(Question oldQuestion) {
         if (!oldQuestion.getType().equals(getType())) {

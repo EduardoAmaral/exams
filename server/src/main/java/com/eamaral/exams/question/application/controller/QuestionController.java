@@ -59,7 +59,7 @@ public class QuestionController {
         log.info("Saving question by user {}", currentUserId);
 
         question = question.toBuilder()
-                .author(currentUserId)
+                .authorId(currentUserId)
                 .build();
         questionService.save(question);
     }
@@ -70,7 +70,7 @@ public class QuestionController {
         String currentUserId = userService.getCurrentUserId();
         log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
 
-        questions.replaceAll(question -> question.toBuilder().author(currentUserId).build());
+        questions.replaceAll(question -> question.toBuilder().authorId(currentUserId).build());
         questionService.saveAll(new ArrayList<>(questions));
     }
 
