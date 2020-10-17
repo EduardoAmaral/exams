@@ -40,6 +40,7 @@ services:
   solr:
     image: solr:8.4
     container_name: exams-solr
+    restart: always
     ports:
       - "8983:8983"
     volumes:
@@ -56,6 +57,7 @@ services:
     build:
       context: ./worker
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "8083:8083"
     environment:
