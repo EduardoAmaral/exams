@@ -45,10 +45,7 @@ public abstract class QuestionEntity implements Question {
     @Setter
     private boolean deleted;
 
-    @Column(nullable = false)
-    private boolean shared;
-
-    @Column
+    @Column(name = "CORRECT_ANSWER")
     @NotBlank(message = "{question.answer.required}")
     private String correctAnswer;
 

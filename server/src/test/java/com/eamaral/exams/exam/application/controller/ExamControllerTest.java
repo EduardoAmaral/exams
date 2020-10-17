@@ -73,9 +73,6 @@ class ExamControllerTest extends ControllerIntegrationTest {
 
         assertThat(exam.getAuthor())
                 .isEqualTo(currentUserId);
-
-        assertThat(exam.isMockTest())
-                .isFalse();
     }
 
     @Test
@@ -108,7 +105,6 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
-                .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].title", is(title)))
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(2)));
@@ -128,7 +124,6 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
-                .andExpect(jsonPath("$[0].mockTest", is(false)))
                 .andExpect(jsonPath("$[0].title", is(title)))
                 .andExpect(jsonPath("$[0].author", is(currentUserId)))
                 .andExpect(jsonPath("$[0].questions", hasSize(0)));
@@ -150,7 +145,6 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.author", is(currentUserId)))
                 .andExpect(jsonPath("$.startDateTime", containsString(startDateTimeFormatted)))
                 .andExpect(jsonPath("$.endDateTime", containsString(endDateTimeFormatted)))
-                .andExpect(jsonPath("$.mockTest", is(false)))
                 .andExpect(jsonPath("$.questions", hasSize(2)));
     }
 
@@ -171,7 +165,6 @@ class ExamControllerTest extends ControllerIntegrationTest {
                 .id(1L)
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)
-                .mockTest(false)
                 .author(currentUserId)
                 .title(title)
                 .questions(getQuestions())

@@ -83,8 +83,11 @@ dependencies {
 }
 
 configurations {
-    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    all*.exclude group: 'log4j', module: 'log4j'
+    all {
+        exclude group: 'log4j', module: 'log4j'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 }
 
 test {

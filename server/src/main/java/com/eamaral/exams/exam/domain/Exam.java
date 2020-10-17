@@ -16,19 +16,11 @@ public abstract class Exam {
 
     public abstract ZonedDateTime getEndDateTime();
 
-    public abstract boolean isMockTest();
-
     public abstract String getAuthor();
 
     public abstract List<Question> getQuestions();
 
     public void validate() {
-        if (!isMockTest()) {
-            validateDates();
-        }
-    }
-
-    private void validateDates() {
         if (getStartDateTime() == null || getEndDateTime() == null) {
             throw new InvalidDataException("Dates are required when not a mock test");
         }

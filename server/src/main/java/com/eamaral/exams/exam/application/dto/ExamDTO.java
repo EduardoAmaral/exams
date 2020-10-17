@@ -36,8 +36,6 @@ public class ExamDTO extends Exam {
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime endDateTime;
 
-    private boolean mockTest;
-
     private String author;
 
     @NotEmpty(message = "{exam.questions.required}")
@@ -50,7 +48,6 @@ public class ExamDTO extends Exam {
             builder.id(exam.getId())
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
-                    .mockTest(exam.isMockTest())
                     .author(exam.getAuthor())
                     .title(exam.getTitle())
                     .questions(QuestionDTO.from(exam.getQuestions()))

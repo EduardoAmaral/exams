@@ -249,30 +249,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    @DisplayName("should return empty when getting a question that is not shared and was created by other user")
-    void findById_whenIdExistsButIsNotSharableAndQuestionAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
-        Question question = getMultipleChoice();
-
-        question = repository.save(question);
-
-        Optional<Question> result = repository.find(question.getId(), "ABC");
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("should return a question that is shared when it exists")
-    void findById_whenTheAuthorIsNotTheCurrentUserButQuestionIsShared_shouldReturnAQuestion() {
-        Question question = getTrueOrFalseQuestion();
-
-        question = repository.save(question);
-
-        Optional<Question> result = repository.find(question.getId(), "ABC");
-
-        assertThat(result).isNotEmpty();
-    }
-
-    @Test
     @DisplayName("should update a question")
     void update_shouldUpdateTheFieldsOfAQuestion() {
         Question question = getMultipleChoice();
@@ -284,7 +260,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .type(question.getType())
                 .correctAnswer("World")
                 .statement("Hello")
-                .shared(false)
                 .solution("Hello World!")
                 .keywords("Greetings")
                 .subject(english)
@@ -300,7 +275,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         Question::getSolution,
                         Question::getCorrectAnswer,
                         Question::getKeywords,
-                        Question::isShared,
                         q -> q.getSubject().getDescription(),
                         Question::getAuthor)
                 .containsExactlyInAnyOrder(
@@ -309,7 +283,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         "Hello World!",
                         "World",
                         "Greetings",
-                        false,
                         "English",
                         "1");
     }
@@ -331,21 +304,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
         questions = repository.findByUser(author);
 
         assertThat(questions).isEmpty();
-    }
-
-    @Test
-    @DisplayName("should retrieve only author's questions or shared ones when searching by criteria")
-    void findByCriteriaWithCurrentUser_shouldReturnOnlyQuestionsCreatedByTheCurrentUserOrShared() {
-        repository.saveAll(getQuestions());
-
-        String currentUser = "20001";
-        Question question = TrueOrFalseEntity.builder().build();
-
-        List<Question> result = repository.findByCriteria(question, currentUser);
-
-        assertThat(result)
-                .hasSize(2)
-                .allMatch(q -> q.getAuthor().equals(currentUser) || q.isShared(), "The result should only contain questions created by the user or shared questions");
     }
 
     @Test
@@ -412,7 +370,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                         .correctAnswer("True")
                         .keywords("Language; Latin Language")
                         .subject(portuguese)
-                        .shared(true)
                         .author("20001")
                         .build());
     }
@@ -422,7 +379,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .statement("Can I test TF?")
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
-                .shared(true)
                 .subject(english)
                 .keywords("Language")
                 .author(currentUser)
@@ -434,7 +390,6 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 .statement("Can I test MC?")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
-                .shared(false)
                 .subject(english)
                 .keywords("Test")
                 .alternatives(getAlternatives())

@@ -43,9 +43,6 @@ public class ExamEntity extends Exam {
     @Column
     private ZonedDateTime endDateTime;
 
-    @Column(nullable = false)
-    private boolean mockTest;
-
     @Column
     @NotBlank(message = "{exam.author.required}")
     private String author;
@@ -64,7 +61,6 @@ public class ExamEntity extends Exam {
             builder.id(exam.getId())
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
-                    .mockTest(exam.isMockTest())
                     .title(exam.getTitle())
                     .author(exam.getAuthor())
                     .questions(

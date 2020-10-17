@@ -91,33 +91,12 @@ class ExamRepositoryTest extends JpaIntegrationTest {
         repository.save(getExam()
                 .startDateTime(today.minusMinutes(30))
                 .endDateTime(today.plusHours(2))
-                .mockTest(false)
                 .build());
 
         ZonedDateTime nextDay = today.plusDays(1);
         repository.save(getExam()
                 .startDateTime(nextDay)
                 .endDateTime(nextDay.plusHours(2))
-                .mockTest(false)
-                .build());
-
-        List<Exam> exams = repository.findAvailable();
-
-        assertThat(exams).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("findAvailable should retrieve all mock tests where current time is between the start and end date/time")
-    void findAvailable_shouldRetrieveAllMockTests() {
-        repository.save(getExam()
-                .mockTest(true)
-                .build());
-
-        ZonedDateTime nextDay = ZonedDateTime.now().plusDays(1);
-        repository.save(getExam()
-                .startDateTime(nextDay)
-                .endDateTime(nextDay.plusHours(2))
-                .mockTest(false)
                 .build());
 
         List<Exam> exams = repository.findAvailable();
@@ -175,8 +154,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                 .author(currentUser)
                 .questions(questions)
                 .startDateTime(ZonedDateTime.now())
-                .endDateTime(ZonedDateTime.now().plusHours(2))
-                .mockTest(false);
+                .endDateTime(ZonedDateTime.now().plusHours(2));
     }
 
     private void persistQuestions() {
@@ -187,7 +165,6 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                         .statement("True or False question")
                         .type(QuestionType.TRUE_OR_FALSE)
                         .correctAnswer("True")
-                        .shared(true)
                         .subject(subject)
                         .keywords("Idioms")
                         .author(currentUser)
@@ -196,7 +173,6 @@ class ExamRepositoryTest extends JpaIntegrationTest {
                         .statement("Multiple choice question")
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .correctAnswer("Three")
-                        .shared(true)
                         .subject(subject)
                         .keywords("Idioms")
                         .alternatives(getAlternatives())

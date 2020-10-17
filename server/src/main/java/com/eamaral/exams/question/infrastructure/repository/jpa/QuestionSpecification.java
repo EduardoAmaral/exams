@@ -34,14 +34,8 @@ public class QuestionSpecification {
                 predicates.add(cb.equal(question.get("subject"), query.getSubject()));
             }
 
-            Predicate sharedPredicate = cb.isTrue(question.get("shared"));
-
-            if (shouldFilterByAuthor(query) && !isAuthorTheCurrentUser(query, currentUser)) {
-                Predicate authorPredicate = cb.equal(question.get("author"), query.getAuthor());
-                predicates.add(cb.and(authorPredicate, sharedPredicate));
-            } else {
-                Predicate userPredicate = cb.equal(question.get("author"), currentUser);
-                predicates.add(cb.or(userPredicate, sharedPredicate));
+            if (shouldFilterByAuthor(query)) {
+                predicates.add(cb.equal(question.get("author"), query.getAuthor()));
             }
 
             cb.asc(question.get("statement"));

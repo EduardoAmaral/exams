@@ -58,7 +58,6 @@ class ExamServiceTest {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(null)
                 .endDateTime(null)
-                .mockTest(false)
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
@@ -73,7 +72,6 @@ class ExamServiceTest {
     void create_whenNotMockTestAndEndDateTimeIsNull_shouldThrowDatesAreRequiredWhenNotAMockTest() {
         Exam exam = getExamBuilderWithDefault()
                 .endDateTime(null)
-                .mockTest(false)
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
@@ -89,7 +87,6 @@ class ExamServiceTest {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(endDateTime)
                 .endDateTime(startDateTime)
-                .mockTest(false)
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
@@ -105,7 +102,6 @@ class ExamServiceTest {
         Exam exam = getExamBuilderWithDefault()
                 .startDateTime(startDateTime)
                 .endDateTime(startDateTime.plusMinutes(1))
-                .mockTest(false)
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class)
@@ -113,20 +109,6 @@ class ExamServiceTest {
                 .withMessage("The exam duration must be at least 30 minutes");
 
         verify(examRepositoryPort, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("should validate that mock tests don't require dates (interval)")
-    void create_whenMockTest_shouldNotValidateDates() {
-        Exam exam = getExamBuilderWithDefault()
-                .startDateTime(null)
-                .endDateTime(null)
-                .mockTest(true)
-                .build();
-
-        service.create(exam);
-
-        verify(examRepositoryPort).save(exam);
     }
 
     @Test
@@ -223,8 +205,7 @@ class ExamServiceTest {
                 .author(currentUser)
                 .questions(getQuestions())
                 .startDateTime(startDateTime)
-                .endDateTime(endDateTime)
-                .mockTest(false);
+                .endDateTime(endDateTime);
     }
 
     private List<QuestionDTO> getQuestions() {
