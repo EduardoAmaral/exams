@@ -4,11 +4,13 @@ import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
 import com.eamaral.exams.question.QuestionType;
+import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.repository.QuestionRepository;
 import com.eamaral.exams.question.infrastructure.repository.SubjectRepository;
-import com.eamaral.exams.question.infrastructure.repository.converter.QuestionConverter;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.*;
+import com.eamaral.exams.question.infrastructure.repository.jpa.entity.AlternativeEntity;
+import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    private List<QuestionEntity> questions;
+    private List<Question> questions;
 
     @BeforeEach
     void setUp() {
@@ -152,40 +154,39 @@ class ExamRepositoryTest extends JpaIntegrationTest {
         return ExamEntity.builder()
                 .title("Exam 1")
                 .authorId(currentUser)
-                .questions(questions)
+                .questions(questions.stream().map(QuestionEntity::from).collect(toList()))
                 .startDateTime(ZonedDateTime.now())
                 .endDateTime(ZonedDateTime.now().plusHours(2));
     }
 
     private void persistQuestions() {
-        SubjectEntity subject = SubjectEntity.from(subjectRepository.save(SubjectEntity.builder()
+        Subject subject = subjectRepository.save(Subject.builder()
                 .description("English")
-                .build()));
-        List<Question> questions = List.of(TrueOrFalseEntity.builder()
+                .build());
+        List<Question> questions = List.of(Question.builder()
                         .statement("True or False question")
                         .type(QuestionType.TRUE_OR_FALSE)
                         .correctAnswer("True")
                         .subject(subject)
                         .keywords("Idioms")
-                        .author(currentUser)
+                        .authorId(currentUser)
                         .build(),
-                MultipleChoiceEntity.builder()
+                Question.builder()
                         .statement("Multiple choice question")
                         .type(QuestionType.MULTIPLE_CHOICES)
                         .correctAnswer("Three")
                         .subject(subject)
                         .keywords("Idioms")
                         .alternatives(getAlternatives())
-                        .author(currentUser)
+                        .authorId(currentUser)
                         .build());
 
-        this.questions = questionRepository.saveAll(questions)
-                .stream()
-                .map(QuestionConverter::from)
-                .collect(toList());
+        questions.forEach(question -> questionRepository.save(question));
+        this.questions = questionRepository.findByUser(currentUser);
+
     }
 
-    private List<AlternativeEntity> getAlternatives() {
+    private List<Alternative> getAlternatives() {
         return List.of(
                 AlternativeEntity.builder()
                         .description("One")

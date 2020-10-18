@@ -6,10 +6,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@SpringBootTest(classes = {JpaIntegrationTestConfiguration.class}, properties = "spring.jpa.open-in-view=false")
 @Transactional
+@ActiveProfiles("test")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {JpaIntegrationTestConfiguration.class})
 public abstract class JpaIntegrationTest {
 
 }

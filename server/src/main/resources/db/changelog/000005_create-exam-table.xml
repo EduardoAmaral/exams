@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="eamaral" id="1">
+        <createTable tableName="TB_EXAM">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STARTS_AT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENDS_AT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DELETED" type="BOOLEAN" value="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUTHOR_ID" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

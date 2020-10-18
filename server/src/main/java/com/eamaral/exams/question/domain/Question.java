@@ -2,38 +2,44 @@ package com.eamaral.exams.question.domain;
 
 import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.question.QuestionType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public interface Question {
+@Getter
+@Builder(toBuilder = true)
+@AllArgsConstructor
+public class Question {
 
-    Long getId();
+    private final Long id;
 
-    String getStatement();
+    private final String statement;
 
-    QuestionType getType();
+    private final QuestionType type;
 
-    String getSolution();
+    private final String solution;
 
-    List<Alternative> getAlternatives();
+    private final List<Alternative> alternatives;
 
-    String getCorrectAnswer();
+    private final String correctAnswer;
 
-    String getKeywords();
+    private final String keywords;
 
-    Subject getSubject();
+    private final Subject subject;
 
-    String getAuthorId();
+    private final String authorId;
 
-    default void validateTypeChange(Question oldQuestion) {
+    public void validateTypeChange(Question oldQuestion) {
         if (!oldQuestion.getType().equals(getType())) {
             throw new InvalidDataException("Question's type can't be updated");
         }
     }
 
-    default void validateAlternatives() {
+    public void validateAlternatives() {
         if (!getAlternatives().stream()
                 .map(Alternative::getDescription)
                 .collect(toList())

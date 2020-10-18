@@ -4,10 +4,9 @@ import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.AlternativeEntity;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.MultipleChoiceEntity;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.TrueOrFalseEntity;
+import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +16,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +31,8 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
 
     private final String currentUser = "1";
 
-    private SubjectEntity english;
-    private SubjectEntity portuguese;
+    private Subject english;
+    private Subject portuguese;
 
     @Autowired
     private SubjectRepository subjectRepository;
@@ -39,12 +40,15 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private QuestionRepository repository;
 
+    @Autowired
+    private EntityManager entityManager;
+
     private static Stream<SearchByCriteriaScenario> findByCriteriaScenarios() {
         return Stream.of(
                 SearchByCriteriaScenario.builder()
                         .assertField("statement")
                         .criteria(
-                                TrueOrFalseEntity.builder()
+                                Question.builder()
                                         .statement("Can")
                                         .build()
                         )
@@ -53,7 +57,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 SearchByCriteriaScenario.builder()
                         .assertField("type")
                         .criteria(
-                                TrueOrFalseEntity.builder()
+                                Question.builder()
                                         .type(QuestionType.MULTIPLE_CHOICES)
                                         .build()
                         )
@@ -62,7 +66,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 SearchByCriteriaScenario.builder()
                         .assertField("keywords")
                         .criteria(
-                                TrueOrFalseEntity.builder()
+                                Question.builder()
                                         .keywords("language")
                                         .build()
                         )
@@ -71,8 +75,8 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
                 SearchByCriteriaScenario.builder()
                         .assertField("authorId")
                         .criteria(
-                                TrueOrFalseEntity.builder()
-                                        .author("20001")
+                                Question.builder()
+                                        .authorId("20001")
                                         .build()
                         )
                         .matcher(author -> author.equals("20001"))
@@ -96,20 +100,26 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     @Test
-    @DisplayName("Save multiple choices question should return success")
+    @DisplayName("Save multiple choices question should save question and its alternatives")
     void save_multipleChoices() {
         Question question = getMultipleChoice();
 
         Question result = repository.save(question);
 
-        assertThat(result.getId()).isNotZero();
-        assertThat(result.getAlternatives()).isNotEmpty();
+        assertThat(entityManager.find(QuestionEntity.class, result.getId())).isNotNull();
+
+        final Query query = entityManager.createQuery("SELECT a FROM AlternativeEntity a");
+        assertThat(query.getResultList()).isNotEmpty();
+
+        final List<Question> questions = repository.findByUser(currentUser);
+
+        assertThat(questions.get(0).getAlternatives()).isNotEmpty();
     }
 
     @Test
     @DisplayName("should validate required fields when saving a question")
     void save_whenFieldsAreInvalid_shouldThrowsException() {
-        Question question = MultipleChoiceEntity.builder()
+        Question question = Question.builder()
                 .subject(english)
                 .alternatives(Collections.emptyList())
                 .correctAnswer("")
@@ -119,8 +129,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
 
         List<String> validationMessages = List.of("Author id is required",
                 "Correct answer is required",
-                "Statement is required",
-                "Alternatives are required");
+                "Statement is required");
 
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(question))
@@ -132,10 +141,10 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should validate maximum value of fields")
     void save_whenStatementIsGreaterThanMaximum() {
-        Question question = MultipleChoiceEntity.builder()
+        Question question = Question.builder()
                 .subject(english)
                 .correctAnswer("A")
-                .author("1")
+                .authorId("1")
                 .keywords(new String(new char[256]).replace('\0', 'A'))
                 .statement(new String(new char[2001]).replace('\0', 'A'))
                 .type(QuestionType.TRUE_OR_FALSE)
@@ -157,8 +166,8 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should validate required subject when saving a question")
     void save_whenSubjectIsBlank_shouldThrowsException() {
-        Question question = MultipleChoiceEntity.builder()
-                .subject(SubjectEntity.builder().build())
+        Question question = Question.builder()
+                .subject(Subject.builder().build())
                 .alternatives(Collections.emptyList())
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .build();
@@ -222,9 +231,7 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should find a MULTIPLE CHOICES question when search an existent question by id")
     void findById_whenIdExistsAndQuestionIsMultipleChoice_shouldReturnAMultipleChoiceQuestion() {
-        Question question = getMultipleChoice();
-
-        question = repository.save(question);
+        Question question = repository.save(getMultipleChoice());
 
         Optional<Question> result = repository.find(question.getId(), currentUser);
 
@@ -254,16 +261,16 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
         Question question = getMultipleChoice();
         question = repository.save(question);
 
-        MultipleChoiceEntity entity = MultipleChoiceEntity.builder()
+        Question entity = Question.builder()
                 .id(question.getId())
-                .alternatives(AlternativeEntity.from(question.getAlternatives()))
+                .alternatives(question.getAlternatives())
                 .type(question.getType())
                 .correctAnswer("World")
                 .statement("Hello")
                 .solution("Hello World!")
                 .keywords("Greetings")
                 .subject(english)
-                .author("1")
+                .authorId("1")
                 .build();
 
         question = repository.save(entity);
@@ -290,26 +297,19 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should remove a question")
     void delete_shouldRemoveAQuestion() {
-        String author = "1";
-
-        Question question = getMultipleChoice();
-        question = repository.save(question);
-
-        List<Question> questions = repository.findByUser(author);
-
+        entityManager.persist(QuestionEntity.from(getTrueOrFalseQuestion()));
+        final List<Question> questions = repository.findByUser(currentUser);
         assertThat(questions).hasSize(1);
 
-        repository.delete(question);
+        repository.delete(questions.get(0));
 
-        questions = repository.findByUser(author);
-
-        assertThat(questions).isEmpty();
+        assertThat(repository.findByUser(currentUser)).isEmpty();
     }
 
     @Test
     @DisplayName("should return empty if any question matches the criteria used")
     void findByCriteria_whenDoesNotHaveAnyMatch_shouldReturnEmpty() {
-        List<Question> result = repository.findByCriteria(TrueOrFalseEntity.builder().build(), "");
+        List<Question> result = repository.findByCriteria(Question.builder().build(), "");
 
         assertThat(result).isEmpty();
     }
@@ -319,8 +319,8 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     void findByCriteriaWithSubject_shouldReturnOnlyQuestionThatMatchTheSubjectFiltered() {
         repository.saveAll(getQuestions());
 
-        Question question = TrueOrFalseEntity.builder()
-                .subject(SubjectEntity.builder()
+        Question question = Question.builder()
+                .subject(Subject.builder()
                         .id(english.getId())
                         .build())
                 .build();
@@ -347,57 +347,55 @@ class QuestionRepositoryTest extends JpaIntegrationTest {
     }
 
     private void insertSubjects() {
-        english = SubjectEntity.from(
-                subjectRepository.save(
-                        SubjectEntity.builder()
-                                .description("English")
-                                .build()));
+        english = subjectRepository.save(
+                Subject.builder()
+                        .description("English")
+                        .build());
 
-        portuguese = SubjectEntity.from(
-                subjectRepository.save(
-                        SubjectEntity.builder()
-                                .description("Portuguese")
-                                .build()));
+        portuguese = subjectRepository.save(
+                Subject.builder()
+                        .description("Portuguese")
+                        .build());
     }
 
     private List<Question> getQuestions() {
         return List.of(
                 getTrueOrFalseQuestion(),
                 getMultipleChoice(),
-                TrueOrFalseEntity.builder()
+                Question.builder()
                         .statement("Can I test TF?")
                         .type(QuestionType.TRUE_OR_FALSE)
                         .correctAnswer("True")
                         .keywords("Language; Latin Language")
                         .subject(portuguese)
-                        .author("20001")
+                        .authorId("20001")
                         .build());
     }
 
-    private TrueOrFalseEntity getTrueOrFalseQuestion() {
-        return TrueOrFalseEntity.builder()
+    private Question getTrueOrFalseQuestion() {
+        return Question.builder()
                 .statement("Can I test TF?")
                 .type(QuestionType.TRUE_OR_FALSE)
                 .correctAnswer("True")
                 .subject(english)
                 .keywords("Language")
-                .author(currentUser)
+                .authorId(currentUser)
                 .build();
     }
 
-    private MultipleChoiceEntity getMultipleChoice() {
-        return MultipleChoiceEntity.builder()
+    private Question getMultipleChoice() {
+        return Question.builder()
                 .statement("Can I test MC?")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .correctAnswer("B")
                 .subject(english)
                 .keywords("Test")
                 .alternatives(getAlternatives())
-                .author(currentUser)
+                .authorId(currentUser)
                 .build();
     }
 
-    private List<AlternativeEntity> getAlternatives() {
+    private List<Alternative> getAlternatives() {
         return List.of(
                 AlternativeEntity.builder()
                         .description("A")

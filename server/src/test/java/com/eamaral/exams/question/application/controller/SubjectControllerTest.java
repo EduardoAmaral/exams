@@ -2,6 +2,7 @@ package com.eamaral.exams.question.application.controller;
 
 import com.eamaral.exams.configuration.controller.ControllerIntegrationTest;
 import com.eamaral.exams.question.application.dto.SubjectDTO;
+import com.eamaral.exams.question.domain.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,11 +26,11 @@ class SubjectControllerTest extends ControllerIntegrationTest {
     @DisplayName("should retrieve all subjects")
     void list_shouldReturnAllSubjects() throws Exception {
         when(subjectService.findAll()).thenReturn(new ArrayList<>(List.of(
-                SubjectDTO.builder()
+                Subject.builder()
                         .id(1L)
                         .description("English")
                         .build(),
-                SubjectDTO.builder()
+                Subject.builder()
                         .id(2L)
                         .description("French")
                         .build()
@@ -49,7 +50,7 @@ class SubjectControllerTest extends ControllerIntegrationTest {
                 .description("English")
                 .build();
 
-        when(subjectService.save(dto)).thenReturn(SubjectDTO.builder()
+        when(subjectService.save(dto.toDomain())).thenReturn(Subject.builder()
                 .id(1L)
                 .description("English")
                 .build());

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SubjectDTO implements Serializable, Subject {
+public class SubjectDTO implements Serializable {
 
     private Long id;
 
@@ -30,5 +30,12 @@ public class SubjectDTO implements Serializable, Subject {
         }
 
         return builder.build();
+    }
+
+    public Subject toDomain() {
+        return Subject.builder()
+                .id(getId())
+                .description(getDescription())
+                .build();
     }
 }

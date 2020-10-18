@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="eamaral" id="1">
+        <createTable tableName="TB_QUESTION">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="STATEMENT" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SOLUTION" type="VARCHAR(3000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DELETED" type="BOOLEAN" value="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CORRECT_ANSWER" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="KEYWORDS" type="VARCHAR(300)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="AUTHOR_ID" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SUBJECT_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -11,10 +11,10 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Getter
@@ -66,6 +66,8 @@ public class ExamDTO extends Exam {
     }
 
     public List<Question> getQuestions() {
-        return new ArrayList<>(emptyIfNull(questions));
+        return emptyIfNull(questions).stream()
+                .map(QuestionDTO::toDomain)
+                .collect(toList());
     }
 }

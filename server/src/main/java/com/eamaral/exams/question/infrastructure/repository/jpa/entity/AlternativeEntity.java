@@ -1,16 +1,14 @@
 package com.eamaral.exams.question.infrastructure.repository.jpa.entity;
 
 import com.eamaral.exams.question.domain.Alternative;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.eamaral.exams.question.domain.Question;
+import lombok.*;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @Entity
@@ -22,7 +20,6 @@ import static java.util.stream.Collectors.toList;
 public class AlternativeEntity implements Alternative {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -30,16 +27,24 @@ public class AlternativeEntity implements Alternative {
     @NotBlank(message = "Alternative's description is required")
     private String description;
 
-    public static List<AlternativeEntity> from(List<Alternative> alternatives) {
-        if (alternatives == null) return emptyList();
+    @Column(name = "QUESTION_ID")
+    private Long questionId;
 
-        return alternatives.stream().map(AlternativeEntity::from).collect(toList());
+    public static List<AlternativeEntity> withId(List<Alternative> alternatives, Long id) {
+        return CollectionUtils.emptyIfNull(alternatives).stream()
+                .map(alternative -> from(alternative, id))
+                .collect(toList());
     }
 
-    private static AlternativeEntity from(Alternative alternative) {
+    public static AlternativeEntity from(Alternative alternative, Long questionId) {
         return builder()
                 .id(alternative.getId())
                 .description(alternative.getDescription())
+                .questionId(questionId)
                 .build();
+    }
+
+    public static List<AlternativeEntity> from(Question question) {
+        return withId(question.getAlternatives(), question.getId());
     }
 }

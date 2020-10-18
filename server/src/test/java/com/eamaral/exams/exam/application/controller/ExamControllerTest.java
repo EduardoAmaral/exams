@@ -5,6 +5,7 @@ import com.eamaral.exams.exam.application.dto.ExamDTO;
 import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.QuestionDTO;
+import com.eamaral.exams.question.application.dto.SubjectDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -172,14 +173,20 @@ class ExamControllerTest extends ControllerIntegrationTest {
     }
 
     private List<QuestionDTO> getQuestions() {
+        final SubjectDTO english = SubjectDTO.builder()
+                .description("English")
+                .build();
+
         return List.of(
                 QuestionDTO.builder()
                         .id(1L)
                         .type(QuestionType.TRUE_OR_FALSE)
+                        .subject(english)
                         .build(),
                 QuestionDTO.builder()
                         .id(2L)
                         .type(QuestionType.MULTIPLE_CHOICES)
+                        .subject(english)
                         .build()
         );
     }

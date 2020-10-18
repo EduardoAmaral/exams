@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ImportAutoConfiguration(classes = {
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 )
 @EntityScan(basePackages = {"com.eamaral.exams.**.jpa"})
 @EnableJpaRepositories(basePackages = {"com.eamaral.exams.**.jpa"})
-@EnableTransactionManagement
 public class JpaIntegrationTestConfiguration {
 
 }

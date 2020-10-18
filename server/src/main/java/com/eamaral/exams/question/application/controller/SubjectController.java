@@ -36,6 +36,6 @@ public class SubjectController {
     @PostMapping
     public ResponseEntity<SubjectDTO> save(@RequestBody @Validated SubjectDTO subject) {
         log.info("Saving subject {}", subject.getDescription());
-        return ok(SubjectDTO.from(service.save(subject)));
+        return ok(SubjectDTO.from(service.save(subject.toDomain())));
     }
 }

@@ -1,7 +1,6 @@
 package com.eamaral.exams.question.application.dto;
 
 import com.eamaral.exams.question.QuestionType;
-import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -23,7 +22,7 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class QuestionDTO implements Serializable, Question {
+public class QuestionDTO implements Serializable {
 
     private Long id;
 
@@ -36,8 +35,6 @@ public class QuestionDTO implements Serializable, Question {
 
     @Size(max = 3000, message = "{question.solution.size}")
     private String solution;
-
-    private boolean shared;
 
     @Builder.Default
     @NotEmpty(message = "{question.alternatives.required}")
@@ -78,10 +75,18 @@ public class QuestionDTO implements Serializable, Question {
                 .collect(toList());
     }
 
-    @Override
-    public List<Alternative> getAlternatives() {
-        return new ArrayList<>(alternatives);
+    public Question toDomain() {
+        return Question.builder()
+                .id(id)
+                .statement(statement)
+                .subject(subject.toDomain())
+                .correctAnswer(correctAnswer)
+                .authorId(authorId)
+                .keywords(keywords)
+                .type(type)
+                .solution(solution)
+                .alternatives(new ArrayList<>(getAlternatives()))
+                .build();
     }
-
 }
 

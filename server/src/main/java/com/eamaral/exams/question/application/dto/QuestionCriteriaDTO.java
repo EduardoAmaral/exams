@@ -2,6 +2,7 @@ package com.eamaral.exams.question.application.dto;
 
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.domain.Subject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,12 +27,12 @@ public class QuestionCriteriaDTO {
     private String authorId;
 
     public Question toQuestion() {
-        return QuestionDTO.builder()
+        return Question.builder()
                 .statement(statement)
                 .type(type)
                 .keywords(keywords)
                 .authorId(authorId)
-                .subject(SubjectDTO.builder()
+                .subject(Subject.builder()
                         .id(subject)
                         .build())
                 .build();

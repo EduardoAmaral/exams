@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubjectEntity implements Subject {
+public class SubjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,13 @@ public class SubjectEntity implements Subject {
         return builder()
                 .id(subject.getId())
                 .description(subject.getDescription())
+                .build();
+    }
+
+    public Subject toDomain() {
+        return Subject.builder()
+                .id(getId())
+                .description(getDescription())
                 .build();
     }
 }

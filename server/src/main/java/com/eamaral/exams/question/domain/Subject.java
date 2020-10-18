@@ -1,8 +1,17 @@
 package com.eamaral.exams.question.domain;
 
-public interface Subject {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-    Long getId();
+@Getter
+@Builder
+@AllArgsConstructor
+@EqualsAndHashCode(of = {"description"})
+public class Subject {
 
-    String getDescription();
+    private final Long id;
+
+    private final String description;
 }

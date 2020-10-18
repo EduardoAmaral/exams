@@ -2,7 +2,6 @@ package com.eamaral.exams.exam.infrastructure.repository.jpa.entity;
 
 import com.eamaral.exams.exam.domain.Exam;
 import com.eamaral.exams.question.domain.Question;
-import com.eamaral.exams.question.infrastructure.repository.converter.QuestionConverter;
 import com.eamaral.exams.question.infrastructure.repository.jpa.entity.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -37,10 +35,10 @@ public class ExamEntity extends Exam {
     @NotBlank(message = "{exam.title.required}")
     private String title;
 
-    @Column
+    @Column(name = "STARTS_AT")
     private ZonedDateTime startDateTime;
 
-    @Column
+    @Column(name = "ENDS_AT")
     private ZonedDateTime endDateTime;
 
     @Column(name = "AUTHOR_ID")
@@ -48,6 +46,9 @@ public class ExamEntity extends Exam {
     private String authorId;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_EXAM_QUESTION",
+            joinColumns = {@JoinColumn(name = "EXAM_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "QUESTION_ID")})
     @NotEmpty(message = "{exam.questions.required}")
     private List<QuestionEntity> questions;
 
@@ -66,7 +67,7 @@ public class ExamEntity extends Exam {
                     .questions(
                             emptyIfNull(exam.getQuestions())
                                     .stream()
-                                    .map(QuestionConverter::from)
+                                    .map(QuestionEntity::from)
                                     .collect(toList())
                     );
         }
@@ -75,6 +76,8 @@ public class ExamEntity extends Exam {
     }
 
     public List<Question> getQuestions() {
-        return new ArrayList<>(emptyIfNull(questions));
+        return emptyIfNull(questions).stream()
+                .map(QuestionEntity::toDomain)
+                .collect(toList());
     }
 }

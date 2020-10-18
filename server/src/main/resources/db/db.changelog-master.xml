@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="changelog/000001_create-subject-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000002_create-alternative-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000003_create-question-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000004_create-user-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000005_create-exam-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000006_create-exam-question-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000007_create-comment-table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

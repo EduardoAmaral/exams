@@ -4,9 +4,9 @@ import com.eamaral.exams.configuration.exception.InvalidDataException;
 import com.eamaral.exams.configuration.exception.NotFoundException;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.application.dto.AlternativeDTO;
-import com.eamaral.exams.question.application.dto.QuestionDTO;
-import com.eamaral.exams.question.application.dto.SubjectDTO;
+import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
+import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.domain.port.QuestionRepositoryPort;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -42,11 +42,11 @@ class QuestionServiceTest {
         String statement1 = "AAA";
         String statement2 = "EEE";
         List<Question> questions = List.of(
-                QuestionDTO.builder()
+                Question.builder()
                         .statement(statement1)
                         .authorId(currentUser)
                         .build(),
-                QuestionDTO.builder()
+                Question.builder()
                         .statement(statement2)
                         .authorId(currentUser)
                         .build());
@@ -105,7 +105,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should save a question")
     void save() {
-        Question question = QuestionDTO.builder()
+        Question question = Question.builder()
                 .statement("AAA")
                 .correctAnswer("True")
                 .alternatives(getAlternatives())
@@ -122,17 +122,17 @@ class QuestionServiceTest {
     @DisplayName("should save a list of questions")
     void saveAll() {
         List<Question> request = List.of(
-                QuestionDTO.builder()
+                Question.builder()
                         .statement("AAA")
                         .build(),
-                QuestionDTO.builder()
+                Question.builder()
                         .statement("EEE")
                         .build());
 
         when(repositoryPort.saveAll(request)).then(invocation -> {
             List<Question> args = invocation.getArgument(0);
             return args.stream().map(q ->
-                    QuestionDTO.builder()
+                    Question.builder()
                             .id(request.indexOf(q) + 1L)
                             .statement(q.getStatement())
                             .build())
@@ -177,7 +177,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the question's type didn't change when updating a question")
     void update_whenTypeChanges_shouldReturnAInvalidException() {
-        QuestionDTO.QuestionDTOBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
+        Question.QuestionBuilder builder = getQuestionBuilder("Solution", "Statement", "False");
         Question question = builder.type(QuestionType.TRUE_OR_FALSE).build();
 
         when(repositoryPort.find(question.getId(), currentUser))
@@ -192,7 +192,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the question exist when updating it")
     void update_whenQuestionDoesNotExist_shouldThrowNotFoundException() {
-        Question question = QuestionDTO.builder().id(questionId).build();
+        Question question = Question.builder().id(questionId).build();
 
         when(repositoryPort.find(questionId, currentUser))
                 .thenReturn(Optional.empty());
@@ -205,14 +205,13 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the current user is the author when updating a question")
     void update_whenUserIsDifferentFromTheCreator_shouldThrowForbiddenException() {
-        QuestionDTO.QuestionDTOBuilder builder = QuestionDTO.builder()
+        Question question = Question.builder()
                 .id(questionId)
                 .statement("A")
                 .correctAnswer("True")
                 .alternatives(getAlternatives())
                 .type(QuestionType.TRUE_OR_FALSE)
-                .authorId("123");
-        Question question = builder
+                .authorId("123")
                 .build();
 
         when(repositoryPort.find(questionId, currentUser))
@@ -226,7 +225,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the correct answer is part of the alternatives when updating a question")
     void update_whenCorrectAnswerDoesNotMatchAnyOfTheAlternatives_shouldThrowInvalidDataException() {
-        Question question = QuestionDTO.builder()
+        Question question = Question.builder()
                 .id(questionId)
                 .statement("A")
                 .correctAnswer("Wrong")
@@ -271,7 +270,7 @@ class QuestionServiceTest {
     void search_shouldCallSearchByCriteria() {
         when(repositoryPort.findByCriteria(any(), eq(currentUser))).thenReturn(emptyList());
 
-        service.search(QuestionDTO.builder().build(), currentUser);
+        service.search(Question.builder().build(), currentUser);
 
         verify(repositoryPort).findByCriteria(any(), eq(currentUser));
     }
@@ -279,9 +278,10 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the correct answer is part of the alternatives in TRUE OR FALSE questions")
     void save_whenCorrectAnswerDoesNotMatchAnyOfTheTrueOrFalseAlternatives() {
-        Question question = QuestionDTO.builder()
+        Question question = Question.builder()
                 .correctAnswer("Wrong")
                 .type(QuestionType.TRUE_OR_FALSE)
+                .alternatives(emptyList())
                 .build();
 
         assertThatExceptionOfType(InvalidDataException.class).isThrownBy(() -> service.save(question))
@@ -291,7 +291,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("should validate that the correct answer is part of the alternatives in MULTIPLE CHOICES questions")
     void save_whenCorrectAnswerDoesNotMatchAnyOfTheMultipleChoicesAlternatives() {
-        Question question = QuestionDTO.builder()
+        Question question = Question.builder()
                 .correctAnswer("Wrong")
                 .type(QuestionType.MULTIPLE_CHOICES)
                 .alternatives(getAlternatives())
@@ -301,18 +301,17 @@ class QuestionServiceTest {
                 .withMessage("The correct answer to the question must be one of your alternatives");
     }
 
-    private QuestionDTO.QuestionDTOBuilder getQuestionBuilder(String solution,
-                                                              String statement,
-                                                              String correctAnswer) {
-        return QuestionDTO.builder()
+    private Question.QuestionBuilder getQuestionBuilder(String solution,
+                                                        String statement,
+                                                        String correctAnswer) {
+        return Question.builder()
                 .id(questionId)
                 .solution(solution)
                 .statement(statement)
                 .type(QuestionType.TRUE_OR_FALSE)
-                .shared(false)
                 .correctAnswer(correctAnswer)
                 .authorId(currentUser)
-                .subject(SubjectDTO.builder()
+                .subject(Subject.builder()
                         .description("English")
                         .build())
                 .alternatives(
@@ -320,7 +319,7 @@ class QuestionServiceTest {
     }
 
 
-    private List<AlternativeDTO> getAlternatives() {
+    private List<Alternative> getAlternatives() {
         return List.of(AlternativeDTO.builder()
                         .description("True")
                         .build(),

@@ -1,11 +1,11 @@
 package com.eamaral.exams.question.infrastructure.repository.jpa.entity;
 
 import com.eamaral.exams.question.QuestionType;
+import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -13,15 +13,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Entity
 @Getter
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "TB_QUESTION")
 @Where(clause = "deleted = false")
-public abstract class QuestionEntity implements Question {
+public class QuestionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +46,6 @@ public abstract class QuestionEntity implements Question {
     private String solution;
 
     @Column(nullable = false)
-    @Setter
     private boolean deleted;
 
     @Column(name = "CORRECT_ANSWER")
@@ -53,11 +56,57 @@ public abstract class QuestionEntity implements Question {
     @Size(max = 255, message = "{question.keywords.size}")
     private String keywords;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
     private SubjectEntity subject;
 
     @Column(name = "AUTHOR_ID")
     @NotEmpty(message = "{question.author.required}")
     private String authorId;
 
+    @OneToMany
+    @JoinColumn(name = "QUESTION_ID", insertable = false, updatable = false)
+    private List<AlternativeEntity> alternatives;
+
+    public static QuestionEntity from(Question question) {
+        return QuestionEntity.builder()
+                .id(question.getId())
+                .correctAnswer(question.getCorrectAnswer())
+                .solution(question.getSolution())
+                .statement(question.getStatement())
+                .type(question.getType())
+                .keywords(question.getKeywords())
+                .subject(SubjectEntity.from(question.getSubject()))
+                .authorId(question.getAuthorId())
+                .alternatives(AlternativeEntity.from(question))
+                .build();
+    }
+
+    public Question toDomain() {
+        return Question.builder()
+                .id(id)
+                .statement(statement)
+                .subject(subject.toDomain())
+                .correctAnswer(correctAnswer)
+                .authorId(authorId)
+                .keywords(keywords)
+                .type(type)
+                .solution(solution)
+                .alternatives(getAlternativesBasedOnType())
+                .build();
+    }
+
+    private List<Alternative> getAlternativesBasedOnType() {
+        if (QuestionType.TRUE_OR_FALSE.equals(type)) {
+            return List.of(AlternativeEntity.builder()
+                            .description("True")
+                            .build(),
+                    AlternativeEntity.builder()
+                            .description("False")
+                            .build());
+        }
+
+        return new ArrayList<>(emptyIfNull(getAlternatives()));
+    }
 }

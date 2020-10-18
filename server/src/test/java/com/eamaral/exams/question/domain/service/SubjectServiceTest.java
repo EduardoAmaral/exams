@@ -2,7 +2,6 @@ package com.eamaral.exams.question.domain.service;
 
 import com.eamaral.exams.question.domain.Subject;
 import com.eamaral.exams.question.domain.port.SubjectRepositoryPort;
-import com.eamaral.exams.question.infrastructure.repository.jpa.entity.SubjectEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +26,7 @@ class SubjectServiceTest {
     @Test
     @DisplayName("should save a subject")
     void save_shouldSaveASubject() {
-        Subject subject = SubjectEntity.builder()
+        Subject subject = Subject.builder()
                 .description("English")
                 .build();
 
@@ -42,17 +40,17 @@ class SubjectServiceTest {
     @Test
     @DisplayName("should retrieve all subjects")
     void findAll_shouldReturnAllSubjects_orderedByDescription() {
-        List<Subject> subjects = new ArrayList<>(List.of(
-                SubjectEntity.builder()
+        List<Subject> subjects = List.of(
+                Subject.builder()
                         .description("French")
                         .build(),
-                SubjectEntity.builder()
+                Subject.builder()
                         .description("English")
                         .build(),
-                SubjectEntity.builder()
+                Subject.builder()
                         .description("Chinese")
                         .build()
-        ));
+        );
 
         when(repository.findAll()).thenReturn(subjects);
 

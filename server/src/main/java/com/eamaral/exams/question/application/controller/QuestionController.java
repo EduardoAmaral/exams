@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -61,7 +60,7 @@ public class QuestionController {
         question = question.toBuilder()
                 .authorId(currentUserId)
                 .build();
-        questionService.save(question);
+        questionService.save(question.toDomain());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/list")
@@ -71,7 +70,9 @@ public class QuestionController {
         log.info("Saving a list of {} questions to user {}", questions.size(), currentUserId);
 
         questions.replaceAll(question -> question.toBuilder().authorId(currentUserId).build());
-        questionService.saveAll(new ArrayList<>(questions));
+        questionService.saveAll(questions.stream()
+                .map(QuestionDTO::toDomain)
+                .collect(toList()));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -80,7 +81,7 @@ public class QuestionController {
         log.info("Updating question {} to user {}", question.getId(), currentUserId);
 
         return ok(QuestionDTO.from(
-                questionService.update(question, currentUserId)));
+                questionService.update(question.toDomain(), currentUserId)));
     }
 
     @DeleteMapping(path = "/{id}")

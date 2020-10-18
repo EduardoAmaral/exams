@@ -28,13 +28,13 @@ class SubjectRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should save a subject")
     void save_shouldSaveASubject() {
-        SubjectEntity entity = SubjectEntity.builder()
+        Subject subject = Subject.builder()
                 .description("English")
                 .build();
 
-        Subject subject = repository.save(entity);
+        Subject result = repository.save(subject);
 
-        assertThat(subject.getId()).isNotZero();
+        assertThat(result.getId()).isNotZero();
     }
 
     @Test
@@ -60,7 +60,7 @@ class SubjectRepositoryTest extends JpaIntegrationTest {
     @ValueSource(strings = {"", "    "})
     @DisplayName("should validate that a subject can't be saved without description")
     void save_whenDescriptionIsBlank_shouldThrowsException(String description) {
-        final SubjectEntity subject = SubjectEntity.builder()
+        final Subject subject = Subject.builder()
                 .description(description)
                 .build();
 
@@ -71,7 +71,7 @@ class SubjectRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("should validate ")
     void save_whenDescriptionAlreadyExists_shouldThrowsException() {
-        SubjectEntity english = SubjectEntity.builder()
+        Subject english = Subject.builder()
                 .description("English")
                 .build();
 

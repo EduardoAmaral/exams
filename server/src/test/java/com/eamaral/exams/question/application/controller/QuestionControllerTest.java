@@ -17,10 +17,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.http.MediaType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -79,7 +79,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @Test
     @DisplayName("should retrieve all questions")
     void get_shouldReturnAllQuestions() throws Exception {
-        List<Question> questions = new ArrayList<>(getQuestionsDTO());
+        List<Question> questions = getQuestions();
 
         when(userService.getCurrentUserId()).thenReturn(currentUser);
         when(questionService.findByUser(currentUser)).thenReturn(questions);
@@ -92,7 +92,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].statement", is("Question 1?")))
                 .andExpect(jsonPath("$[0].solution", is("S1")))
                 .andExpect(jsonPath("$[0].type", Matchers.is("True Or False")))
-                .andExpect(jsonPath("$[0].shared", is(false)))
                 .andExpect(jsonPath("$[0].correctAnswer", is("True")))
                 .andExpect(jsonPath("$[0].keywords", is("T01")))
                 .andExpect(jsonPath("$[0].authorId", is(currentUser)))
@@ -102,7 +101,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].statement", is("Question 2?")))
                 .andExpect(jsonPath("$[1].solution", is("S2")))
                 .andExpect(jsonPath("$[1].type", is("Multiple Choices")))
-                .andExpect(jsonPath("$[1].shared", is(false)))
                 .andExpect(jsonPath("$[1].correctAnswer", is("A")))
                 .andExpect(jsonPath("$[1].keywords", is("T02")))
                 .andExpect(jsonPath("$[1].authorId", is(currentUser)))
@@ -114,7 +112,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @DisplayName("should retrieve a question by id")
     void getById_whenQuestionExists_shouldReturnAQuestion() throws Exception {
         when(userService.getCurrentUserId()).thenReturn(currentUser);
-        when(questionService.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion());
+        when(questionService.find(questionId, currentUser)).thenReturn(getTrueOrFalseQuestion().toDomain());
 
         mockMvc.perform(
                 get("/api/question/1"))
@@ -123,7 +121,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.statement", is("Question 1?")))
                 .andExpect(jsonPath("$.solution", is("S1")))
                 .andExpect(jsonPath("$.type", Matchers.is("True Or False")))
-                .andExpect(jsonPath("$.shared", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("True")))
                 .andExpect(jsonPath("$.keywords", is("T01")))
                 .andExpect(jsonPath("$.authorId", is("1")))
@@ -173,7 +170,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     void createByList_whenAllFieldsAreValid_shouldReturnQuestionsWithId() throws Exception {
         List<QuestionDTO> dtos = getQuestionsDTO();
 
-        List<Question> questions = new ArrayList<>(dtos);
+        List<Question> questions = dtos.stream().map(QuestionDTO::toDomain).collect(toList());
 
         String author = "40030";
         when(userService.getCurrentUserId()).thenReturn(author);
@@ -197,10 +194,10 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     void update_whenAllFieldsAreValid_shouldReturnAQuestionUpdated() throws Exception {
         QuestionDTO dto = getTrueOrFalseQuestion();
 
-        Question question = dto.toBuilder()
+        Question question = dto.toDomain()
+                .toBuilder()
                 .solution("New Solution")
                 .statement("New Statement")
-                .shared(false)
                 .correctAnswer("False")
                 .build();
 
@@ -218,7 +215,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .andExpect(jsonPath("$.statement", is("New Statement")))
                 .andExpect(jsonPath("$.solution", is("New Solution")))
                 .andExpect(jsonPath("$.type", is("True Or False")))
-                .andExpect(jsonPath("$.shared", is(false)))
                 .andExpect(jsonPath("$.correctAnswer", is("False")));
     }
 
@@ -242,7 +238,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @DisplayName("search should use logged user")
     void search_shouldUseCurrentUserAsParameter() throws Exception {
         when(userService.getCurrentUserId()).thenReturn(currentUser);
-        when(questionService.search(any(), stringCaptor.capture())).thenReturn(new ArrayList<>(getQuestionsDTO()));
+        when(questionService.search(any(), stringCaptor.capture())).thenReturn(getQuestions());
 
         mockMvc.perform(
                 get(ENDPOINT + "/search"))
@@ -257,7 +253,7 @@ class QuestionControllerTest extends ControllerIntegrationTest {
     @DisplayName("search should retrieve questions by filter")
     void search_shouldReturnAListOfQuestionBySearchTerm(SearchQuestionScenario search) throws Exception {
 
-        when(questionService.search(questionCaptor.capture(), any())).thenReturn(new ArrayList<>(getQuestionsDTO()));
+        when(questionService.search(questionCaptor.capture(), any())).thenReturn(getQuestions());
 
         mockMvc.perform(
                 get(ENDPOINT + "/search")
@@ -269,13 +265,18 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                 .isEqualTo(search.expectValue);
     }
 
+    private List<Question> getQuestions() {
+        return getQuestionsDTO().stream()
+                .map(QuestionDTO::toDomain)
+                .collect(toList());
+    }
+
     private QuestionDTO getTrueOrFalseQuestion() {
         return QuestionDTO.builder()
                 .id(questionId)
                 .statement("Question 1?")
                 .solution("S1")
                 .type(QuestionType.TRUE_OR_FALSE)
-                .shared(true)
                 .correctAnswer("True")
                 .keywords("T01")
                 .authorId(currentUser)
@@ -302,7 +303,6 @@ class QuestionControllerTest extends ControllerIntegrationTest {
                         .statement("Question 2?")
                         .solution("S2")
                         .type(QuestionType.MULTIPLE_CHOICES)
-                        .shared(false)
                         .correctAnswer("A")
                         .keywords("T02")
                         .authorId(currentUser)
