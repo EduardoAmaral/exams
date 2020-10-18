@@ -8,10 +8,11 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"description"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Subject {
 
     private final Long id;
 
+    @EqualsAndHashCode.Include
     private final String description;
 }

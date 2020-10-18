@@ -90,6 +90,6 @@ class QuestionSolrRepositoryTest extends SolrIntegrationTest {
         repository.deleteAll();
 
         final Page<QuestionDocument> resultAfterDelete = solrTemplate.query(COLLECTION_NAME, new SimpleQuery("*"), QuestionDocument.class);
-        assertThat(resultAfterDelete).hasSize(0);
+        assertThat(resultAfterDelete).isEmpty();
     }
 }

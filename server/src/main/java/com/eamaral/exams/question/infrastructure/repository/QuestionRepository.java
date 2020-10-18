@@ -68,7 +68,7 @@ public class QuestionRepository implements QuestionRepositoryPort {
         QuestionEntity query = QuestionEntity.from(criteria);
 
         return repository.findAll(
-                where(matchFilters(query, currentUser)))
+                where(matchFilters(query)))
                 .stream()
                 .map(QuestionEntity::toDomain)
                 .collect(toList());

@@ -14,7 +14,7 @@ public class QuestionSpecification {
         super();
     }
 
-    public static Specification<QuestionEntity> matchFilters(QuestionEntity query, String currentUser) {
+    public static Specification<QuestionEntity> matchFilters(QuestionEntity query) {
         return (question, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -63,10 +63,6 @@ public class QuestionSpecification {
 
     private static boolean shouldFilterBySubject(QuestionEntity query) {
         return query.getSubject().getId() != null;
-    }
-
-    private static boolean isAuthorTheCurrentUser(QuestionEntity query, String currentUser) {
-        return currentUser.equals(query.getAuthorId());
     }
 
     private static String like(String field) {

@@ -3,9 +3,10 @@ package com.eamaral.exams.question.infrastructure.repository.jpa.entity;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Alternative;
 import com.eamaral.exams.question.domain.Question;
-import lombok.*;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
