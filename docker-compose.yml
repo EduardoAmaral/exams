@@ -44,7 +44,6 @@ services:
     ports:
       - "8983:8983"
     volumes:
-      - solr-data:/var/solr
       - ./solr/configsets:/opt/solr/server/solr/configsets
     entrypoint:
       - solr-precreate
@@ -64,9 +63,10 @@ services:
       EXAMS_DATABASE_URL: ${EXAMS_DATABASE_URL}
       EXAMS_DATABASE_USER: ${EXAMS_DATABASE_USER}
       EXAMS_DATABASE_PASSWORD: ${EXAMS_DATABASE_PASSWORD}
+      EXAMS_SOLR_HOST: ${EXAMS_SOLR_HOST}
     links:
       - "database:database"
+      - "solr:solr"
 
 volumes:
   db-data:
-  solr-data:

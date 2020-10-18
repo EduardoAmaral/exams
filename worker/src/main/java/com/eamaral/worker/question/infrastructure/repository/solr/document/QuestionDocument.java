@@ -8,11 +8,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import static com.eamaral.worker.question.infrastructure.repository.solr.document.QuestionDocument.COLLECTION_NAME;
+
 @Getter
 @Builder
 @AllArgsConstructor
-@SolrDocument(collection = "questions")
+@SolrDocument(collection = COLLECTION_NAME)
 public class QuestionDocument {
+
+    public static final String COLLECTION_NAME = "questions";
 
     @Id
     @Indexed

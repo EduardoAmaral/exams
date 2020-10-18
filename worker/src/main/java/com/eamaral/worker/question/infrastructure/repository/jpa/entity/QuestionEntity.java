@@ -37,10 +37,10 @@ public class QuestionEntity {
     @Column
     private String keywords;
 
-    @Formula("SELECT S.DESCRIPTION FROM TB_SUBJECT S WHERE S.ID = SUBJECT_ID")
+    @Formula("(SELECT S.DESCRIPTION FROM TB_SUBJECT S WHERE S.ID = SUBJECT_ID)")
     private String subject;
 
-    @Formula("SELECT CONCAT(U.NAME, ' ', U.SURNAME) FROM TB_USER U WHERE U.ID = AUTHOR_ID")
+    @Formula("(SELECT CONCAT(U.NAME, ' ', U.SURNAME) FROM TB_USER U WHERE U.ID = AUTHOR_ID)")
     private String author;
 
     public Question toDomain() {
