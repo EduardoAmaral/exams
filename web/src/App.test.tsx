@@ -16,7 +16,7 @@ describe('<App />', () => {
   it('should call Login when not authenticated', async () => {
     axios.get.mockRejectedValueOnce({ status: 401 });
 
-    window.location.replace = jest.fn();
+    Object.defineProperty(window.location, 'replace', jest.fn());
 
     render(<App />);
 

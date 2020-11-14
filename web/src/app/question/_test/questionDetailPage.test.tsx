@@ -5,15 +5,14 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import Axios from 'axios';
-import router from 'react-router';
 import { QUESTION_BY_ID, QUESTION_COMMENT } from '../../config/endpoint';
 import history from '../../config/history';
 import QuestionDetailPage from '../questionDetailPage';
 import { questionCommentsSubscription } from '../../config/socket';
+import { MemoryRouter, Route } from 'react-router';
 
 jest.mock('axios');
 jest.mock('../../config/history');
-jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 jest.mock('../../config/socket');
 
 const axiosMocked = Axios as jest.Mocked<typeof Axios>;
@@ -61,7 +60,7 @@ describe('<QuestionDetailPage />', () => {
   });
 
   it('should call the get question by id endpoint', async () => {
-    render(<QuestionDetailPage />);
+    renderPage();
 
     expect(Axios.get).toHaveBeenCalledWith(
       QUESTION_BY_ID.replace(':id', question.id.toString())
@@ -69,20 +68,20 @@ describe('<QuestionDetailPage />', () => {
   });
 
   it('should render a loading while calling endpoint', () => {
-    const { getByTestId } = render(<QuestionDetailPage />);
+    const { getByTestId } = renderPage();
     expect(getByTestId('loading')).toBeDefined();
   });
 
   it('should render the question detail page', async () => {
-    const { getByTestId, getByRole } = render(<QuestionDetailPage />);
+    const { getByTestId, getByRole } = renderPage();
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
-    expect(getByRole('heading')).toHaveTextContent(`Question ${question.id}`);
+    expect(getByRole('heading')).toHaveTextContent('Question');
   });
 
   it('should render the question details', async () => {
-    const { getByText, getByTestId } = render(<QuestionDetailPage />);
+    const { getByText, getByTestId } = renderPage();
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -111,7 +110,7 @@ describe('<QuestionDetailPage />', () => {
 
   it('should return to the previous page after click on the cancel button', async () => {
     history.goBack = jest.fn();
-    const { getByTestId, getByRole } = render(<QuestionDetailPage />);
+    const { getByTestId, getByRole } = renderPage();
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -126,7 +125,7 @@ describe('<QuestionDetailPage />', () => {
 
   describe('Comments Section', () => {
     it('should render a comment section', async () => {
-      const { getByTestId } = render(<QuestionDetailPage />);
+      const { getByTestId } = renderPage();
 
       await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -134,7 +133,7 @@ describe('<QuestionDetailPage />', () => {
     });
 
     it('should call create comment endpoint when clicked on send button', async () => {
-      const { container, getByTestId } = render(<QuestionDetailPage />);
+      const { container, getByTestId } = renderPage();
 
       await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -153,7 +152,7 @@ describe('<QuestionDetailPage />', () => {
     });
 
     it('should subsribe on comments channel', async () => {
-      const { getByTestId } = render(<QuestionDetailPage />);
+      const { getByTestId } = renderPage();
 
       await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -163,4 +162,14 @@ describe('<QuestionDetailPage />', () => {
       );
     });
   });
+
+  const renderPage = () => {
+    return render(
+      <MemoryRouter initialEntries={['/question/detail/2']}>
+        <Route path="/question/detail/:id">
+          <QuestionDetailPage />
+        </Route>
+      </MemoryRouter>
+    );
+  };
 });

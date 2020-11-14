@@ -15,12 +15,16 @@ interface CommentMessage {
   readonly data: any;
 }
 
-export default function QuestionDetailPage() {
+interface QueryParams {
+  readonly id: string;
+}
+
+export default function QuestionDetailPage(): JSX.Element {
   const [isLoading, setLoading] = useState(false);
   const [question, setQuestion] = useState<Partial<Question>>({});
   const [comments, setComments] = useState<Comment[]>([]);
 
-  const { id } = useParams();
+  const { id } = useParams<QueryParams>();
 
   const onCommentReceive = (message: CommentMessage) => {
     switch (message.type) {
@@ -72,7 +76,7 @@ export default function QuestionDetailPage() {
     <>
       <Loading isLoading={isLoading} />
       <section>
-        <h2>Question {id}</h2>
+        <h2>Question</h2>
         <div className="field">
           <span>
             Statement: <span>{question?.statement}</span>

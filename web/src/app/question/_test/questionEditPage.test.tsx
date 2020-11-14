@@ -6,13 +6,12 @@ import {
 } from '@testing-library/react';
 import Axios from 'axios';
 import React from 'react';
-import router from 'react-router';
+import { MemoryRouter, Route } from 'react-router';
 import { QUESTION, QUESTION_BY_ID, SUBJECT } from '../../config/endpoint';
 import QuestionEditPage from '../questionEditPage';
 
 jest.mock('axios');
 jest.mock('../../config/history');
-jest.spyOn(router, 'useParams').mockReturnValue({ id: '2' });
 
 const axios = Axios as jest.Mocked<typeof Axios>;
 
@@ -57,7 +56,7 @@ describe('<QuestionEditPage />', () => {
   afterEach(() => axios.get.mockRestore());
 
   it('should render the question edit page', async () => {
-    const { getByRole, getByLabelText } = render(<QuestionEditPage />);
+    const { getByRole, getByLabelText } = renderPage();
 
     await waitFor(() => getByLabelText('Subject'));
 
@@ -65,7 +64,7 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should call the questionById and subject endpoint', async () => {
-    render(<QuestionEditPage />);
+    renderPage();
 
     expect(Axios.get).toHaveBeenCalledTimes(2);
     expect(Axios.get).toHaveBeenNthCalledWith(1, SUBJECT);
@@ -76,14 +75,12 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should render a loading while calling an endpoint', () => {
-    const { getByTestId } = render(<QuestionEditPage />);
+    const { getByTestId } = renderPage();
     expect(getByTestId('loading')).toBeDefined();
   });
 
   it('should render a form', async () => {
-    const { getByLabelText, getByRole, getByTestId } = render(
-      <QuestionEditPage />
-    );
+    const { getByLabelText, getByRole, getByTestId } = renderPage();
 
     await waitForElementToBeRemoved(getByTestId('loading'));
 
@@ -93,9 +90,7 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should call the question update endpoint when save a form', async () => {
-    const { getByText, getByLabelText, getByTestId } = render(
-      <QuestionEditPage />
-    );
+    const { getByText, getByLabelText, getByTestId } = renderPage();
 
     await waitForElementToBeRemoved(getByTestId('loading'));
 
@@ -106,4 +101,14 @@ describe('<QuestionEditPage />', () => {
     expect(Axios.put).toHaveBeenCalledTimes(1);
     expect(Axios.put).toHaveBeenCalledWith(QUESTION, expect.any(Object));
   });
+
+  const renderPage = () => {
+    return render(
+      <MemoryRouter initialEntries={['/question/edit/2']}>
+        <Route path="/question/edit/:id">
+          <QuestionEditPage />
+        </Route>
+      </MemoryRouter>
+    );
+  };
 });

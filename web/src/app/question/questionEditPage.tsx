@@ -7,11 +7,15 @@ import Loading from '../loading/loading';
 import Question from '../types/Question';
 import QuestionForm from './components/questionForm';
 
-export default function QuestionEditPage() {
+interface QueryParams {
+  readonly id: string;
+}
+
+export default function QuestionEditPage(): JSX.Element {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question>();
 
-  const { id } = useParams();
+  const { id } = useParams<QueryParams>();
 
   useEffect(() => {
     setLoading(true);
