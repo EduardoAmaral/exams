@@ -245,13 +245,15 @@ describe('<QuestionForm />', () => {
       expect(queryByText('required')).toBeNull();
     });
 
-    it('should show statement validation message when have a statement error', () => {
-      const { getByText } = render(
+    it('should show statement validation message when have a statement error', async () => {
+      const { getByText, getByLabelText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ statement: 'Statement is required' }}
         />
       );
+
+      await waitFor(() => getByLabelText('Statement'));
 
       expect(getByText('Statement is required')).toBeVisible();
     });
