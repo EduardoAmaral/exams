@@ -4,6 +4,8 @@ import { DELETE_QUESTION, QUESTION } from '../config/endpoint';
 import Loading from '../loading/loading';
 import history from '../config/history';
 import Question from '../types/Question';
+import { IconButton } from '@material-ui/core';
+import { InfoOutlined, EditOutlined, DeleteOutlined } from '@material-ui/icons';
 
 export default function QuestionPage(): JSX.Element {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -118,30 +120,33 @@ export function QuestionItem({
       </td>
       <td>
         <div className="action-buttons">
-          <button
-            className="icon"
+          <IconButton
+            aria-label="detail"
             type="button"
+            className="icon"
             data-testid={`question-detail-button-${id}`}
             onClick={() => onDetail(id)}
           >
-            <i className="ri-information-line" title="Info" />
-          </button>
-          <button
-            className="icon"
+            <InfoOutlined fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="edit"
             type="button"
+            className="icon"
             data-testid={`question-edit-button-${id}`}
             onClick={() => onEdit(id)}
           >
-            <i className="ri-pencil-line" title="Edit" />
-          </button>
-          <button
-            className="icon"
+            <EditOutlined fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
             type="button"
+            className="icon"
             data-testid={`question-delete-button-${id}`}
             onClick={() => onDelete(id)}
           >
-            <i className="ri-delete-bin-line" title="Delete" />
-          </button>
+            <DeleteOutlined fontSize="small" />
+          </IconButton>
         </div>
       </td>
     </tr>

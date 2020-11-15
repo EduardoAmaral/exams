@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CommentModel from '../types/Comment';
 import style from './comments.module.scss';
+import { Send } from '@material-ui/icons';
 
 interface Props {
   comments?: CommentModel[];
@@ -42,7 +43,7 @@ export default function Comments({
             data-testid="send-comment-button"
             onClick={sendComment}
           >
-            <i className="ri-send-plane-2-line" />
+            <Send />
           </button>
         </div>
       </div>

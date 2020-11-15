@@ -5,11 +5,13 @@ import history from '../../config/history';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
 import NewSubjectButton from './newSubjectButton';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import {
+  TextField,
+  InputLabel,
+  Select,
+  FormControl,
+  FormHelperText,
+} from '@material-ui/core';
 
 import style from './questionForm.module.scss';
 

@@ -39,10 +39,6 @@ select {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-
-  &.error {
-    border: 1px solid $danger-color;
-  }
 }
 
 button {
@@ -84,10 +80,6 @@ button {
 
 input {
   height: $input-height;
-}
-
-select {
-  height: $select-height;
 }
 
 input[type='radio'] {

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { SUBJECT } from '../../config/endpoint';
 import Subject from '../../types/Subject';
 import style from './newSubjectButton.module.scss';
+import { IconButton } from '@material-ui/core';
+import { AddCircleOutline } from '@material-ui/icons';
 
 interface Props {
   readonly onSave: (subject: Subject) => void;
@@ -35,7 +37,6 @@ const NewSubjectButton = ({ onSave }: Props): JSX.Element => {
         <input
           id="new-subject"
           type="text"
-          placeholder="Add new subject"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -56,14 +57,14 @@ const NewSubjectButton = ({ onSave }: Props): JSX.Element => {
 
   return (
     <span className={`${style.container} ${visible ? style.inputSpace : ''}`}>
-      <button
+      <IconButton
         type="button"
         className="icon"
         onClick={openModal}
         title="Add new subject"
       >
-        <i className="ri-add-circle-line" />
-      </button>
+        <AddCircleOutline />
+      </IconButton>
       {visible ? renderInput() : null}
     </span>
   );
