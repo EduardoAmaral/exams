@@ -7,6 +7,7 @@ import QuestionDetailPage from './app/question/questionDetailPage';
 import ExamPage from './app/exam/examPage';
 import CreateExamPage from './app/exam/createExamPage';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function Routes() {
   return (
     <Switch>

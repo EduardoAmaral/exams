@@ -8,7 +8,7 @@ interface Props {
   readonly onSave: (subject: Subject) => void;
 }
 
-const NewSubjectButton = ({ onSave }: Props) => {
+const NewSubjectButton = ({ onSave }: Props): JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('');
 

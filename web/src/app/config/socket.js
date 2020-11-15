@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { RxStomp } from '@stomp/rx-stomp';
 import SockJS from 'sockjs-client';
 import { map } from 'rxjs/operators';

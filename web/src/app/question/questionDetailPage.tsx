@@ -12,7 +12,7 @@ import Comment from '../types/Comment';
 
 interface CommentMessage {
   readonly type: string;
-  readonly data: any;
+  readonly data: Comment[];
 }
 
 interface QueryParams {
@@ -64,7 +64,7 @@ export default function QuestionDetailPage(): JSX.Element {
     history.goBack();
   };
 
-  const onSendComment = (comment: Comment) => {
+  const onSendComment = (comment: Partial<Comment>) => {
     axios
       .post(QUESTION_COMMENT, { ...comment, questionId: question.id })
       .then((response) => {

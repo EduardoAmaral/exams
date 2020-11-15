@@ -46,7 +46,7 @@ const Authentication = () => {
   return <></>;
 };
 
-export default function App() {
+export default function App(): JSX.Element {
   const [user, setUser] = useState<User>();
 
   return (

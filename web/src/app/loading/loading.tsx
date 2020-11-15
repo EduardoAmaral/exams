@@ -5,7 +5,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export default function Loading({ isLoading }: Props) {
+export default function Loading({ isLoading }: Props): JSX.Element {
   if (isLoading) {
     return (
       <div className={style.container}>

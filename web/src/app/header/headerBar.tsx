@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../context';
 import style from './headerBar.module.scss';
 
-export default function HeaderBar() {
+export default function HeaderBar(): JSX.Element {
   return (
     <header className={style.header}>
       <h1>Exams</h1>

@@ -7,7 +7,7 @@ import style from './createExamPage.module.scss';
 import Question from '../types/Question';
 import Loading from '../loading/loading';
 
-export default function CreateExamPage() {
+export default function CreateExamPage(): JSX.Element {
   const [exam, setExam] = useState<Partial<Exam>>({
     title: '',
     startDateTime: '',

@@ -6,7 +6,7 @@ import Loading from '../loading/loading';
 import Question from '../types/Question';
 import QuestionForm from './components/questionForm';
 
-export default function QuestionCreatePage() {
+export default function QuestionCreatePage(): JSX.Element {
   const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 

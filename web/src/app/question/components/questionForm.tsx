@@ -18,7 +18,7 @@ export default function QuestionForm({
   questionData,
   errors = {},
   onSubmit,
-}: Props) {
+}: Props): JSX.Element {
   const [question, setQuestion] = useState<Partial<Question>>({
     keywords: '',
     solution: '',

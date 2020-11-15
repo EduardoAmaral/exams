@@ -4,10 +4,13 @@ import style from './comments.module.scss';
 
 interface Props {
   comments?: CommentModel[];
-  onSend: (comment: any) => void;
+  onSend: (comment: Partial<CommentModel>) => void;
 }
 
-export default function Comments({ comments = [], onSend }: Props) {
+export default function Comments({
+  comments = [],
+  onSend,
+}: Props): JSX.Element {
   const [newComment, setNewComment] = useState<Partial<CommentModel>>({});
 
   const sendComment = () => {
@@ -56,7 +59,7 @@ interface CommentProps {
   comment: CommentModel;
 }
 
-export function Comment({ comment }: CommentProps) {
+export function Comment({ comment }: CommentProps): JSX.Element {
   const printDate = () => {
     const creationDate = new Date(comment.creationDate);
     const currentDate = new Date();

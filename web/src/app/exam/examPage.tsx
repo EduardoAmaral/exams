@@ -6,7 +6,7 @@ import Exam from '../types/Exam';
 import { formatDateTime } from '../util/dateUtil';
 import history from '../config/history';
 
-export default function ExamPage() {
+export default function ExamPage(): JSX.Element {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [exams, setExams] = useState<Exam[]>([]);
 

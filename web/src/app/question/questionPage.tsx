@@ -5,7 +5,7 @@ import Loading from '../loading/loading';
 import history from '../config/history';
 import Question from '../types/Question';
 
-export default function QuestionPage() {
+export default function QuestionPage(): JSX.Element {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -102,7 +102,7 @@ export function QuestionItem({
   onEdit,
   onDelete,
   onDetail,
-}: QuestionItemProps) {
+}: QuestionItemProps): JSX.Element {
   const id = question.id || 0;
 
   return (
