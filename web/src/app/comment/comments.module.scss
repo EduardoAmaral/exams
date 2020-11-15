@@ -62,7 +62,6 @@
     }
 
     .message {
-      font-weight: $font-light;
       font-size: $font-disclaimer;
     }
 
@@ -70,7 +69,6 @@
     .date {
       position: absolute;
       font-size: 12px;
-      font-weight: $font-light;
       bottom: -18px;
     }
   }

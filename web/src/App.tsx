@@ -8,20 +8,38 @@ import HeaderBar from './app/header/headerBar';
 import User from './app/types/User';
 import { AuthContext } from './context';
 import Routes from './routes';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 const Authenticated = () => {
   const context = useContext(AuthContext);
 
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const theme = React.useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type: 'dark',
+        },
+      }),
+    [prefersDarkMode]
+  );
+
   if (context.user) {
     return (
-      <div data-testid="app" className="app">
-        <HeaderBar />
-        <div className="content">
-          <Router history={history}>
-            <Routes />
-          </Router>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div data-testid="app" className="app">
+          <HeaderBar />
+          <div className="content">
+            <Router history={history}>
+              <Routes />
+            </Router>
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 

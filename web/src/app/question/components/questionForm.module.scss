@@ -19,17 +19,6 @@
     label {
       margin-bottom: $minimun-margin;
     }
-
-    .subjectContainer {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: top;
-
-      select {
-        flex: 1;
-      }
-    }
   }
 
   .alternatives {

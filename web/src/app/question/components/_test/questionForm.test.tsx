@@ -55,10 +55,12 @@ describe('<QuestionForm />', () => {
     expect(getByRole('form')).toBeVisible();
   });
 
-  it('should render alternatives true and false when True Or False type is selected', () => {
+  it('should render alternatives true and false when True Or False type is selected', async () => {
     const { getByTestId, getByLabelText } = render(
       <QuestionForm onSubmit={jest.fn()} />
     );
+
+    await waitFor(() => getByLabelText('Type'));
 
     fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
       target: { value: 'True Or False' },
@@ -72,10 +74,12 @@ describe('<QuestionForm />', () => {
     );
   });
 
-  it('should render five alternatives when Multiple Choices type is selected', () => {
+  it('should render five alternatives when Multiple Choices type is selected', async () => {
     const { getByLabelText, getAllByRole } = render(
       <QuestionForm onSubmit={jest.fn()} />
     );
+
+    await waitFor(() => getByLabelText('Type'));
 
     fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
       target: { value: 'Multiple Choices' },
@@ -210,8 +214,10 @@ describe('<QuestionForm />', () => {
     );
   });
 
-  it('should not disable the type dropdown when question data is not provided', () => {
+  it('should not disable the type dropdown when question data is not provided', async () => {
     const { getByLabelText } = render(<QuestionForm onSubmit={jest.fn()} />);
+
+    await waitFor(() => getByLabelText('Type'));
 
     expect(getByLabelText('Type', { selector: 'select' })).toHaveProperty(
       'disabled',
@@ -219,10 +225,12 @@ describe('<QuestionForm />', () => {
     );
   });
 
-  it('should disable type options when question data is provided', () => {
+  it('should disable type options when question data is provided', async () => {
     const { getByLabelText } = render(
       <QuestionForm onSubmit={jest.fn()} questionData={questionData} />
     );
+
+    await waitFor(() => getByLabelText('Type'));
 
     expect(getByLabelText('Type', { selector: 'select' })).toHaveProperty(
       'disabled',
@@ -248,13 +256,15 @@ describe('<QuestionForm />', () => {
       expect(getByText('Statement is required')).toBeVisible();
     });
 
-    it('should show type validation message when have a type error', () => {
-      const { getByText } = render(
+    it('should show type validation message when have a type error', async () => {
+      const { getByText, getByLabelText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ type: 'Type is required' }}
         />
       );
+
+      await waitFor(() => getByLabelText('Type'));
 
       expect(getByText('Type is required')).toBeVisible();
     });
@@ -272,13 +282,15 @@ describe('<QuestionForm />', () => {
       expect(getByText('Subject is required')).toBeVisible();
     });
 
-    it('should show alternatives validation message when have an alternatives errors', () => {
+    it('should show alternatives validation message when have an alternatives errors', async () => {
       const { getByLabelText, getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ alternatives: 'Alternatives are required' }}
         />
       );
+
+      await waitFor(() => getByLabelText('Type'));
 
       fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
         target: { value: 'True Or False' },
@@ -287,13 +299,15 @@ describe('<QuestionForm />', () => {
       expect(getByText('Alternatives are required')).toBeVisible();
     });
 
-    it('should show correct answer validation message when have a correct answer error', () => {
+    it('should show correct answer validation message when have a correct answer error', async () => {
       const { getByLabelText, getByText } = render(
         <QuestionForm
           onSubmit={jest.fn()}
           errors={{ correctAnswer: 'Correct answer is required' }}
         />
       );
+
+      await waitFor(() => getByLabelText('Type'));
 
       fireEvent.change(getByLabelText('Type', { selector: 'select' }), {
         target: { value: 'True Or False' },

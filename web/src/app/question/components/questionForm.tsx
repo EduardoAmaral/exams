@@ -5,6 +5,11 @@ import history from '../../config/history';
 import Question, { QuestionErrors } from '../../types/Question';
 import Subject from '../../types/Subject';
 import NewSubjectButton from './newSubjectButton';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import style from './questionForm.module.scss';
 
@@ -91,95 +96,117 @@ export default function QuestionForm({
 
   const renderStatementInput = () => {
     return (
-      <>
-        <label htmlFor="statement">Statement</label>
-        <textarea
+      !loadingSubjects && (
+        <TextField
+          label="Statement"
           id="statement"
           name="statement"
-          rows={4}
-          className={`${errors.statement ? 'error' : ''}`}
+          variant="outlined"
+          error={errors.statement ? true : false}
+          helperText={errors.statement}
+          type="text"
           value={question.statement}
           onChange={(event) => {
             setQuestion({ ...question, statement: event.target.value });
           }}
+          multiline={true}
+          rows={3}
+          data-testid="question-statement"
         />
-        {errors.statement ? (
-          <div className="validation-error">{errors.statement}</div>
-        ) : null}
-      </>
+      )
     );
+  };
+
+  const selectType = (type: string) => {
+    switch (type) {
+      case TRUE_OR_FALSE:
+        setQuestion({
+          ...question,
+          type: type,
+          alternatives: trueOrFalseAlternatives,
+        });
+        break;
+      case MULTIPLE_CHOICES:
+        setQuestion({
+          ...question,
+          type: type,
+          alternatives: multipleChoicesAlternatives,
+        });
+        break;
+      default:
+        setQuestion({
+          ...question,
+          type: type,
+          alternatives: [],
+        });
+        break;
+    }
   };
 
   const renderTypeSelect = () => {
     return (
-      <>
-        <label htmlFor="type">Type</label>
-        <select
-          id="type"
-          name="type"
-          className={`${errors.type ? 'error' : ''}`}
-          value={question.type}
+      !loadingSubjects && (
+        <FormControl
+          variant="outlined"
           disabled={question.id !== undefined}
-          onChange={(event) => {
-            switch (event.target.value) {
-              case TRUE_OR_FALSE:
-                setQuestion({
-                  ...question,
-                  type: event.target.value,
-                  alternatives: trueOrFalseAlternatives,
-                });
-                break;
-              case MULTIPLE_CHOICES:
-                setQuestion({
-                  ...question,
-                  type: event.target.value,
-                  alternatives: multipleChoicesAlternatives,
-                });
-                break;
-              default:
-                setQuestion({
-                  ...question,
-                  type: event.target.value,
-                  alternatives: [],
-                });
-                break;
-            }
-          }}
+          error={errors.type ? true : false}
         >
-          <option value="" label="Select an option" />
-          {types.map((type) => (
-            <option key={type.value} value={type.value} label={type.value} />
-          ))}
-        </select>
-        {errors.type ? (
-          <div className="validation-error">{errors.type}</div>
-        ) : null}
-      </>
+          <InputLabel htmlFor="type">Type</InputLabel>
+          <Select
+            native
+            id="type"
+            name="type"
+            label="Type"
+            value={question.type}
+            onChange={(event) => selectType(event.target.value as string)}
+            data-testid="question-type"
+            inputProps={{
+              name: 'type',
+              id: 'type',
+            }}
+          >
+            <option aria-label="None" value="" />
+            {types.map((type) => (
+              <option key={type.value} value={type.value} label={type.value} />
+            ))}
+          </Select>
+          <FormHelperText>{errors.type}</FormHelperText>
+        </FormControl>
+      )
     );
+  };
+
+  const selectSubject = (newSubject: number) => {
+    setQuestion({
+      ...question,
+      subject: {
+        id: newSubject,
+      },
+    });
+    setSelectedSubject(newSubject);
   };
 
   const renderSubjectSelect = () => {
     return (
       !loadingSubjects && (
         <>
-          <label htmlFor="subject">Subject</label>
-          <div className={style.subjectContainer}>
-            <select
+          <FormControl variant="outlined" error={errors.subject ? true : false}>
+            <InputLabel htmlFor="subject">Subject</InputLabel>
+            <Select
+              native
               id="subject"
               name="subject"
-              className={`${errors.subject ? 'error' : ''}`}
+              label="Subject"
               value={selectedSubject}
               onChange={(event) => {
-                setQuestion({
-                  ...question,
-                  subject: {
-                    id: Number.parseInt(event.target.value),
-                  },
-                });
-                setSelectedSubject(Number.parseInt(event.target.value));
+                selectSubject(Number.parseInt(event.target.value as string));
+              }}
+              inputProps={{
+                name: 'subject',
+                id: 'subject',
               }}
             >
-              <option value="" label="Select an option" />
+              <option aria-label="None" value="" />
               {subjects?.map((subject) => (
                 <option
                   value={subject.id}
@@ -187,17 +214,15 @@ export default function QuestionForm({
                   label={subject.description}
                 />
               ))}
-            </select>
-            <NewSubjectButton
-              onSave={(subject: Subject) => {
-                setSubjects((s) => [...s, subject]);
-                setSelectedSubject(subject.id);
-              }}
-            />
-          </div>
-          {errors.subject ? (
-            <div className="validation-error">{errors.subject}</div>
-          ) : null}
+            </Select>
+            <FormHelperText>{errors.subject}</FormHelperText>
+          </FormControl>
+          <NewSubjectButton
+            onSave={(subject: Subject) => {
+              setSubjects((s) => [...s, subject]);
+              setSelectedSubject(subject.id);
+            }}
+          />
         </>
       )
     );
@@ -205,43 +230,39 @@ export default function QuestionForm({
 
   const renderSolutionInput = () => {
     return (
-      <>
-        <label htmlFor="solution">Solution</label>
-        <textarea
-          id="solution"
-          name="solution"
-          className={`${errors.solution ? 'error' : ''}`}
-          rows={3}
-          value={question.solution}
-          onChange={(event) => {
-            setQuestion({ ...question, solution: event.target.value });
-          }}
-        />
-        {errors.solution ? (
-          <div className="validation-error">{errors.solution}</div>
-        ) : null}
-      </>
+      <TextField
+        label="Solution"
+        id="solution"
+        name="solution"
+        variant="outlined"
+        error={errors.solution ? true : false}
+        helperText={errors.solution}
+        type="text"
+        value={question.solution}
+        onChange={(event) => {
+          setQuestion({ ...question, solution: event.target.value });
+        }}
+        multiline={true}
+        rows={2}
+      />
     );
   };
 
   const renderKeywordsInput = () => {
     return (
-      <>
-        <label htmlFor="keywords">Keywords</label>
-        <input
-          id="keywords"
-          name="keywords"
-          className={`${errors.keywords ? 'error' : ''}`}
-          type="text"
-          value={question.keywords}
-          onChange={(event) => {
-            setQuestion({ ...question, keywords: event.target.value });
-          }}
-        />
-        {errors.keywords ? (
-          <div className="validation-error">{errors.keywords}</div>
-        ) : null}
-      </>
+      <TextField
+        label="Keywords"
+        id="keywords"
+        name="keywords"
+        variant="outlined"
+        error={errors.keywords ? true : false}
+        helperText={errors.keywords}
+        type="text"
+        value={question.keywords}
+        onChange={(event) => {
+          setQuestion({ ...question, keywords: event.target.value });
+        }}
+      />
     );
   };
 
