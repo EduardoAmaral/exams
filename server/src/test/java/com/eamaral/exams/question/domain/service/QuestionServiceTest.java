@@ -301,6 +301,22 @@ class QuestionServiceTest {
                 .withMessage("The correct answer to the question must be one of your alternatives");
     }
 
+    @Test
+    @DisplayName("should not save questions with duplicated alternatives")
+    void save_withDuplicatedAlternatives() {
+        final List<Alternative> alternatives = List.of(AlternativeDTO.builder().description("A").build(),
+                AlternativeDTO.builder().description("A").build());
+
+        Question question = Question.builder()
+                .correctAnswer("A")
+                .type(QuestionType.MULTIPLE_CHOICES)
+                .alternatives(alternatives)
+                .build();
+
+        assertThatExceptionOfType(InvalidDataException.class).isThrownBy(() -> service.save(question))
+                .withMessage("The question cannot have duplicated alternatives");
+    }
+
     private Question.QuestionBuilder getQuestionBuilder(String solution,
                                                         String statement,
                                                         String correctAnswer) {

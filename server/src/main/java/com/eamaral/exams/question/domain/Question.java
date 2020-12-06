@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -45,6 +46,14 @@ public class Question {
                 .collect(toList())
                 .contains(getCorrectAnswer())) {
             throw new InvalidDataException("The correct answer to the question must be one of your alternatives");
+        }
+
+        final List<String> alternativesDescription = getAlternatives().stream()
+                .map(Alternative::getDescription)
+                .collect(toList());
+        if (alternativesDescription.stream()
+                .anyMatch(description -> Collections.frequency(alternativesDescription, description) > 1)) {
+            throw new InvalidDataException("The question cannot have duplicated alternatives");
         }
     }
 }
