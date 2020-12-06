@@ -14,6 +14,7 @@ interface QueryParams {
 export default function QuestionEditPage(): JSX.Element {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<Question>();
+  const [errors, setErrors] = useState({});
 
   const { id } = useParams<QueryParams>();
 
@@ -41,8 +42,9 @@ export default function QuestionEditPage(): JSX.Element {
           history.goBack();
         }
       })
-      .catch(() => {
+      .catch(({ response }) => {
         setLoading(false);
+        setErrors(response.data.errors);
       });
   };
 
@@ -51,7 +53,11 @@ export default function QuestionEditPage(): JSX.Element {
       <Loading isLoading={isLoading} />
       <section>
         <h2>Edit Question</h2>
-        <QuestionForm questionData={question} onSubmit={onSubmit} />
+        <QuestionForm
+          questionData={question}
+          onSubmit={onSubmit}
+          errors={errors}
+        />
       </section>
     </>
   );

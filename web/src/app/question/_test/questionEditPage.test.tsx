@@ -47,10 +47,6 @@ describe('<QuestionEditPage />', () => {
     axios.get
       .mockResolvedValueOnce({ data: subjects })
       .mockResolvedValueOnce({ data: question });
-
-    axios.put.mockResolvedValueOnce({
-      status: 200,
-    });
   });
 
   afterEach(() => axios.get.mockRestore());
@@ -90,6 +86,10 @@ describe('<QuestionEditPage />', () => {
   });
 
   it('should call the question update endpoint when save a form', async () => {
+    axios.put.mockResolvedValueOnce({
+      status: 200,
+    });
+
     const { getByText, getByLabelText, getByTestId } = renderPage();
 
     await waitForElementToBeRemoved(getByTestId('loading'));
@@ -100,6 +100,38 @@ describe('<QuestionEditPage />', () => {
 
     expect(Axios.put).toHaveBeenCalledTimes(1);
     expect(Axios.put).toHaveBeenCalledWith(QUESTION, expect.any(Object));
+  });
+
+  it('should show errors on fields when save with invalid fields', async () => {
+    axios.put.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: {
+          errors: {
+            statement: 'Statement is required',
+          },
+        },
+      },
+    });
+
+    const { getByLabelText, getByText, getByRole } = renderPage();
+
+    await waitFor(() => getByLabelText('Subject'));
+
+    fireEvent.change(getByLabelText('Statement', { selector: 'textarea' }), {
+      target: { value: '' },
+    });
+
+    fireEvent.click(
+      getByRole('button', {
+        name: 'Save',
+      })
+    );
+
+    await waitFor(() => getByText('Statement is required'));
+
+    expect(Axios.put).toHaveBeenCalledTimes(1);
+    expect(getByText('Statement is required')).toBeDefined();
   });
 
   const renderPage = () => {
