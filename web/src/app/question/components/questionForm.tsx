@@ -33,6 +33,7 @@ export default function QuestionForm({
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<number>();
   const [loadingSubjects, setLoadingSubjects] = useState<boolean>();
+  const [correctAnswerPosition, setCorrectAnswerPosition] = useState<number>();
 
   const TRUE_OR_FALSE = 'True Or False';
   const MULTIPLE_CHOICES = 'Multiple Choices';
@@ -82,14 +83,27 @@ export default function QuestionForm({
           position: ++alternativePosition,
         })),
       });
+
       setSelectedSubject(questionData?.subject?.id);
+      questionData.alternatives &&
+        setCorrectAnswerPosition(
+          questionData.alternatives.findIndex(
+            (q) => q.description === questionData.correctAnswer
+          ) + 1
+        );
     }
   }, [questionData]);
 
   const onSubmitForm = (event: FormEvent) => {
     event.preventDefault();
 
-    onSubmit(question);
+    onSubmit({
+      ...question,
+      correctAnswer:
+        correctAnswerPosition && question.alternatives
+          ? question.alternatives[correctAnswerPosition - 1].description
+          : '',
+    });
   };
 
   const onCancelClick = () => {
@@ -287,20 +301,19 @@ export default function QuestionForm({
                 <input
                   type="radio"
                   name="correctAnswer"
-                  value={alternative.description}
+                  value={alternative.position}
                   data-testid={`question-form-alternative-${alternative.position}-radio`}
-                  checked={alternative.description === question.correctAnswer}
+                  checked={alternative.position == correctAnswerPosition}
                   onChange={(event) => {
-                    setQuestion({
-                      ...question,
-                      correctAnswer: event.target.value,
-                    });
+                    setCorrectAnswerPosition(
+                      Number.parseInt(event.target.value as string)
+                    );
                   }}
                 />
                 {question.type === TRUE_OR_FALSE ? (
                   alternative.description
                 ) : (
-                  <input
+                  <TextField
                     type="input"
                     name={`alternative-${alternative.position}`}
                     data-testid={`question-form-alternative-${alternative.position}-input`}
