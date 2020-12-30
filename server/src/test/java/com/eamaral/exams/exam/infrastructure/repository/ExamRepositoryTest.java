@@ -2,6 +2,7 @@ package com.eamaral.exams.exam.infrastructure.repository;
 
 import com.eamaral.exams.configuration.jpa.JpaIntegrationTest;
 import com.eamaral.exams.exam.domain.Exam;
+import com.eamaral.exams.exam.infrastructure.repository.jpa.ExamJpaRepository;
 import com.eamaral.exams.exam.infrastructure.repository.jpa.entity.ExamEntity;
 import com.eamaral.exams.question.QuestionType;
 import com.eamaral.exams.question.domain.Alternative;
@@ -38,6 +39,9 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    @Autowired
+    private ExamJpaRepository examJpaRepository;
+
     private List<Question> questions;
 
     @BeforeEach
@@ -49,8 +53,14 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @DisplayName("save should save an exam when required fields are filled")
     void save_shouldSaveAnExam() {
         Exam exam = getExam().build();
-        exam = repository.save(exam);
-        assertThat(exam.getId()).isNotZero();
+        repository.save(exam);
+
+        final ExamEntity examEntity = examJpaRepository.findAll().get(0);
+        assertThat(examEntity.getId()).isNotZero();
+        assertThat(examEntity.isMockTest()).isFalse();
+        assertThat(examEntity.getQuestions())
+                .extracting(Question::getStatement)
+                .containsExactlyInAnyOrder("True or False question", "Multiple choice question");
     }
 
     @Test
@@ -63,24 +73,43 @@ class ExamRepositoryTest extends JpaIntegrationTest {
         final ExamEntity emptyExam = ExamEntity.builder().build();
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> repository.save(emptyExam))
-                .matches(e -> e.getConstraintViolations().size() == 3)
                 .matches(e -> e.getConstraintViolations().stream().allMatch(
                         v -> validationMessages.contains(v.getMessage())));
     }
 
     @Test
+    @DisplayName("should create a mock test without dates")
+    void save_mockTest() {
+        Exam exam = getExam()
+                .mockTest(true)
+                .startDateTime(null)
+                .endDateTime(null)
+                .build();
+
+        repository.save(exam);
+
+        final ExamEntity examEntity = examJpaRepository.findAll().get(0);
+        assertThat(examEntity.getId()).isNotZero();
+        assertThat(examEntity.isMockTest()).isTrue();
+        assertThat(examEntity.getQuestions())
+                .extracting(Question::getStatement)
+                .containsExactlyInAnyOrder("True or False question", "Multiple choice question");
+
+    }
+
+    @Test
     @DisplayName("findByUser should retrieve all exams created by a given user")
     void findByUser_shouldReturnAllExamsCreatedByTheUser() {
-        repository.save(getExam().build());
+        examJpaRepository.saveAndFlush(getExam().build());
         List<Exam> exams = repository.findByUser(currentUser);
 
         assertThat(exams).hasSize(1);
     }
 
     @Test
-    @DisplayName("findByUser should return empty if a given user doesn't have exams registred")
+    @DisplayName("findByUser should return empty if a given user doesn't have exams registered")
     void findByUser_shouldReturnEmpty() {
-        repository.save(getExam().build());
+        examJpaRepository.saveAndFlush(getExam().build());
         List<Exam> exams = repository.findByUser("000009");
 
         assertThat(exams).isEmpty();
@@ -90,13 +119,13 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @DisplayName("findAvailable should retrieve all exams where current time is between exams start and end date/time")
     void findAvailable_shouldReturnAllExamsWhereTheCurrentDateIsBetweenTheirInterval() {
         ZonedDateTime today = ZonedDateTime.now();
-        repository.save(getExam()
+        examJpaRepository.saveAndFlush(getExam()
                 .startDateTime(today.minusMinutes(30))
                 .endDateTime(today.plusHours(2))
                 .build());
 
         ZonedDateTime nextDay = today.plusDays(1);
-        repository.save(getExam()
+        examJpaRepository.saveAndFlush(getExam()
                 .startDateTime(nextDay)
                 .endDateTime(nextDay.plusHours(2))
                 .build());
@@ -109,7 +138,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("findById should return the exam when it exists and the current user is its author")
     void findById_whenExamExistsAndCurrentUserIsItsAuthor_shouldReturnIt() {
-        Exam exam = repository.save(getExam().build());
+        final ExamEntity exam = examJpaRepository.saveAndFlush(getExam().build());
 
         Optional<Exam> result = repository.findById(exam.getId(), currentUser);
 
@@ -123,7 +152,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("findById should return empty if current user is not the exam's author")
     void findById_whenExamExistsButAuthorIsNotTheCurrentUser_shouldReturnEmpty() {
-        Exam exam = repository.save(getExam().build());
+        final ExamEntity exam = examJpaRepository.saveAndFlush(getExam().build());
 
         Optional<Exam> result = repository.findById(exam.getId(), "user");
 
@@ -141,7 +170,7 @@ class ExamRepositoryTest extends JpaIntegrationTest {
     @Test
     @DisplayName("delete should remove an exam")
     void delete_shouldRemoveAnExam() {
-        Exam exam = repository.save(getExam().build());
+        final ExamEntity exam = examJpaRepository.saveAndFlush(getExam().build());
 
         assertThat(repository.findByUser(currentUser)).isNotEmpty();
 

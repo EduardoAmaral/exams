@@ -1,6 +1,5 @@
 @import './variables.scss';
 
-$input-height: 26px;
 $select-height: 36px;
 $button-height: 36px;
 $icon-height: 36px;
@@ -76,10 +75,6 @@ button {
       background-color: lighten($color: $secundary-color, $amount: 5);
     }
   }
-}
-
-input {
-  height: $input-height;
 }
 
 input[type='radio'] {

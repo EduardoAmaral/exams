@@ -19,16 +19,17 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 @Entity
-@Table(name = "TB_EXAM")
 @Getter
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
+@Table(name = "TB_EXAM")
 @Where(clause = "deleted = false")
-public class ExamEntity extends Exam {
+@SequenceGenerator(name = "exam_seq_id", sequenceName = "exam_seq_id", allocationSize = 1)
+public class ExamEntity implements Exam {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exam_seq_id")
     private Long id;
 
     @Column
@@ -55,6 +56,9 @@ public class ExamEntity extends Exam {
     @Column(nullable = false)
     private boolean deleted;
 
+    @Column(nullable = false)
+    private boolean mockTest;
+
     public static ExamEntity from(Exam exam) {
         ExamEntityBuilder builder = builder();
 
@@ -64,6 +68,7 @@ public class ExamEntity extends Exam {
                     .endDateTime(exam.getEndDateTime())
                     .title(exam.getTitle())
                     .authorId(exam.getAuthorId())
+                    .mockTest(exam.isMockTest())
                     .questions(
                             emptyIfNull(exam.getQuestions())
                                     .stream()

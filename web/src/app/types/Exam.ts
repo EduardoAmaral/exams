@@ -5,5 +5,6 @@ export default interface Exam {
   title: string;
   startDateTime: string;
   endDateTime: string;
+  mockTest: boolean;
   questions?: Question[];
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="eamaral" id="1">
+        <addColumn tableName="TB_EXAM">
+            <column name="MOCK_TEST" type="BOOLEAN" value="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropNotNullConstraint  columnDataType="TIMESTAMP"
+                                columnName="STARTS_AT"
+                                tableName="TB_EXAM"/>
+        <dropNotNullConstraint  columnDataType="TIMESTAMP"
+                                columnName="ENDS_AT"
+                                tableName="TB_EXAM"/>
+    </changeSet>
+</databaseChangeLog>

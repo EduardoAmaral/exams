@@ -19,7 +19,7 @@ public class ExamService {
     }
 
     public void create(Exam exam) {
-        exam.validate();
+        exam.validateDates();
         repository.save(exam);
     }
 

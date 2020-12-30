@@ -12,6 +12,7 @@ export default function CreateExamPage(): JSX.Element {
     title: '',
     startDateTime: '',
     endDateTime: '',
+    mockTest: false,
   });
 
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -67,6 +68,20 @@ export default function CreateExamPage(): JSX.Element {
           onChange={(e) => setExam({ ...exam, title: e.target.value })}
         />
       </>
+    );
+  };
+
+  const renderMockTestFlag = () => {
+    return (
+      <label>
+        <input
+          type="checkbox"
+          id="mockTest"
+          checked={exam.mockTest === true}
+          onClick={() => setExam({ ...exam, mockTest: !exam.mockTest })}
+        />{' '}
+        Mock test
+      </label>
     );
   };
 
@@ -153,6 +168,7 @@ export default function CreateExamPage(): JSX.Element {
         <form onSubmit={saveExam}>
           <div className={style.container}>
             <div className={style.title}>{renderTitle()}</div>
+            <div className={style.mockTest}>{renderMockTestFlag()}</div>
             <div>{renderStartsAt()}</div>
             <div>{renderEndsAt()}</div>
             <div className={style.questions}>{renderQuestions()}</div>

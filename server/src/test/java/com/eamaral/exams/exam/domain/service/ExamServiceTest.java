@@ -53,6 +53,20 @@ class ExamServiceTest {
     }
 
     @Test
+    @DisplayName("should validate that dates are not required when creating a mock test")
+    void create_whenCreatingMockTests() {
+        Exam exam = getExamBuilderWithDefault()
+                .startDateTime(null)
+                .endDateTime(null)
+                .mockTest(true)
+                .build();
+
+        service.create(exam);
+
+        verify(examRepositoryPort).save(exam);
+    }
+
+    @Test
     @DisplayName("should validate that dates are required when creating an exam")
     void create_whenNotMockTestAndWithoutDates_shouldThrowDatesAreRequiredWhenNotAMockTest() {
         Exam exam = getExamBuilderWithDefault()

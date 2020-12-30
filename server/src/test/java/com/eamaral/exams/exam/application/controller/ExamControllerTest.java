@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,12 +34,8 @@ class ExamControllerTest extends ControllerIntegrationTest {
     private final Long examId = 1L;
     private final ZonedDateTime startDateTime = ZonedDateTime.now();
     private final ZonedDateTime endDateTime = ZonedDateTime.now().plusHours(2);
-    private final String startDateTimeFormatted = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-            .format(startDateTime);
-    private final String endDateTimeFormatted = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-            .format(endDateTime);
+    private final String startDateTimeFormatted = startDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    private final String endDateTimeFormatted = endDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     private final String title = "Title 1";
 
     @Captor
@@ -97,18 +93,33 @@ class ExamControllerTest extends ControllerIntegrationTest {
     @Test
     @DisplayName("should retrieve all exams by their author")
     void get_shouldReturnAllExamsCreatedByTheUser() throws Exception {
-
         when(userService.getCurrentUserId()).thenReturn(currentUserId);
-        when(examService.findByUser(currentUserId)).thenReturn(singletonList(getExamDTO()));
+        when(examService.findByUser(currentUserId)).thenReturn(
+                List.of(getExamDTO(),
+                        ExamDTO.builder()
+                                .id(2L)
+                                .title("Some New Title")
+                                .authorId(currentUserId)
+                                .mockTest(true)
+                                .questions(getQuestions())
+                                .build()
+                )
+        );
 
         mockMvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].startDateTime", containsString(startDateTimeFormatted)))
-                .andExpect(jsonPath("$[0].endDateTime", containsString(endDateTimeFormatted)))
-                .andExpect(jsonPath("$[0].title", is(title)))
-                .andExpect(jsonPath("$[0].authorId", is(currentUserId)))
-                .andExpect(jsonPath("$[0].questions", hasSize(2)));
+                .andExpect(jsonPath("$[?(@.id == 1)].startDateTime", containsInAnyOrder(startDateTimeFormatted)))
+                .andExpect(jsonPath("$[?(@.id == 1)].endDateTime", containsInAnyOrder(endDateTimeFormatted)))
+                .andExpect(jsonPath("$[?(@.id == 1)].title", containsInAnyOrder(title)))
+                .andExpect(jsonPath("$[?(@.id == 1)].authorId", containsInAnyOrder(currentUserId)))
+                .andExpect(jsonPath("$[?(@.id == 1)].mockTest", contains(false)))
+                .andExpect(jsonPath("$[?(@.id == 1)].questions[?(@.id == 1)].type", containsInAnyOrder("True Or False")))
+                .andExpect(jsonPath("$[?(@.id == 1)].questions[?(@.id == 2)].type", containsInAnyOrder("Multiple Choices")))
+                .andExpect(jsonPath("$[?(@.id == 2)].title", containsInAnyOrder("Some New Title")))
+                .andExpect(jsonPath("$[?(@.id == 2)].authorId", containsInAnyOrder(currentUserId)))
+                .andExpect(jsonPath("$[?(@.id == 2)].mockTest", contains(true)))
+                .andExpect(jsonPath("$[?(@.id == 2)].questions[?(@.id == 1)].type", containsInAnyOrder("True Or False")))
+                .andExpect(jsonPath("$[?(@.id == 2)].questions[?(@.id == 2)].type", containsInAnyOrder("Multiple Choices")));
 
         verify(userService).getCurrentUserId();
         verify(examService).findByUser(currentUserId);
@@ -118,7 +129,7 @@ class ExamControllerTest extends ControllerIntegrationTest {
     @DisplayName("should retrieve all available exams at current time")
     void getAvailable_shouldReturnAllExamsAvailableAtTheCurrentTime() throws Exception {
         when(userService.getCurrentUserId()).thenReturn(currentUserId);
-        when(examService.findAvailable()).thenReturn(singletonList(getExamDTO()));
+        when(examService.findAvailable()).thenReturn(List.of(getExamDTO()));
 
         mockMvc.perform(get(ENDPOINT + "/available"))
                 .andExpect(status().isOk())

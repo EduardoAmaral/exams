@@ -11,4 +11,6 @@
     <include file="changelog/000005_create-exam-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/000006_create-exam-question-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/000007_create-comment-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000008_update-exam-table-add-mock-test-column.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/000009_create-exam-sequence-id.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

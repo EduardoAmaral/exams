@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ExamRepositoryPort {
 
-    Exam save(Exam exam);
+    void save(Exam exam);
 
     List<Exam> findByUser(String currentUser);
 

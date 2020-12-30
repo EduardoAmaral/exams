@@ -51,7 +51,7 @@ describe('<CreateExamPage />', () => {
   });
 
   it('should display a table with the questions available to create an exam', async () => {
-    const { getByText, getByTestId, getAllByRole } = render(<CreateExamPage />);
+    const { getByText, getByTestId } = render(<CreateExamPage />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
@@ -67,7 +67,7 @@ describe('<CreateExamPage />', () => {
     expect(getByText('Author')).toBeDefined();
     expect(getByText('Unknown')).toBeDefined();
 
-    expect(getAllByRole('checkbox')).toHaveLength(1);
+    expect(getByTestId('question-selected-1-input')).toBeDefined();
   });
 
   it('should save an exam when click on save button with the required fields filled', async () => {
@@ -100,6 +100,8 @@ describe('<CreateExamPage />', () => {
       },
     });
 
+    fireEvent.click(getByLabelText('Mock test'));
+
     fireEvent.click(getByTestId(`question-selected-${questions[0].id}-input`));
 
     fireEvent.click(
@@ -112,6 +114,7 @@ describe('<CreateExamPage />', () => {
       title: 'Title should be this',
       startDateTime: new Date('2020-09-27T18:02').toISOString(),
       endDateTime: new Date('2020-09-27T22:02').toISOString(),
+      mockTest: true,
       questions: questions.map((q) => ({ ...q, selected: true })),
     });
 

@@ -23,7 +23,7 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExamDTO extends Exam {
+public class ExamDTO implements Exam {
 
     private Long id;
 
@@ -41,15 +41,18 @@ public class ExamDTO extends Exam {
     @NotEmpty(message = "{exam.questions.required}")
     private List<QuestionDTO> questions;
 
+    private boolean mockTest;
+
     public static ExamDTO from(Exam exam) {
         ExamDTOBuilder builder = builder();
 
         if (exam != null) {
             builder.id(exam.getId())
+                    .title(exam.getTitle())
+                    .authorId(exam.getAuthorId())
                     .startDateTime(exam.getStartDateTime())
                     .endDateTime(exam.getEndDateTime())
-                    .authorId(exam.getAuthorId())
-                    .title(exam.getTitle())
+                    .mockTest(exam.isMockTest())
                     .questions(QuestionDTO.from(exam.getQuestions()))
                     .build();
         }

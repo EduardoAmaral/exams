@@ -6,21 +6,27 @@ import com.eamaral.exams.question.domain.Question;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public abstract class Exam {
+public interface Exam {
 
-    public abstract Long getId();
+    Long getId();
 
-    public abstract String getTitle();
+    String getTitle();
 
-    public abstract ZonedDateTime getStartDateTime();
+    ZonedDateTime getStartDateTime();
 
-    public abstract ZonedDateTime getEndDateTime();
+    ZonedDateTime getEndDateTime();
 
-    public abstract String getAuthorId();
+    String getAuthorId();
 
-    public abstract List<Question> getQuestions();
+    List<Question> getQuestions();
 
-    public void validate() {
+    boolean isMockTest();
+
+    default void validateDates() {
+        if (isMockTest()) {
+            return;
+        }
+
         if (getStartDateTime() == null || getEndDateTime() == null) {
             throw new InvalidDataException("Dates are required when not a mock test");
         }

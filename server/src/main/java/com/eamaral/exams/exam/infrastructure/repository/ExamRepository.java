@@ -24,9 +24,9 @@ public class ExamRepository implements ExamRepositoryPort {
 
 
     @Override
-    public Exam save(Exam exam) {
+    public void save(Exam exam) {
         ExamEntity examEntity = ExamEntity.from(exam);
-        return repository.saveAndFlush(examEntity);
+        repository.saveAndFlush(examEntity);
     }
 
     @Override
