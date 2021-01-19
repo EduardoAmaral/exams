@@ -6,6 +6,7 @@ import com.eamaral.exams.question.domain.service.QuestionService;
 import com.eamaral.exams.question.domain.service.SubjectService;
 import com.eamaral.exams.user.domain.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest
 @ContextConfiguration(classes = {ControllerIntegrationTestConfiguration.class})
 @WithMockUser
+@Timeout(1)
 public abstract class ControllerIntegrationTest {
 
     @MockBean
